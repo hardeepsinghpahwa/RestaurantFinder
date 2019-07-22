@@ -1,0 +1,122 @@
+{
+  "project_info": {
+    "project_number": "484157616647",
+    "firebase_url": "https://urbanrider-a7875.firebaseio.com",
+    "project_id": "urbanrider-a7875",
+    "storage_bucket": "urbanrider-a7875.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484157616647:android:d54b5d7042fac053",
+        "android_client_info": {
+          "package_name": "com.example.restaurantfinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "484157616647-akqps13hs4r0ae4ifgg2g5o8m1800jkq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.restaurantfinder",
+            "certificate_hash": "f7e685fa61edd8294e5a8d40b325bff817485cc3"
+          }
+        },
+        {
+          "client_id": "484157616647-9asm69bmhq32a2fmln8q034s3rao305k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ1_P6MJjXq__qQOiMiufQLri_EcHIT-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "484157616647-9asm69bmhq32a2fmln8q034s3rao305k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484157616647:android:c6f328a74f771c4b",
+        "android_client_info": {
+          "package_name": "com.example.urbanrider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "484157616647-7j4nbfpmtbopbp5e4v5a9lnl0bti6hgk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.urbanrider",
+            "certificate_hash": "f7e685fa61edd8294e5a8d40b325bff817485cc3"
+          }
+        },
+        {
+          "client_id": "484157616647-9asm69bmhq32a2fmln8q034s3rao305k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ1_P6MJjXq__qQOiMiufQLri_EcHIT-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "484157616647-9asm69bmhq32a2fmln8q034s3rao305k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484157616647:android:85f39892a83be92b",
+        "android_client_info": {
+          "package_name": "com.example.urbanrideruserapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "484157616647-7onlsq3380qplbm2r0sfcfk2vcte2ap5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.urbanrideruserapp",
+            "certificate_hash": "f7e685fa61edd8294e5a8d40b325bff817485cc3"
+          }
+        },
+        {
+          "client_id": "484157616647-9asm69bmhq32a2fmln8q034s3rao305k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ1_P6MJjXq__qQOiMiufQLri_EcHIT-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "484157616647-9asm69bmhq32a2fmln8q034s3rao305k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
