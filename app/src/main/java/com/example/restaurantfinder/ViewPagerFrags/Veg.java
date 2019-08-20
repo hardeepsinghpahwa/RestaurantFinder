@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.restaurantfinder.HomeMaps;
 import com.example.restaurantfinder.R;
@@ -80,7 +82,7 @@ public class Veg extends Fragment {
 
         recyclerView=v.findViewById(R.id.vegrecyclerview);
         recyclerView.setAdapter(new GridAdapter(images,getActivity()));
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
 
         return v;
     }
@@ -128,6 +130,8 @@ public class Veg extends Fragment {
 
         int a[];
         String brands[] = new String[]{"veg1","veg2","veg3","veg4"};
+        String names[] = new String[]{"Chinese","North Indian","South Indian","Italian"};
+
 
 
         Context context;
@@ -150,6 +154,7 @@ public class Veg extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull GridAdapter.GridViewHolder gridViewHolder, int i) {
             gridViewHolder.imageView.setImageResource(a[i]);
+            gridViewHolder.name.setText(names[i]);
         }
 
         @Override
@@ -160,6 +165,8 @@ public class Veg extends Fragment {
 
         public class GridViewHolder extends RecyclerView.ViewHolder {
             CircularImageView imageView;
+            TextView name;
+
             private SparseBooleanArray selectedItems = new SparseBooleanArray();
 
 
@@ -167,17 +174,20 @@ public class Veg extends Fragment {
                 super(itemView);
 
                 imageView = itemView.findViewById(R.id.gridimage);
-
+                name=itemView.findViewById(R.id.cuisinename);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @TargetApi(Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View v) {
-                        Intent intent=new Intent(getActivity(), HomeMaps.class);
-                        intent.putExtra("posi",getAdapterPosition());
-                        intent.putExtra("array",a);
-                        intent.putExtra("brand",brands[getAdapterPosition()]);
-                        startActivity(intent);
+
+                        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),imageView,"imageMain");
+                        Intent in = new Intent(getActivity(),HomeMaps.class);
+                        in.putExtra("posi",getAdapterPosition());
+                        in.putExtra("array",a);
+                        in.putExtra("brand",brands[getAdapterPosition()]);
+                        startActivity(in,activityOptionsCompat.toBundle());
                         getActivity().finish();
+                        //getActivity().overridePendingTransition(R.anim.fadein,R.anim.fadeout);
                     }
                 });
             }

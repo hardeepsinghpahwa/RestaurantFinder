@@ -172,7 +172,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                                     markerOptions.title(dataSnapshot1.getKey());
 
-                                    markerOptions.icon(getBitmapDescriptor(R.drawable.blue_marker));
+                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.indian));
 
                                     mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
@@ -189,7 +189,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 markerOptions.position(latLng);
 
 
-                                markerOptions.icon(getBitmapDescriptor(R.drawable.red_marker));
+                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.non));
 
                                 markerOptions.title(dataSnapshot1.getKey());
 
@@ -215,6 +215,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
 
     }
+
 
     private BitmapDescriptor getBitmapDescriptor(int id) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -604,6 +605,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         super.onBackPressed();
 
         startActivity(new Intent(RestaurentActivity.this,HomeMaps.class));
+        overridePendingTransition(R.anim.fadein,R.anim.fadeout);
         finish();
     }
 
@@ -634,7 +636,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
 
     }
-
     @Override
     protected void onPause() {
         super.onPause();

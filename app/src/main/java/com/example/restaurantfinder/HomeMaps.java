@@ -75,6 +75,7 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
                     intent.putExtra("array",a);
                     intent.putExtra("posi",item);
                     startActivity(intent);
+                    finish();
                 } else {
 
                     Intent intent = new Intent(HomeMaps.this, BottomUpActivity.class);
@@ -85,6 +86,11 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
         });
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override

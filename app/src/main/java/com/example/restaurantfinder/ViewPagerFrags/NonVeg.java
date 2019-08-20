@@ -14,6 +14,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.restaurantfinder.HomeMaps;
 import com.example.restaurantfinder.R;
@@ -78,7 +79,7 @@ public class NonVeg extends Fragment {
 
         recyclerView=v.findViewById(R.id.nonvegrecyclerview);
         recyclerView.setAdapter(new GridAdapter(images,getActivity()));
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
 
         return v;
     }
@@ -115,6 +116,8 @@ public class NonVeg extends Fragment {
 
         int a[];
         String brands[]=new String[]{"nonveg1","nonveg2"};
+        String names[]=new String[]{"Indian","Sea Food"};
+
 
         Context context;
         ArrayList<Integer> images = new ArrayList<>();
@@ -136,6 +139,7 @@ public class NonVeg extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull GridAdapter.GridViewHolder gridViewHolder, int i) {
             gridViewHolder.imageView.setImageResource(a[i]);
+            gridViewHolder.name.setText(names[i]);
         }
 
         @Override
@@ -146,6 +150,8 @@ public class NonVeg extends Fragment {
 
         public class GridViewHolder extends RecyclerView.ViewHolder {
             CircularImageView imageView;
+            TextView name;
+
             private SparseBooleanArray selectedItems = new SparseBooleanArray();
 
 
@@ -153,7 +159,7 @@ public class NonVeg extends Fragment {
                 super(itemView);
 
                 imageView = itemView.findViewById(R.id.gridimage);
-
+                name=itemView.findViewById(R.id.cuisinename);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @TargetApi(Build.VERSION_CODES.M)
                     @Override
@@ -164,6 +170,8 @@ public class NonVeg extends Fragment {
                         intent.putExtra("brand",brands[getAdapterPosition()]);
                         startActivity(intent);
                         getActivity().finish();
+                        getActivity().overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+
                     }
                 });
             }

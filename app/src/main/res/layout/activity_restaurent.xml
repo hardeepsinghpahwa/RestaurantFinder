@@ -39,7 +39,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginRight="20dp"
-                    android:src="@drawable/locblue" />
+                    android:src="@drawable/indian" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginRight="20dp"
-                    android:src="@drawable/locred" />
+                    android:src="@drawable/non" />
 
                 <TextView
                     android:layout_width="wrap_content"
