@@ -4,14 +4,17 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.VectorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -22,8 +25,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,6 +48,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONObject;
 
@@ -60,10 +68,24 @@ import dmax.dialog.SpotsDialog;
 
 public class RestaurentActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+
+
+    String bname;
+    CheckBox sunday, monday, tuesday, wednesday, thursday, friday, saturday;
+    Button onsitekms;
+    TextView timefrom, timeto,name;
+    Button call;
+    ImageView imageView;
+    SpinKitView spin;
+    TextView choose,area;
+
+
+    private SlidingUpPanelLayout mLayout;
     RelativeLayout overlay;
     Button ok;
     GoogleMap mMap;
     LatLng origin;
+    RelativeLayout details;
     LocationManager locationManager;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     Location mLastKnownLocation;
@@ -80,13 +102,69 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurent);
 
+
         getSupportActionBar().setTitle("Nearby Restaurants");
+
+
+        onsitekms = findViewById(R.id.kms);
+        call=findViewById(R.id.call);
+        name = findViewById(R.id.name);
+
+
+        sunday = findViewById(R.id.sunday);
+        monday = findViewById(R.id.monday);
+        tuesday = findViewById(R.id.tuesday);
+        wednesday = findViewById(R.id.wednesday);
+        thursday = findViewById(R.id.thursday);
+        friday = findViewById(R.id.friday);
+        saturday = findViewById(R.id.saturday);
+
+        area=findViewById(R.id.area);
+        choose=findViewById(R.id.choose);
+        spin=findViewById(R.id.spin);
+
+        sunday.setChecked(true);
+        monday.setChecked(true);
+        tuesday.setChecked(true);
+        wednesday.setChecked(true);
+        thursday.setChecked(true);
+        friday.setChecked(true);
+        saturday.setChecked(true);
+
+
+
+
+
+
+
         overlay = findViewById(R.id.overlay);
         ok = findViewById(R.id.ok);
 
         pos = getIntent().getIntExtra("posi", -1);
         a = getIntent().getIntArrayExtra("array");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        mLayout=findViewById(R.id.sliding);
+
+        mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                Log.i("Main", "onPanelSlide, offset " + slideOffset);
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                Log.i("Main", "onPanelStateChanged " + newState);
+            }
+        });
+        mLayout.setFadeOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
+
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -172,9 +250,15 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                                     markerOptions.title(dataSnapshot1.getKey());
 
-                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.indian));
+                                    int height = 100;
+                                    int width = 100;
+                                    BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.bluemarker);
+                                    Bitmap b=bitmapdraw.getBitmap();
+                                    Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-                                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+
+                                    mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
 
                                     // Placing a marker on the touched position
                                     mMap.addMarker(markerOptions);
@@ -188,12 +272,17 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 LatLng latLng = new LatLng(Double.parseDouble(dataSnapshot1.child("latitude").getValue(String.class)), Double.parseDouble(dataSnapshot1.child("longitude").getValue(String.class)));
                                 markerOptions.position(latLng);
 
+                                int height = 100;
+                                int width = 100;
+                                BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.redmarker);
+                                Bitmap b=bitmapdraw.getBitmap();
+                                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.non));
 
+                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
                                 markerOptions.title(dataSnapshot1.getKey());
 
-                                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                                mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
 
                                 // Placing a marker on the touched position
                                 mMap.addMarker(markerOptions);
@@ -260,17 +349,29 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getLastKnownLocation(), 19));
 
 
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if(details.getVisibility()==View.VISIBLE)
+                {
+                    details.setVisibility(View.GONE);
+                }
+            }
+        });
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
 
+
                 String mark = marker.getTitle();
                 Log.i("ljn", mark);
-
+                /*
                 FirebaseDatabase.getInstance().getReference().child("Saved").child(mark).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
                         Log.i("", dataSnapshot.child("latitude").getValue(String.class) + (dataSnapshot.child("longitude").getValue(String.class)));
 
 
@@ -285,6 +386,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                         // Start downloading json data from Google Directions API
                         downloadTask.execute(url);
+
 
 
                     }
@@ -302,6 +404,134 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                 i.putExtra("bname", marker.getTitle());
                 startActivity(i);
                 overridePendingTransition(R.anim.slidein, R.anim.slideout);
+*/
+
+
+
+                choose.setVisibility(View.INVISIBLE);
+                spin.setVisibility(View.VISIBLE);
+
+                FirebaseDatabase.getInstance().getReference().child("Saved").child(mark).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        final details1 de = dataSnapshot.getValue(details1.class);
+
+                        call.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final android.support.v7.app.AlertDialog.Builder builder=new android.support.v7.app.AlertDialog.Builder(RestaurentActivity.this);
+                                builder.setMessage("Are you sure to call "+de.getBuisnessname());
+                                builder.setPositiveButton("Call", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                                        intent.setData(Uri.parse("tel:"+de.getContact1()));
+                                        startActivity(intent);
+                                        builder.create().dismiss();
+                                    }
+                                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        builder.create().dismiss();
+                                    }
+                                });
+
+                                builder.create().show();
+                            }
+                        });
+
+                        area.setText(de.getAreaname());
+                        name.setText(de.getBuisnessname());
+                        String phone=de.getContact1();
+                        if(de.getOnsite().equals("no"))
+                        {
+                            onsitekms.setText("None");
+                        }
+                        else {
+                            onsitekms.setText(de.getKms()+" kms");
+                        }
+
+                        if (de.getSunday().matches("false")) {
+                            sunday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                            sunday.setTextColor(Color.WHITE);
+                            sunday.setChecked(false);
+                        } else if (de.getSunday().matches("true")) {
+                            sunday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                            sunday.setTextColor(Color.parseColor("#e0e0e0"));
+                            sunday.setChecked(true);
+                        }
+
+
+                        if (de.getMonday().matches("false")) {
+                            monday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                            monday.setTextColor(Color.WHITE);
+                            monday.setChecked(false);
+                        } else if (de.getMonday().matches("true")) {
+                            monday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                            monday.setTextColor(Color.parseColor("#e0e0e0"));
+                            monday.setChecked(true);
+                        }
+
+                        if (de.getTuesday().matches("false")) {
+                            tuesday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                            tuesday.setTextColor(Color.WHITE);
+                            tuesday.setChecked(false);
+                        } else if (de.getTuesday().matches("true")) {
+                            tuesday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                            tuesday.setTextColor(Color.parseColor("#e0e0e0"));
+                            tuesday.setChecked(true);
+                        }
+
+                        if (de.getWednesday().matches("false")) {
+                            wednesday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                            wednesday.setTextColor(Color.WHITE);
+                            wednesday.setChecked(false);
+                        } else if (de.getWednesday().matches("true")) {
+                            wednesday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                            wednesday.setTextColor(Color.parseColor("#e0e0e0"));
+                            wednesday.setChecked(true);
+                        }
+
+                        if (de.getThursday().matches("false")) {
+                            thursday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                            thursday.setTextColor(Color.WHITE);
+                            thursday.setChecked(false);
+                        } else if (de.getThursday().matches("true")) {
+                            thursday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                            thursday.setTextColor(Color.parseColor("#e0e0e0"));
+                            thursday.setChecked(true);
+                        }
+
+                        if (de.getFriday().matches("false")) {
+                            friday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                            friday.setTextColor(Color.WHITE);
+                            friday.setChecked(false);
+                        } else if (de.getFriday().matches("true")) {
+                            friday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                            friday.setTextColor(Color.parseColor("#e0e0e0"));
+                            friday.setChecked(true);
+                        }
+
+                        if (de.getSaturday().matches("false")) {
+                            saturday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                            saturday.setTextColor(Color.WHITE);
+                            saturday.setChecked(false);
+                        } else if (de.getSaturday().matches("true")) {
+                            saturday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                            saturday.setTextColor(Color.parseColor("#e0e0e0"));
+                            saturday.setChecked(true);
+                        }
+
+                        spin.setVisibility(View.INVISIBLE);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
 
                 return true;
@@ -604,7 +834,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     public void onBackPressed() {
         super.onBackPressed();
 
-        startActivity(new Intent(RestaurentActivity.this,HomeMaps.class));
         overridePendingTransition(R.anim.fadein,R.anim.fadeout);
         finish();
     }

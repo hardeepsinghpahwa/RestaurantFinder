@@ -14,7 +14,6 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,13 +21,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.restaurantfinder.MarkerDetails"
-            android:theme="@style/AppThemeCustom"
-            ></activity>
+        <activity android:name=".RestaurentActivity" />
         <activity
-            android:name="com.example.restaurantfinder.RestaurentActivity" />
-        <activity
-            android:name="com.example.restaurantfinder.BottomUpActivity"
+            android:name=".BottomUpActivity"
             android:theme="@style/AppThemeCustom" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -43,7 +38,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.restaurantfinder.HomeMaps"
+            android:name=".HomeMaps"
             android:label="Maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,7 +46,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.restaurantfinder.MainActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
