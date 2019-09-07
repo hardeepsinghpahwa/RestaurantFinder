@@ -7,7 +7,22 @@
     tools:context=".HomeMaps">
 
 
-    <android.support.v7.widget.Toolbar
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search Nearby"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:id="@+id/search"
+        android:visibility="invisible"
+        android:textSize="20sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:background="@color/colorPrimary"
+        />
+
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/homemapstoolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -18,13 +33,16 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <android.support.design.widget.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                map:fabSize="mini"
-                android:layout_margin="8dp"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/pic"
+                map:civ_border_color="#FFFFFF"
+                map:civ_border_width="2dp"
+                android:layout_gravity="center"
+                android:background="@drawable/person"
                 android:backgroundTint="@android:color/white"
-                android:src="@drawable/person" />
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -32,11 +50,14 @@
                 android:gravity="center"
                 android:text="Username"
                 android:textColor="#FFFFFF"
-                android:textSize="25sp"
+                android:textSize="20sp"
+                android:id="@+id/nme"
+                android:fontFamily="@font/quicksand_medium"
+                android:layout_marginLeft="10dp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <fragment
         android:id="@+id/map"
@@ -72,28 +93,28 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
+            android:id="@+id/fl1"
+            android:visibility="gone"
             android:layout_weight="1"
             >
 
-            <android.support.design.widget.FloatingActionButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 map:fabSize="normal"
                 android:layout_marginBottom="10dp"
                 android:id="@+id/restaurentfab"
-                map:backgroundTint="#5613B2"
+                map:backgroundTint="#FFAB00"
                 android:src="@drawable/restaurantwhite"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RESTAURENT"
-                android:textStyle="bold"
+                android:text="Restaurant"
+                android:textColor="#FFAB00"
                 android:textSize="20dp"
-                android:textColor="#5613B2"
-
-                />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -102,23 +123,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
+            android:id="@+id/fl2"
+            android:visibility="gone"
             android:layout_weight="1">
 
-            <android.support.design.widget.FloatingActionButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 map:fabSize="normal"
+                android:id="@+id/dhaba"
                 android:layout_marginBottom="10dp"
-                map:backgroundTint="#0BD34E"
-                android:src="@drawable/whitedhaba"
+                map:backgroundTint="#FF6D00"
+                android:src="@drawable/dhabafood"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DHABA"
+                android:text="Dhaba"
                 android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:textSize="20dp"
-                android:textColor="#0BD34E"
+                android:textColor="#FF6D00"
 
                 />
 
@@ -129,24 +154,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
+            android:visibility="gone"
+            android:id="@+id/fl3"
             android:layout_weight="1">
 
-            <android.support.design.widget.FloatingActionButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 map:fabSize="normal"
                 android:layout_marginBottom="10dp"
-                map:backgroundTint="#FF1628"
+                map:backgroundTint="#FFAB00"
+                android:id="@+id/coffeeshop"
                 android:src="@drawable/coffeewhite"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="COFFEE SHOP"
+                android:text="Coffee Shop"
                 android:textStyle="bold"
                 android:textSize="20dp"
-                android:textColor="#FF1628"
+                android:textColor="#FFAB00"
                 />
 
         </LinearLayout>

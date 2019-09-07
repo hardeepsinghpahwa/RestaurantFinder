@@ -1,24 +1,27 @@
 package com.example.restaurantfinder.ViewPagerFrags;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.restaurantfinder.HomeMaps;
 import com.example.restaurantfinder.R;
-import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
 
@@ -75,11 +78,11 @@ public class NonVeg extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_non_veg, container, false);
-        images = new int[]{R.drawable.indiannonveg, R.drawable.seafood};
+        images = new int[]{R.drawable.nonindianfood, R.drawable.seafood1};
 
         recyclerView=v.findViewById(R.id.nonvegrecyclerview);
         recyclerView.setAdapter(new GridAdapter(images,getActivity()));
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
 
         return v;
     }
@@ -118,6 +121,7 @@ public class NonVeg extends Fragment {
         String brands[]=new String[]{"nonveg1","nonveg2"};
         String names[]=new String[]{"Indian","Sea Food"};
 
+        int lastPosition=-1;
 
         Context context;
         ArrayList<Integer> images = new ArrayList<>();
@@ -147,9 +151,36 @@ public class NonVeg extends Fragment {
             return a.length;
         }
 
+        @Override
+        public void onViewAttachedToWindow(@NonNull final GridViewHolder holder) {
+            super.onViewAttachedToWindow(holder);
+            holder.itemView.setVisibility(View.INVISIBLE);
+
+            if (holder.getPosition() > lastPosition) {
+                holder.itemView.getHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.itemView.setVisibility(View.VISIBLE);
+                        ObjectAnimator alpha = ObjectAnimator.ofFloat(holder.itemView, "alpha", 0f, 1f);
+                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(holder.itemView, "scaleY", 0f, 1f);
+                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(holder.itemView, "scaleX", 0f, 1f);
+                        AnimatorSet animSet = new AnimatorSet();
+                        animSet.play(alpha).with(scaleY).with(scaleX);
+                        animSet.setInterpolator(new OvershootInterpolator());
+                        animSet.setDuration(400);
+                        animSet.start();
+
+                    }
+                }, 200);
+
+                lastPosition = holder.getPosition();
+            } else {
+                holder.itemView.setVisibility(View.VISIBLE);
+            }
+        }
 
         public class GridViewHolder extends RecyclerView.ViewHolder {
-            CircularImageView imageView;
+            ImageView imageView;
             TextView name;
 
             private SparseBooleanArray selectedItems = new SparseBooleanArray();

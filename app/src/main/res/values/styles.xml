@@ -7,11 +7,32 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:fontFamily">@font/quicksand_medium</item>
+
+    </style>
+
+    <style name="Nobar" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/quicksand_medium</item>
+
+    </style>
+
+    <style name="SigninTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">#362D2D</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:fontFamily">@font/quicksand_medium</item>
+
     </style>
 
     <style name="Custom" parent="android:Theme.DeviceDefault.Dialog">
-        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
-        <item name="android:fontFamily">serif</item>
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Material.Title</item>
+        <item name="android:fontFamily">@font/quicksand_medium</item>
         <item name="DialogSpotColor">#FFFFFF</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="DialogSpotCount">6</item>
@@ -23,8 +44,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@drawable/dialogback</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:fontFamily">@font/quicksand_medium</item>
     </style>
-    
+
 </resources>

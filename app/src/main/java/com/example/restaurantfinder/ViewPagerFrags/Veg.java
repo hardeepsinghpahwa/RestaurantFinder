@@ -1,25 +1,28 @@
 package com.example.restaurantfinder.ViewPagerFrags;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.restaurantfinder.HomeMaps;
 import com.example.restaurantfinder.R;
-import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
 
@@ -78,11 +81,11 @@ public class Veg extends Fragment {
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_veg, container, false);
 
-        images = new int[]{R.drawable.chinese, R.drawable.northindi, R.drawable.southindian, R.drawable.italian};
+        images = new int[]{R.drawable.chinesefood, R.drawable.northindian, R.drawable.southindianfood, R.drawable.italianfood};
 
         recyclerView=v.findViewById(R.id.vegrecyclerview);
         recyclerView.setAdapter(new GridAdapter(images,getActivity()));
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,false));
 
         return v;
     }
@@ -132,6 +135,7 @@ public class Veg extends Fragment {
         String brands[] = new String[]{"veg1","veg2","veg3","veg4"};
         String names[] = new String[]{"Chinese","North Indian","South Indian","Italian"};
 
+        int lastPosition = -1;
 
 
         Context context;
@@ -140,6 +144,34 @@ public class Veg extends Fragment {
         public GridAdapter(int[] a, Context context) {
             this.a = a;
             this.context = context;
+        }
+
+        @Override
+        public void onViewAttachedToWindow(@NonNull final GridViewHolder holder) {
+            super.onViewAttachedToWindow(holder);
+            holder.itemView.setVisibility(View.INVISIBLE);
+
+            if (holder.getPosition() > lastPosition) {
+                holder.itemView.getHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.itemView.setVisibility(View.VISIBLE);
+                        ObjectAnimator alpha = ObjectAnimator.ofFloat(holder.itemView, "alpha", 0f, 1f);
+                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(holder.itemView, "scaleY", 0f, 1f);
+                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(holder.itemView, "scaleX", 0f, 1f);
+                        AnimatorSet animSet = new AnimatorSet();
+                        animSet.play(alpha).with(scaleY).with(scaleX);
+                        animSet.setInterpolator(new OvershootInterpolator());
+                        animSet.setDuration(400);
+                        animSet.start();
+
+                    }
+                }, 200);
+
+                lastPosition = holder.getPosition();
+            } else {
+                holder.itemView.setVisibility(View.VISIBLE);
+            }
         }
 
         @NonNull
@@ -152,9 +184,13 @@ public class Veg extends Fragment {
 
 
         @Override
-        public void onBindViewHolder(@NonNull GridAdapter.GridViewHolder gridViewHolder, int i) {
+        public void onBindViewHolder(@NonNull final GridAdapter.GridViewHolder gridViewHolder, int i) {
+
+
             gridViewHolder.imageView.setImageResource(a[i]);
             gridViewHolder.name.setText(names[i]);
+
+
         }
 
         @Override
@@ -164,7 +200,7 @@ public class Veg extends Fragment {
 
 
         public class GridViewHolder extends RecyclerView.ViewHolder {
-            CircularImageView imageView;
+            ImageView imageView;
             TextView name;
 
             private SparseBooleanArray selectedItems = new SparseBooleanArray();

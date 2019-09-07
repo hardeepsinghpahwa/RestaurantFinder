@@ -1,13 +1,13 @@
 package com.example.restaurantfinder;
 
 import android.net.Uri;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.view.ViewCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.content.res.AppCompatResources;
+import androidx.appcompat.content.res.AppCompatResources;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.example.restaurantfinder.ViewPagerFrags.NonVeg;
 import com.example.restaurantfinder.ViewPagerFrags.Veg;
 
-public class BottomUpActivity extends AppCompatActivity implements Veg.OnFragmentInteractionListener, NonVeg.OnFragmentInteractionListener {
+public class BottomUpActivity extends AppCompatActivity implements Veg.OnFragmentInteractionListener, NonVeg.OnFragmentInteractionListener{
 
 
     TabLayout tabLayout;
@@ -106,5 +106,11 @@ public class BottomUpActivity extends AppCompatActivity implements Veg.OnFragmen
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.top,R.anim.bottom);
     }
 }

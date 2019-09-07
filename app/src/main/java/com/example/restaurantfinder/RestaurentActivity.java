@@ -2,7 +2,6 @@ package com.example.restaurantfinder;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,21 +14,32 @@ import android.graphics.drawable.VectorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.example.restaurantfinder.Directions.TaskLoadedCallback;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,6 +50,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -48,50 +59,49 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
+import com.smarteist.autoimageslider.SliderViewAdapter;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.tapadoo.alerter.Alerter;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
 import dmax.dialog.SpotsDialog;
+import pl.droidsonroids.gif.GifImageView;
 
-public class RestaurentActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class RestaurentActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
 
-
-
-    String bname;
     CheckBox sunday, monday, tuesday, wednesday, thursday, friday, saturday;
-    Button onsitekms;
-    TextView timefrom, timeto,name;
-    Button call;
-    ImageView imageView;
+    TextView onsitekms;
+    TextView name;
+    LinearLayout call,kmslinear;
+    SliderView sliderView;
+    private Polyline currentPolyline;
+    String markid;
     SpinKitView spin;
-    TextView choose,area;
-
-
+    ArrayList<String> images;
+    TextView choose, area;
+    NestedScrollView nestedScrollView;
     private SlidingUpPanelLayout mLayout;
     RelativeLayout overlay;
     Button ok;
     GoogleMap mMap;
-    LatLng origin;
-    RelativeLayout details;
+    TextView status;
+    LinearLayout det;
+    int open = 0;
     LocationManager locationManager;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     Location mLastKnownLocation;
     boolean mLocationPermissionGranted = false;
     String brand;
-    int a[]=new int[]{};
+    int a[] = new int[]{};
     int pos;
     double lon, lat;
     ArrayList<String> names = new ArrayList<>();
@@ -104,12 +114,16 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
 
         getSupportActionBar().setTitle("Nearby Restaurants");
-
+        images = new ArrayList<>();
 
         onsitekms = findViewById(R.id.kms);
-        call=findViewById(R.id.call);
+        call = findViewById(R.id.call);
         name = findViewById(R.id.name);
+        kmslinear=findViewById(R.id.kmslinear);
 
+        sliderView = findViewById(R.id.imageSlider);
+        sliderView.setIndicatorAnimation(IndicatorAnimations.SWAP);
+        sliderView.setSliderTransformAnimation(SliderAnimations.FADETRANSFORMATION);
 
         sunday = findViewById(R.id.sunday);
         monday = findViewById(R.id.monday);
@@ -119,9 +133,12 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         friday = findViewById(R.id.friday);
         saturday = findViewById(R.id.saturday);
 
-        area=findViewById(R.id.area);
-        choose=findViewById(R.id.choose);
-        spin=findViewById(R.id.spin);
+        nestedScrollView = findViewById(R.id.nested);
+        nestedScrollView.setSmoothScrollingEnabled(true);
+        nestedScrollView.smoothScrollTo(4, 4);
+        area = findViewById(R.id.area);
+        choose = findViewById(R.id.choose);
+        spin = findViewById(R.id.spin);
 
         sunday.setChecked(true);
         monday.setChecked(true);
@@ -131,11 +148,9 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         friday.setChecked(true);
         saturday.setChecked(true);
 
+        det = findViewById(R.id.det);
 
-
-
-
-
+        status = findViewById(R.id.status);
 
         overlay = findViewById(R.id.overlay);
         ok = findViewById(R.id.ok);
@@ -145,7 +160,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        mLayout=findViewById(R.id.sliding);
+        mLayout = findViewById(R.id.sliding);
 
         mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
@@ -166,6 +181,25 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         });
 
 
+        mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+
+
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                    open = 1;
+                } else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                    open = 0;
+                }
+            }
+        });
+
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -182,15 +216,15 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-           final AlertDialog alertDialog = new SpotsDialog.Builder()
-                            .setContext(RestaurentActivity.this)
-                            .setMessage("Searching nearby")
-                            .setCancelable(false)
-                            .setTheme(R.style.Custom)
-                            .build();;
-                            alertDialog.show();
+        final AlertDialog alertDialog = new SpotsDialog.Builder()
+                .setContext(RestaurentActivity.this)
+                .setMessage("Searching nearby")
+                .setCancelable(false)
+                .setTheme(R.style.Custom)
+                .build();
+        alertDialog.show();
 
-        databaseReference.child("Brands").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("Brands").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (final DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
@@ -217,7 +251,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-        databaseReference.child("Saved").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("Saved").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
 
@@ -241,19 +275,19 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                         @Override
                         public void onSuccess(Void aVoid) {
                             alertDialog.dismiss();
-                            if (dist < 10 && (dataSnapshot1.child("restaurenttype").getValue(String.class)).matches("indian")) {
+                            if (dist < 10 && (dataSnapshot1.child("restaurenttype").getValue(String.class)).matches("indian") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
                                 if (names.contains(dataSnapshot1.getKey())) {
                                     MarkerOptions markerOptions = new MarkerOptions();
 
                                     LatLng latLng = new LatLng(Double.parseDouble(dataSnapshot1.child("latitude").getValue(String.class)), Double.parseDouble(dataSnapshot1.child("longitude").getValue(String.class)));
                                     markerOptions.position(latLng);
 
-                                    markerOptions.title(dataSnapshot1.getKey());
+                                    markerOptions.title(dataSnapshot1.child("buisnessname").getValue(String.class));
 
-                                    int height = 100;
-                                    int width = 100;
-                                    BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.bluemarker);
-                                    Bitmap b=bitmapdraw.getBitmap();
+                                    int height = 200;
+                                    int width = 200;
+                                    BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.blueres);
+                                    Bitmap b = bitmapdraw.getBitmap();
                                     Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
                                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
@@ -266,21 +300,22 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                                 }
                             }
-                            if (dist < 10 && (dataSnapshot1.child("restaurenttype").getValue(String.class)).matches("nonindian")) {
+                            if (dist < 10 && (dataSnapshot1.child("restaurenttype").getValue(String.class)).matches("nonindian") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
                                 MarkerOptions markerOptions = new MarkerOptions();
 
                                 LatLng latLng = new LatLng(Double.parseDouble(dataSnapshot1.child("latitude").getValue(String.class)), Double.parseDouble(dataSnapshot1.child("longitude").getValue(String.class)));
                                 markerOptions.position(latLng);
 
-                                int height = 100;
-                                int width = 100;
-                                BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.redmarker);
-                                Bitmap b=bitmapdraw.getBitmap();
+                                markerOptions.title(dataSnapshot1.child("buisnessname").getValue(String.class));
+
+                                int height = 200;
+                                int width = 200;
+                                BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.redres);
+                                Bitmap b = bitmapdraw.getBitmap();
                                 Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
 
                                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
-                                markerOptions.title(dataSnapshot1.getKey());
 
                                 mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
 
@@ -352,179 +387,268 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                if(details.getVisibility()==View.VISIBLE)
-                {
-                    details.setVisibility(View.GONE);
+                if (det.getVisibility() == View.VISIBLE) {
+
+
+                    if (name.getVisibility() == View.VISIBLE) {
+                        YoYo.with(Techniques.FadeOut)
+                                .duration(500)
+                                .playOn(det);
+
+                        YoYo.with(Techniques.FadeOut)
+                                .duration(500)
+                                .playOn(name);
+
+                        YoYo.with(Techniques.FadeOut)
+                                .duration(500)
+                                .playOn(kmslinear);
+
+                        YoYo.with(Techniques.FadeOut)
+                                .duration(500)
+                                .playOn(status);
+
+                        YoYo.with(Techniques.FadeOut)
+                                .duration(500)
+                                .playOn(call);
+
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                det.setVisibility(View.INVISIBLE);
+                                name.setVisibility(View.INVISIBLE);
+                                kmslinear.setVisibility(View.INVISIBLE);
+                                status.setVisibility(View.INVISIBLE);
+                                call.setVisibility(View.INVISIBLE);
+                            }
+                        },500);
+
+                        choose.setVisibility(View.VISIBLE);
+                        YoYo.with(Techniques.FadeIn)
+                                .duration(500)
+                                .playOn(choose);
+                    }
+
                 }
             }
         });
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
+            public boolean onMarkerClick(final com.google.android.gms.maps.model.Marker marker) {
 
+//                new FetchURL(RestaurentActivity.this).execute(getUrl(getLastKnownLocation(), marker.getPosition(), "driving"), "driving");
 
-                String mark = marker.getTitle();
-                Log.i("ljn", mark);
-                /*
-                FirebaseDatabase.getInstance().getReference().child("Saved").child(mark).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final String mark = marker.getTitle();
 
-
-                        Log.i("", dataSnapshot.child("latitude").getValue(String.class) + (dataSnapshot.child("longitude").getValue(String.class)));
-
-
-                        origin=new LatLng(Double.parseDouble(dataSnapshot.child("latitude").getValue(String.class)),Double.parseDouble(dataSnapshot.child("longitude").getValue(String.class)));
-
-                        LatLng destPosition = getLastKnownLocation();
-
-
-                        String url = getDirectionsUrl(origin, destPosition);
-
-                        DownloadTask downloadTask = new DownloadTask();
-
-                        // Start downloading json data from Google Directions API
-                        downloadTask.execute(url);
-
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-
-                Intent i = new Intent(RestaurentActivity.this, MarkerDetails.class);
-                i.putExtra("array",a);
-                i.putExtra("posi",pos);
-                i.putExtra("bname", marker.getTitle());
-                startActivity(i);
-                overridePendingTransition(R.anim.slidein, R.anim.slideout);
-*/
-
-
+                marker.showInfoWindow();
 
                 choose.setVisibility(View.INVISIBLE);
                 spin.setVisibility(View.VISIBLE);
 
-                FirebaseDatabase.getInstance().getReference().child("Saved").child(mark).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                FirebaseDatabase.getInstance().getReference().child("Saved").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        final details1 de = dataSnapshot.getValue(details1.class);
+                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                            if (dataSnapshot1.child("buisnessname").getValue(String.class).equals(mark)) {
+                                markid = dataSnapshot1.getKey();
+                                Log.i("b", markid);
+                            }
+                        }
 
-                        call.setOnClickListener(new View.OnClickListener() {
+                        FirebaseDatabase.getInstance().getReference().child("Images").child(markid).addValueEventListener(new ValueEventListener() {
                             @Override
-                            public void onClick(View v) {
-                                final android.support.v7.app.AlertDialog.Builder builder=new android.support.v7.app.AlertDialog.Builder(RestaurentActivity.this);
-                                builder.setMessage("Are you sure to call "+de.getBuisnessname());
-                                builder.setPositiveButton("Call", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent intent = new Intent(Intent.ACTION_DIAL);
-                                        intent.setData(Uri.parse("tel:"+de.getContact1()));
-                                        startActivity(intent);
-                                        builder.create().dismiss();
-                                    }
-                                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        builder.create().dismiss();
-                                    }
-                                });
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                images.clear();
+                                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                                    images.add(dataSnapshot1.child("image").getValue(String.class));
+                                }
+                                sliderView.setSliderAdapter(new SliderAdapter(RestaurentActivity.this, images));
+                            }
 
-                                builder.create().show();
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
                             }
                         });
 
-                        area.setText(de.getAreaname());
-                        name.setText(de.getBuisnessname());
-                        String phone=de.getContact1();
-                        if(de.getOnsite().equals("no"))
-                        {
-                            onsitekms.setText("None");
-                        }
-                        else {
-                            onsitekms.setText(de.getKms()+" kms");
-                        }
+                        FirebaseDatabase.getInstance().getReference().child("Saved").child(markid).addValueEventListener(new ValueEventListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.M)
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        if (de.getSunday().matches("false")) {
-                            sunday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
-                            sunday.setTextColor(Color.WHITE);
-                            sunday.setChecked(false);
-                        } else if (de.getSunday().matches("true")) {
-                            sunday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
-                            sunday.setTextColor(Color.parseColor("#e0e0e0"));
-                            sunday.setChecked(true);
-                        }
+                                final details1 de = dataSnapshot.getValue(details1.class);
+
+                                String from = de.getFromtime();
+                                String to = de.getTotime();
+
+                                Date currentTime = Calendar.getInstance().getTime();
 
 
-                        if (de.getMonday().matches("false")) {
-                            monday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
-                            monday.setTextColor(Color.WHITE);
-                            monday.setChecked(false);
-                        } else if (de.getMonday().matches("true")) {
-                            monday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
-                            monday.setTextColor(Color.parseColor("#e0e0e0"));
-                            monday.setChecked(true);
-                        }
+                                int m = 0;
+                                while (from.charAt(m) != ':') {
+                                    m++;
+                                }
+                                int frmhour = Integer.parseInt(de.getFromtime().substring(0, m));
+                                Log.i("frm", String.valueOf(frmhour));
+                                int n = 0;
 
-                        if (de.getTuesday().matches("false")) {
-                            tuesday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
-                            tuesday.setTextColor(Color.WHITE);
-                            tuesday.setChecked(false);
-                        } else if (de.getTuesday().matches("true")) {
-                            tuesday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
-                            tuesday.setTextColor(Color.parseColor("#e0e0e0"));
-                            tuesday.setChecked(true);
-                        }
+                                while (to.charAt(n) != ':') {
+                                    n++;
+                                }
+                                int tohour = Integer.parseInt(de.getTotime().substring(0, n));
+                                Log.i("to", String.valueOf(tohour));
 
-                        if (de.getWednesday().matches("false")) {
-                            wednesday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
-                            wednesday.setTextColor(Color.WHITE);
-                            wednesday.setChecked(false);
-                        } else if (de.getWednesday().matches("true")) {
-                            wednesday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
-                            wednesday.setTextColor(Color.parseColor("#e0e0e0"));
-                            wednesday.setChecked(true);
-                        }
 
-                        if (de.getThursday().matches("false")) {
-                            thursday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
-                            thursday.setTextColor(Color.WHITE);
-                            thursday.setChecked(false);
-                        } else if (de.getThursday().matches("true")) {
-                            thursday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
-                            thursday.setTextColor(Color.parseColor("#e0e0e0"));
-                            thursday.setChecked(true);
-                        }
+                                if (currentTime.getHours() > frmhour && (currentTime.getHours()) < (12 + tohour)) {
+                                    status.setText("OPEN");
+                                    status.setTextColor(Color.parseColor("#64DD17"));
+                                } else {
+                                    status.setTextColor(Color.RED);
+                                    status.setText("CLOSED");
+                                }
 
-                        if (de.getFriday().matches("false")) {
-                            friday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
-                            friday.setTextColor(Color.WHITE);
-                            friday.setChecked(false);
-                        } else if (de.getFriday().matches("true")) {
-                            friday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
-                            friday.setTextColor(Color.parseColor("#e0e0e0"));
-                            friday.setChecked(true);
-                        }
 
-                        if (de.getSaturday().matches("false")) {
-                            saturday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
-                            saturday.setTextColor(Color.WHITE);
-                            saturday.setChecked(false);
-                        } else if (de.getSaturday().matches("true")) {
-                            saturday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
-                            saturday.setTextColor(Color.parseColor("#e0e0e0"));
-                            saturday.setChecked(true);
-                        }
+                                call.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
 
-                        spin.setVisibility(View.INVISIBLE);
+                                        Alerter.create(RestaurentActivity.this).setTitle("Are you sure to call " + de.getBuisnessname())
+                                                .setBackgroundColorInt(Color.DKGRAY)
+                                                .addButton("Call", R.style.AlertButton, new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                                                        intent.setData(Uri.parse("tel:" + de.getContact1()));
+                                                        startActivity(intent);
+                                                        Alerter.clearCurrent(RestaurentActivity.this);
+                                                    }
+                                                }).addButton("No", R.style.AlertButton, new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Alerter.clearCurrent(RestaurentActivity.this);
+                                            }
+                                        }).show();
+                                    }
+                                });
 
+                                area.setText(de.getAreaname());
+                                name.setText(de.getBuisnessname());
+                                String phone = de.getContact1();
+                                if (de.getOnsite().equals("no")) {
+                                    onsitekms.setText("None");
+                                } else {
+                                    onsitekms.setText(de.getKms() + " kms");
+                                }
+
+                                if (de.getSunday().matches("false")) {
+                                    sunday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                                    sunday.setTextColor(Color.WHITE);
+                                    sunday.setChecked(false);
+                                } else if (de.getSunday().matches("true")) {
+                                    sunday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                                    sunday.setTextColor(Color.parseColor("#e0e0e0"));
+                                    sunday.setChecked(true);
+                                }
+
+
+                                if (de.getMonday().matches("false")) {
+                                    monday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                                    monday.setTextColor(Color.WHITE);
+                                    monday.setChecked(false);
+                                } else if (de.getMonday().matches("true")) {
+                                    monday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                                    monday.setTextColor(Color.parseColor("#e0e0e0"));
+                                    monday.setChecked(true);
+                                }
+
+                                if (de.getTuesday().matches("false")) {
+                                    tuesday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                                    tuesday.setTextColor(Color.WHITE);
+                                    tuesday.setChecked(false);
+                                } else if (de.getTuesday().matches("true")) {
+                                    tuesday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                                    tuesday.setTextColor(Color.parseColor("#e0e0e0"));
+                                    tuesday.setChecked(true);
+                                }
+
+                                if (de.getWednesday().matches("false")) {
+                                    wednesday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                                    wednesday.setTextColor(Color.WHITE);
+                                    wednesday.setChecked(false);
+                                } else if (de.getWednesday().matches("true")) {
+                                    wednesday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                                    wednesday.setTextColor(Color.parseColor("#e0e0e0"));
+                                    wednesday.setChecked(true);
+                                }
+
+                                if (de.getThursday().matches("false")) {
+                                    thursday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                                    thursday.setTextColor(Color.WHITE);
+                                    thursday.setChecked(false);
+                                } else if (de.getThursday().matches("true")) {
+                                    thursday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                                    thursday.setTextColor(Color.parseColor("#e0e0e0"));
+                                    thursday.setChecked(true);
+                                }
+
+                                if (de.getFriday().matches("false")) {
+                                    friday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                                    friday.setTextColor(Color.WHITE);
+                                    friday.setChecked(false);
+                                } else if (de.getFriday().matches("true")) {
+                                    friday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                                    friday.setTextColor(Color.parseColor("#e0e0e0"));
+                                    friday.setChecked(true);
+                                }
+
+                                if (de.getSaturday().matches("false")) {
+                                    saturday.setBackground(getResources().getDrawable(R.drawable.checkboxselect));
+                                    saturday.setTextColor(Color.WHITE);
+                                    saturday.setChecked(false);
+                                } else if (de.getSaturday().matches("true")) {
+                                    saturday.setBackground(getResources().getDrawable(R.drawable.checkboxunselect));
+                                    saturday.setTextColor(Color.parseColor("#e0e0e0"));
+                                    saturday.setChecked(true);
+                                }
+
+
+                                det.setVisibility(View.VISIBLE);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1000)
+                                        .playOn(det);
+
+                                name.setVisibility(View.VISIBLE);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1000)
+                                        .playOn(name);
+
+                                kmslinear.setVisibility(View.VISIBLE);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1000)
+                                        .playOn(kmslinear);
+
+                                status.setVisibility(View.VISIBLE);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1000)
+                                        .playOn(status);
+
+                                call.setVisibility(View.VISIBLE);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1000)
+                                        .playOn(call);
+
+                                spin.setVisibility(View.INVISIBLE);
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
 
                     @Override
@@ -570,7 +694,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
 
             float zoomLevel = 16.0f; //This goes up to 21
-          //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 19));
+            //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 19));
 
 
         }
@@ -678,171 +802,34 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         return minIndex;
     }
 
-    private class DownloadTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... url) {
-
-            String data = "";
-
-            try {
-                data = downloadUrl(url[0]);
-            } catch (Exception e) {
-                Log.d("Background Task", e.toString());
-            }
-            return data;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            ParserTask parserTask = new ParserTask();
-
-            Log.i("result",result);
-            parserTask.execute(result);
-
-        }
-    }
-
-
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-
-        // Parsing the data in non-ui thread
-        @Override
-        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
-
-            JSONObject jObject;
-            List<List<HashMap<String, String>>> routes = null;
-
-            try {
-                jObject = new JSONObject(jsonData[0]);
-                DirectionsJSONParser parser = new DirectionsJSONParser();
-
-                routes = parser.parse(jObject);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return routes;
-        }
-
-        @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-            ArrayList points = null;
-            PolylineOptions lineOptions = null;
-            MarkerOptions markerOptions = new MarkerOptions();
-
-            for (int i = 0; i < result.size(); i++) {
-                points = new ArrayList();
-                lineOptions = new PolylineOptions();
-
-                List<HashMap<String, String>> path = result.get(i);
-
-                for (int j = 0; j < path.size(); j++) {
-                    HashMap<String, String> point = path.get(j);
-
-                    double lat = Double.parseDouble(point.get("lat"));
-                    double lng = Double.parseDouble(point.get("lng"));
-                    LatLng position = new LatLng(lat, lng);
-
-                    points.add(position);
-                }
-
-                lineOptions.addAll(points);
-                lineOptions.width(12);
-                lineOptions.color(Color.RED);
-                lineOptions.geodesic(true);
-
-                mMap.addPolyline(lineOptions);
-
-
-            }
-
-// Drawing polyline in the Google Map for the i-th route
-        }
-    }
-
-    private String getDirectionsUrl(LatLng origin, LatLng dest) {
-
-        // Origin of route
-        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-
-        // Destination of route
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-
-        // Sensor enabled
-        String sensor = "sensor=false";
-        String mode = "mode=driving";
-        // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
-
-        // Output format
-        String output = "json";
-
-        // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
-
-
-        return url;
-    }
-
-    /**
-     * A method to download json data from url
-     */
-    private String downloadUrl(String strUrl) throws IOException {
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(strUrl);
-
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            urlConnection.connect();
-
-            iStream = urlConnection.getInputStream();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-
-            StringBuffer sb = new StringBuffer();
-
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-
-            data = sb.toString();
-
-            br.close();
-
-        } catch (Exception e) {
-            Log.d("Exception", e.toString());
-        } finally {
-            iStream.close();
-            urlConnection.disconnect();
-        }
-        return data;
-    }
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        if (open == 0) {
+            onBackPressed();
+        } else {
+            mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        }
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
 
-        overridePendingTransition(R.anim.fadein,R.anim.fadeout);
-        finish();
+        if (mLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        } else if (mLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+            super.onBackPressed();
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+            finish();
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        LatLng latLng=mMap.getCameraPosition().target;
+        LatLng latLng = mMap.getCameraPosition().target;
 
         savedInstanceState.putDouble("lat", latLng.latitude);
         savedInstanceState.putDouble("long", latLng.longitude);
@@ -858,17 +845,88 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         double lat = savedInstanceState.getDouble("lat");
         double longg = savedInstanceState.getDouble("long");
 
-        LatLng coordinate=new LatLng(lat,longg);
+        LatLng coordinate = new LatLng(lat, longg);
         CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
                 coordinate, 15);
         mMap.animateCamera(location);
 
 
     }
+
     @Override
     protected void onPause() {
         super.onPause();
+    }
 
+    private String getUrl(LatLng origin, LatLng dest, String directionMode) {
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        // Mode
+        String mode = "mode=" + directionMode;
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        // Output format
+        String output = "json";
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+        return url;
+    }
+
+    @Override
+    public void onTaskDone(Object... values) {
+        if (currentPolyline != null)
+            currentPolyline.remove();
+        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+
+    }
+
+    class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
+
+        private Context context;
+        ArrayList<String> imgs;
+
+        public SliderAdapter(Context context, ArrayList<String> imgs) {
+            this.context = context;
+            this.imgs = imgs;
+        }
+
+        @Override
+        public SliderAdapterVH onCreateViewHolder(ViewGroup parent) {
+            View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.imageslideritem, null);
+            return new SliderAdapterVH(inflate);
+        }
+
+        @Override
+        public void onBindViewHolder(SliderAdapterVH viewHolder, int position) {
+
+            if (imgs.size() == 0) {
+                viewHolder.imageViewBackground.setImageResource(R.drawable.nopics);
+            } else {
+                Glide.with(context).load(imgs.get(position)).override(500, 300).placeholder(R.drawable.imgbck).into(viewHolder.imageViewBackground);
+            }
+        }
+
+        @Override
+        public int getCount() {
+            //slider view count could be dynamic size
+            if (imgs.size() == 0) {
+                return 1;
+            } else return imgs.size();
+        }
+
+        class SliderAdapterVH extends SliderViewAdapter.ViewHolder {
+
+            View itemView;
+            ImageView imageViewBackground;
+
+            public SliderAdapterVH(View itemView) {
+                super(itemView);
+                imageViewBackground = itemView.findViewById(R.id.slideimg);
+                this.itemView = itemView;
+            }
+        }
     }
 }
 

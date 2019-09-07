@@ -7,29 +7,42 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import android.os.Handler;
+import androidx.annotation.NonNull;
+
+import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleMap mMap;
-    FloatingActionButton floatingActionButton;
+    FloatingActionButton floatingActionButton,dhaba,coffeeshop;
+    CircleImageView pic;
     LocationManager locationManager;
     Location mLastKnownLocation;
     boolean mLocationPermissionGranted = false;
@@ -37,7 +50,9 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
     ImageView imageView;
     int a[];
     String brand;
-
+    Button search;
+    TextView name;
+    LinearLayout fl1,fl2,fl3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +66,28 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
 
         floatingActionButton = findViewById(R.id.restaurentfab);
         imageView = findViewById(R.id.item);
+        search=findViewById(R.id.search);
+
+        name=findViewById(R.id.nme);
+        pic=findViewById(R.id.pic);
+
+
+        dhaba=findViewById(R.id.dhaba);
+        coffeeshop=findViewById(R.id.coffeeshop);
 
         brand = getIntent().getStringExtra("brand");
+
+        fl1=findViewById(R.id.fl1);
+        fl2=findViewById(R.id.fl2);
+        fl3=findViewById(R.id.fl3);
+
+
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null)
+        {
+            name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+            Glide.with(HomeMaps.this).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(pic);
+
+        }
 
         a = new int[]{};
 
@@ -64,24 +99,63 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
 
         if (item != -1) {
             imageView.setImageResource(a[item]);
+            fl1.setVisibility(View.GONE);
+            fl2.setVisibility(View.GONE);
+            fl3.setVisibility(View.GONE);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    search.setVisibility(View.VISIBLE);
+                    YoYo.with(Techniques.Landing)
+                            .duration(1000)
+                            .playOn(search);
+                }
+            },1000);
+
+        }else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    fl1.setVisibility(View.VISIBLE);
+                    YoYo.with(Techniques.Landing)
+                            .duration(1000)
+                            .playOn(fl1);
+
+                    fl3.setVisibility(View.VISIBLE);
+                    YoYo.with(Techniques.Landing)
+                            .duration(1000)
+                            .playOn(fl2);
+
+                    fl2.setVisibility(View.VISIBLE);
+                    YoYo.with(Techniques.Landing)
+                            .duration(1000)
+                            .playOn(fl3);
+
+                }
+            },1000);
+
         }
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (brand != null) {
-                    Intent intent=new Intent(HomeMaps.this,RestaurentActivity.class);
-                    intent.putExtra("brand",brand);
-                    intent.putExtra("array",a);
-                    intent.putExtra("posi",item);
-                    startActivity(intent);
-                    finish();
-                } else {
-
                     Intent intent = new Intent(HomeMaps.this, BottomUpActivity.class);
                     startActivity(intent);
-                    overridePendingTransition(R.anim.slidein, R.anim.slideout);
-                }
+                    overridePendingTransition(R.anim.top, R.anim.bottom);
+            }
+        });
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(HomeMaps.this,RestaurentActivity.class);
+                intent.putExtra("brand",brand);
+                intent.putExtra("array",a);
+                intent.putExtra("posi",item);
+                startActivity(intent);
+                finish();
+                overridePendingTransition(R.anim.top,R.anim.bottom);
             }
         });
 
@@ -217,6 +291,13 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
                         return;
                     }
                     mMap.setMyLocationEnabled(true);
+                    getLastKnownLocation();
+                    updateLocationUI();
+
+                }
+                else{
+                    getLocationPermission();
+                    Toast.makeText(this, "Cant proceed without location permission", Toast.LENGTH_SHORT).show();
                 }
             }
         }

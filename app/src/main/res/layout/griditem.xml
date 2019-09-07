@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <com.mikhaellopez.circularimageview.CircularImageView
-        android:layout_width="90dp"
+    <androidx.cardview.widget.CardView
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:cardElevation="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        app:cardCornerRadius="10dp"
+        android:layout_marginTop="10dp"
+        >
+
+    <ImageView
+        android:layout_width="150dp"
         android:layout_height="90dp"
         android:id="@+id/gridimage"
-        android:padding="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:transitionName="imageMain"
         android:scaleType="centerCrop"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        app:civ_border_width="4dp"
-        app:civ_border_color="@color/colorPrimary"
-        android:src="@drawable/veg1" />
+        android:src="@drawable/veg1"
+        />
+    </androidx.cardview.widget.CardView>
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/gridimage"
         android:text="Chinese"
         android:gravity="center"
+        android:layout_gravity="center"
         android:textSize="18sp"
         android:id="@+id/cuisinename"
         android:textStyle="bold"
-        android:fontFamily="sans-serif-black"
         android:layout_marginTop="10dp"
         android:textColor="@color/colorPrimary"
         />
-</RelativeLayout>
+</LinearLayout>

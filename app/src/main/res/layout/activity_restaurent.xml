@@ -53,7 +53,7 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_marginRight="20dp"
-                        android:src="@drawable/bluemarker" />
+                        android:src="@drawable/non" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -61,7 +61,7 @@
                         android:gravity="center"
                         android:text="Indian Restaurent"
                         android:textColor="#FFFFFF"
-                        android:textSize="25dp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -78,7 +78,7 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_marginRight="20dp"
-                        android:src="@drawable/redmarker" />
+                        android:src="@drawable/indian" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
                         android:gravity="center"
                         android:text="Non Indian Restaurent"
                         android:textColor="#FFFFFF"
-                        android:textSize="25dp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -96,16 +96,17 @@
 
             <Button
                 android:id="@+id/ok"
-                android:layout_width="200dp"
-                android:layout_height="60dp"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="60dp"
-                android:background="@color/colorPrimary"
+                android:background="#FFFFFF"
                 android:gravity="center"
                 android:text="OK"
-                android:textColor="#FFFFFF"
-                android:textSize="30dp" />
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
 
         </RelativeLayout>
 
@@ -121,7 +122,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_height="100dp"
+            >
 
 
             <TextView
@@ -137,10 +139,10 @@
             <com.github.ybq.android.spinkit.SpinKitView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/spin"
-                style="@style/SpinKitView.Small.Wave"
+                style="@style/SpinKitView.ThreeBounce"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
+                android:layout_height="50dp"
+                android:visibility="gone"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 app:SpinKit_Color="@color/colorPrimary" />
@@ -152,9 +154,11 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:maxWidth="300dp"
+                android:visibility="gone"
                 android:singleLine="true"
                 android:text="Pahwa's Restaurant"
                 android:textSize="22sp"
+                android:textColor="#000"
                 android:textStyle="bold" />
 
             <TextView
@@ -162,54 +166,154 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:visibility="gone"
                 android:layout_marginRight="20sp"
                 android:text="OPEN"
-                android:textColor="@color/colorPrimary"
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
-            <Button
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:id="@+id/call"
-                android:layout_width="100dp"
-                android:layout_height="35dp"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="10dp"
+                android:visibility="gone"
                 android:background="@drawable/button"
-                android:drawableLeft="@drawable/phn"
-                android:paddingLeft="10dp"
-                android:text="Call"
-                android:textColor="@color/colorPrimary" />
-
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="35dp"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="10dp"
+                >
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:layout_width="50dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentBottom="true"
+                    android:id="@+id/lt"
+                    app:lottie_loop="true"
+                    app:lottie_repeatMode="restart"
+                    app:lottie_rawRes="@raw/call2"
+                    app:lottie_autoPlay="true"
+
+                    />
+                <TextView
+                    android:layout_width="70dp"
+                    android:layout_height="35dp"
+                    android:text="Call"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:gravity="center|left"
+                    android:textSize="20sp"
+                    android:textColor="#FFFFFF" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/kmslinear"
+                android:visibility="gone"
                 android:layout_toRightOf="@+id/call"
                 android:background="@drawable/button"
-                android:clickable="false"
-                android:id="@+id/kms"
-                android:drawableLeft="@drawable/del"
-                android:paddingLeft="10dp"
-                android:text="8 kms"
-                android:textColor="@color/colorPrimary" />
+                android:layout_alignParentBottom="true"
+                android:layout_margin="10dp"
+                >
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:layout_width="50dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentBottom="true"
+                    android:id="@+id/lat"
+                    app:lottie_loop="true"
+                    app:lottie_repeatMode="restart"
+                    app:lottie_rawRes="@raw/delivery2"
+                    app:lottie_autoPlay="true"
+
+                    />
+                <TextView
+                    android:id="@+id/kms"
+                    android:layout_width="70dp"
+                    android:layout_height="35dp"
+                    android:text="8 kms"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:gravity="center|left"
+                    android:textSize="20sp"
+                    android:textColor="#FFFFFF" />
+
+            </LinearLayout>
 
 
         </RelativeLayout>
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/nested">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:id="@+id/det"
+                android:paddingBottom="10dp"
                 android:orientation="vertical">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/p"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#000"
+                        android:layout_margin="15dp"
+                        android:text="Photos"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_below="@+id/p"
+                        android:layout_height="250dp">
+
+                        <com.smarteist.autoimageslider.SliderView
+                            android:id="@+id/imageSlider"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="visible"
+                            app:sliderAnimationDuration="400"
+                            app:sliderCircularHandlerEnabled="true"
+                            app:sliderIndicatorAnimationDuration="600"
+                            app:sliderIndicatorGravity="center_horizontal|bottom"
+                            app:sliderIndicatorMargin="15dp"
+                            app:sliderIndicatorOrientation="horizontal"
+                            app:sliderIndicatorPadding="3dp"
+                            app:sliderIndicatorRadius="2dp"
+                            app:sliderIndicatorSelectedColor="@color/colorPrimary"
+                            app:sliderIndicatorUnselectedColor="#FFFFFF"
+                            />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/p"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#000"
+                        android:layout_marginTop="30dp"
+                        android:text="No Photos"
+                        android:textSize="18sp"
+                        android:visibility="invisible" />
+
+                </RelativeLayout>
+
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="#000"
                     android:layout_margin="15dp"
                     android:text="Working Days"
                     android:textSize="18sp"
@@ -219,6 +323,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
+                    android:id="@+id/checkboxes"
                     android:gravity="left|center_vertical"
                     android:orientation="horizontal">
 
@@ -324,43 +429,10 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/p"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="15dp"
-                        android:text="Photos"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="250dp"
-                        android:layout_below="@+id/p"
-                        android:layout_margin="20dp"
-                        android:src="@color/colorPrimary" />
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/p"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="30dp"
-                        android:text="No Photos"
-                        android:textSize="18sp"
-                        android:visibility="invisible" />
-
-                </RelativeLayout>
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="#000"
                     android:layout_margin="15sp"
                     android:text="Area"
                     android:textSize="20sp"
@@ -372,13 +444,14 @@
                     android:layout_height="wrap_content"
                     android:maxLines="2"
                     android:text="Mohali"
+                    android:textColor="#000"
                     android:id="@+id/area"
                     android:textSize="18sp"
                     android:layout_marginLeft="15dp"
                     />
 
             </LinearLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 
