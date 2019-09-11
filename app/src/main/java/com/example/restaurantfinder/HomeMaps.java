@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -11,6 +12,7 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -142,7 +144,7 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
             public void onClick(View v) {
                     Intent intent = new Intent(HomeMaps.this, BottomUpActivity.class);
                     startActivity(intent);
-                    overridePendingTransition(R.anim.top, R.anim.bottom);
+                    overridePendingTransition(R.anim.slideup, R.anim.slidedown);
             }
         });
 
@@ -175,14 +177,18 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 mMap.setMyLocationEnabled(true);
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
             }
         } else {
             mMap.setMyLocationEnabled(true);
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
         }
+
 
         updateLocationUI();
 
         getLastKnownLocation();
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
 
 
     }

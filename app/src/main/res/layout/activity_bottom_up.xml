@@ -8,13 +8,13 @@
     app:cardCornerRadius="20dp"
     tools:context=".BottomUpActivity">
 
-    <androidx.viewpager.widget.ViewPager
+    <com.example.restaurantfinder.CustomViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/viewpager"
         >
 
-    </androidx.viewpager.widget.ViewPager>
+    </com.example.restaurantfinder.CustomViewPager>
 
 
     <com.google.android.material.tabs.TabLayout

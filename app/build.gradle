@@ -21,8 +21,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.github.varunest:sparkbutton:1.0.6'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.github.clans:fab:1.6.4'
     implementation 'com.tapadoo.android:alerter:4.0.2'

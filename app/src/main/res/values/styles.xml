@@ -30,6 +30,23 @@
 
     </style>
 
+
+    <style name="AppTheme.Slide">
+        <item name="android:windowEnterAnimation">@anim/slideup</item>
+        <item name="android:windowExitAnimation">@anim/slidedown</item>
+    </style>
+
+    <style name="AppTheme.FullScreenDialog" parent="Theme.MaterialComponents.Light.Dialog.MinWidth">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/trans</item>
+
+        <item name="actionMenuTextColor">@color/colorAccent</item>
+
+    </style>
+
     <style name="Custom" parent="android:Theme.DeviceDefault.Dialog">
         <item name="DialogTitleAppearance">@android:style/TextAppearance.Material.Title</item>
         <item name="android:fontFamily">@font/quicksand_medium</item>
@@ -46,6 +63,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@drawable/dialogback</item>
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
         <item name="android:fontFamily">@font/quicksand_medium</item>
     </style>

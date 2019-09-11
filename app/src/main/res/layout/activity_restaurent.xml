@@ -17,15 +17,89 @@
         android:background="#FFFFFF"
         android:layout_height="match_parent"
         android:id="@+id/view"
+        android:visibility="visible"
         android:clickable="true"
         android:focusable="false"
         >
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            >
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/backbutt"
+                    android:layout_centerVertical="true"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="300dp"
+                    android:layout_marginLeft="40dp"
+                    android:id="@+id/title1"
+                    android:layout_centerVertical="true"
+                    android:text="Nearby Restaurants"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingRight="10dp"
+                android:layout_alignParentEnd="true"
+                >
+
+
+                <com.varunest.sparkbutton.SparkButton
+                    android:id="@+id/bookmark"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    app:sparkbutton_activeImage="@drawable/bookmark"
+                    app:sparkbutton_iconSize="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:visibility="visible"
+                    app:sparkbutton_inActiveImage="@drawable/unmark"
+                    app:sparkbutton_primaryColor="@color/orange"
+                    app:sparkbutton_secondaryColor="@color/orange"
+                    />
+
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/share"
+                    android:layout_gravity="end"
+                    android:id="@+id/share"
+                    android:visibility="visible"
+                    android:padding="5dp"
+                    />
+
+            </LinearLayout>
+            </RelativeLayout>
+
+
+        </androidx.appcompat.widget.Toolbar>
 
         <fragment
             android:id="@+id/map1"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="?android:attr/actionBarSize"
             android:layout_below="@+id/homemapstoolbar"
             tools:context=".RestaurentActivity" />
 
@@ -35,7 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#88000000"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -249,208 +323,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/nested">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:id="@+id/det"
-                android:paddingBottom="10dp"
-                android:orientation="vertical">
+            <include layout="@layout/restaurantdetailslayout"/>
 
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/p"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#000"
-                        android:layout_margin="15dp"
-                        android:text="Photos"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_below="@+id/p"
-                        android:layout_height="250dp">
-
-                        <com.smarteist.autoimageslider.SliderView
-                            android:id="@+id/imageSlider"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:visibility="visible"
-                            app:sliderAnimationDuration="400"
-                            app:sliderCircularHandlerEnabled="true"
-                            app:sliderIndicatorAnimationDuration="600"
-                            app:sliderIndicatorGravity="center_horizontal|bottom"
-                            app:sliderIndicatorMargin="15dp"
-                            app:sliderIndicatorOrientation="horizontal"
-                            app:sliderIndicatorPadding="3dp"
-                            app:sliderIndicatorRadius="2dp"
-                            app:sliderIndicatorSelectedColor="@color/colorPrimary"
-                            app:sliderIndicatorUnselectedColor="#FFFFFF"
-                            />
-
-                    </androidx.cardview.widget.CardView>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/p"
-                        android:layout_centerHorizontal="true"
-                        android:textColor="#000"
-                        android:layout_marginTop="30dp"
-                        android:text="No Photos"
-                        android:textSize="18sp"
-                        android:visibility="invisible" />
-
-                </RelativeLayout>
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#000"
-                    android:layout_margin="15dp"
-                    android:text="Working Days"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:id="@+id/checkboxes"
-                    android:gravity="left|center_vertical"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/sunday"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginBottom="1dp"
-                        android:background="@drawable/checkboxunselect"
-                        android:button="@android:color/transparent"
-                        android:gravity="center"
-                        android:text="S"
-                        android:textColor="#e0e0e0"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <CheckBox
-                        android:id="@+id/monday"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/checkboxunselect"
-                        android:button="@android:color/transparent"
-                        android:checked="false"
-                        android:gravity="center"
-                        android:text="M"
-                        android:textColor="#e0e0e0"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <CheckBox
-                        android:id="@+id/tuesday"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/checkboxunselect"
-                        android:button="@android:color/transparent"
-                        android:checked="false"
-                        android:gravity="center"
-                        android:text="T"
-                        android:textColor="#e0e0e0"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <CheckBox
-                        android:id="@+id/wednesday"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/checkboxunselect"
-                        android:button="@android:color/transparent"
-                        android:checked="false"
-                        android:gravity="center"
-                        android:text="W"
-                        android:textColor="#e0e0e0"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-
-                    <CheckBox
-                        android:id="@+id/thursday"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/checkboxunselect"
-                        android:button="@android:color/transparent"
-                        android:checked="false"
-                        android:gravity="center"
-                        android:text="T"
-                        android:textColor="#e0e0e0"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-
-                    <CheckBox
-                        android:id="@+id/friday"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/checkboxunselect"
-                        android:button="@android:color/transparent"
-                        android:checked="false"
-                        android:gravity="center"
-                        android:text="F"
-                        android:textColor="#e0e0e0"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-
-                    <CheckBox
-                        android:id="@+id/saturday"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/checkboxunselect"
-                        android:button="@android:color/transparent"
-                        android:checked="false"
-                        android:gravity="center"
-                        android:text="S"
-                        android:textColor="#e0e0e0"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#000"
-                    android:layout_margin="15sp"
-                    android:text="Area"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:text="Mohali"
-                    android:textColor="#000"
-                    android:id="@+id/area"
-                    android:textSize="18sp"
-                    android:layout_marginLeft="15dp"
-                    />
-
-            </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>

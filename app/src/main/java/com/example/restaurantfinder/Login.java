@@ -53,6 +53,11 @@ public class Login extends AppCompatActivity {
         FacebookSdk.sdkInitialize(Login.this);
         constraintLayout=findViewById(R.id.cons);
 
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null)
+        {
+            startActivity(new Intent(Login.this,HomeMaps.class));
+        }
+
         looking=findViewById(R.id.looking);
         getgoin=findViewById(R.id.getgoing);
         animationView=findViewById(R.id.lottieAnimationView);

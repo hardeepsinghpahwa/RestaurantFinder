@@ -32,7 +32,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RestaurentActivity" />
+        <activity android:name=".RestaurentActivity"
+            android:theme="@style/Nobar"/>
         <activity
             android:name=".BottomUpActivity"
             android:theme="@style/AppThemeCustom" />
@@ -50,7 +51,9 @@
 
         <activity
             android:name=".HomeMaps"
-            android:theme="@style/Nobar"></activity>
+            android:theme="@style/Nobar">
+
+        </activity>
         <activity android:name=".MainActivity" />
 
         <meta-data

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.appcompat.content.res.AppCompatResources;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,7 +21,7 @@ public class BottomUpActivity extends AppCompatActivity implements Veg.OnFragmen
 
 
     TabLayout tabLayout;
-    ViewPager viewPager;
+    CustomViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,11 @@ public class BottomUpActivity extends AppCompatActivity implements Veg.OnFragmen
 
             }
         });
+
+        viewPager.setPagingEnabled(false);
+
     }
+
 
 
     private void setTabBG(int tab1, int tab2){
