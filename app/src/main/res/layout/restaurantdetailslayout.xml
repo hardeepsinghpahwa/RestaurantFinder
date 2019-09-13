@@ -36,17 +36,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/p"
-            android:layout_centerHorizontal="true"
-            android:textColor="#000"
-            android:layout_marginTop="30dp"
-            android:text="No Photos"
-            android:textSize="18sp"
-            android:visibility="invisible" />
-
     </RelativeLayout>
 
 

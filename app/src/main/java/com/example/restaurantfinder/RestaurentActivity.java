@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.VectorDrawable;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -43,6 +44,8 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.restaurantfinder.Directions.TaskLoadedCallback;
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -57,6 +60,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,6 +73,7 @@ import com.smarteist.autoimageslider.SliderViewAdapter;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tapadoo.alerter.Alerter;
 import com.varunest.sparkbutton.SparkButton;
+import com.varunest.sparkbutton.SparkEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,30 +81,35 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
 import pl.droidsonroids.gif.GifImageView;
 
-public class RestaurentActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
+public class RestaurentActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback,LocationListener{
 
     CheckBox sunday, monday, tuesday, wednesday, thursday, friday, saturday;
     TextView onsitekms;
     TextView name;
-    LinearLayout call,kmslinear;
+    LinearLayout call, kmslinear;
     SliderView sliderView;
     private Polyline currentPolyline;
     String markid;
     SpinKitView spin;
     ArrayList<String> images;
-    TextView choose, area,title;
+    String buiss;
+    TextView choose, area, title;
     NestedScrollView nestedScrollView;
     private SlidingUpPanelLayout mLayout;
     RelativeLayout overlay;
     Button ok;
+    LatLng lastlocation;
     GoogleMap mMap;
     TextView status;
     LinearLayout det;
+    ImageView back;
     int open = 0;
+    FusedLocationProviderClient fusedLocationClient;
     LocationManager locationManager;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     Location mLastKnownLocation;
@@ -124,7 +134,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         onsitekms = findViewById(R.id.kms);
         call = findViewById(R.id.call);
         name = findViewById(R.id.name);
-        kmslinear=findViewById(R.id.kmslinear);
+        kmslinear = findViewById(R.id.kmslinear);
 
         sliderView = findViewById(R.id.imageSlider);
         sliderView.setIndicatorAnimation(IndicatorAnimations.SWAP);
@@ -138,8 +148,11 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         friday = findViewById(R.id.friday);
         saturday = findViewById(R.id.saturday);
 
-        share=findViewById(R.id.share);
-        bookmark=findViewById(R.id.bookmark);
+        back=findViewById(R.id.backbuttonrest);
+
+        share = findViewById(R.id.share);
+        bookmark = findViewById(R.id.bookmark);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         nestedScrollView = findViewById(R.id.nested);
         nestedScrollView.setSmoothScrollingEnabled(true);
@@ -147,7 +160,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         area = findViewById(R.id.area);
         choose = findViewById(R.id.choose);
         spin = findViewById(R.id.spin);
-        title=findViewById(R.id.title1);
+        title = findViewById(R.id.title1);
 
         sunday.setChecked(true);
         monday.setChecked(true);
@@ -167,6 +180,12 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         pos = getIntent().getIntExtra("posi", -1);
         a = getIntent().getIntArrayExtra("array");
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         mLayout = findViewById(R.id.sliding);
 
@@ -214,6 +233,17 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                 .findFragmentById(R.id.map1);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 0, (LocationListener) RestaurentActivity.this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
 
         brand = getIntent().getStringExtra("brand");
 
@@ -295,10 +325,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
 
-                                    // Placing a marker on the touched position
                                     mMap.addMarker(markerOptions);
-                                    mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
-
 
                                 }
                             }
@@ -323,7 +350,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 // Placing a marker on the touched position
                                 mMap.addMarker(markerOptions);
 
-                                mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
 
                             }
 
@@ -332,7 +358,25 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
 
                 }
-                searchingDialog.dismiss();
+
+                fusedLocationClient.getLastLocation().addOnSuccessListener(RestaurentActivity.this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
+                        }
+                    }
+                });
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(searchingDialog!=null)
+                        {
+                            searchingDialog.dismiss();
+                        }
+                    }
+                },4000);
 
             }
 
@@ -341,7 +385,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
             }
         });
-
 
     }
 
@@ -380,10 +423,40 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 mMap.setMyLocationEnabled(true);
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // Got last known location. In some rare situations this can be null.
+                                if (location != null) {
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
+                                }
+                            }
+                        });
             }
         } else {
             mMap.setMyLocationEnabled(true);
+
         }
+
+
+        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+
+                fusedLocationClient.getLastLocation().addOnSuccessListener(RestaurentActivity.this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // Got last known location. In some rare situations this can be null.
+                                if (location != null) {
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
+                                }
+                            }
+                        });
+
+                return true;
+            }
+        });
 
 
         try {
@@ -400,9 +473,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
             Log.e("Activity", "Can't find style. Error: ", e);
         }
 
-        updateLocationUI();
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getLastKnownLocation(), 19));
 
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -467,7 +538,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 //                new FetchURL(RestaurentActivity.this).execute(getUrl(getLastKnownLocation(), marker.getPosition(), "driving"), "driving");
 
                 final String mark = marker.getTitle();
-
                 marker.showInfoWindow();
 
                 choose.setVisibility(View.INVISIBLE);
@@ -482,6 +552,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                             if (dataSnapshot1.child("buisnessname").getValue(String.class).equals(mark)) {
                                 markid = dataSnapshot1.getKey();
+                                buiss=dataSnapshot1.child("buisnessname").getValue(String.class);
                                 title.setText(dataSnapshot1.child("buisnessname").getValue(String.class));
                                 Log.i("b", markid);
                             }
@@ -499,6 +570,87 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                        FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Bookmarks").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
+                                {
+                                    if(dataSnapshot1.getKey().equals(markid))
+                                    {
+                                        bookmark.setChecked(true);
+                                    }
+                                    else {
+                                        bookmark.setChecked(false);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        bookmark.setEventListener(new SparkEventListener() {
+                            @Override
+                            public void onEvent(ImageView button, boolean buttonState) {
+                                bookmark.setClickable(false);
+                                if(buttonState)
+                                {
+                                    FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                            .child("Bookmarks").child(markid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            bookmark.setClickable(true);
+                                            Alerter.create(RestaurentActivity.this)
+                                                    .setBackgroundColorInt(Color.parseColor("#FFA000"))
+                                                    .setTitle(buiss+" Added To Bookmarks")
+                                                    .show();
+                                        }
+                                    });
+                                }
+                                else {
+                                    FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                            .child("Bookmarks").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
+                                            {
+                                                if(dataSnapshot1.getKey().equals(markid))
+                                                {
+                                                    dataSnapshot1.getRef().removeValue();
+                                                    bookmark.setClickable(true);
+                                                    YoYo.with(Techniques.Wobble)
+                                                            .duration(700)
+                                                            .playOn(bookmark);
+                                                    Alerter.create(RestaurentActivity.this)
+                                                            .setBackgroundColorInt(Color.parseColor("#FFA000"))
+                                                            .setTitle(buiss+" Removed From Bookmarks")
+                                                            .show();
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            bookmark.setClickable(true);
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onEventAnimationEnd(ImageView button, boolean buttonState) {
+
+                            }
+
+                            @Override
+                            public void onEventAnimationStart(ImageView button, boolean buttonState) {
 
                             }
                         });
@@ -565,6 +717,9 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                                 area.setText(de.getAreaname());
                                 name.setText(de.getBuisnessname());
+
+
+
                                 String phone = de.getContact1();
                                 if (de.getOnsite().equals("no")) {
                                     onsitekms.setText("None");
@@ -648,12 +803,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 share.setVisibility(View.VISIBLE);
 
 
-                                bookmark.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Toast.makeText(RestaurentActivity.this, de.getBuisnessname(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
 
                                 det.setVisibility(View.VISIBLE);
                                 YoYo.with(Techniques.FadeIn)
@@ -689,6 +838,9 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                             }
                         });
+
+
+
                     }
 
                     @Override
@@ -807,8 +959,16 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                 }
             }
         }
-        updateLocationUI();
-
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
+                        }
+                    }
+                });
     }
 
     public double distance(Double lat_a, Double lng_a, double lat_b, double lng_b) {
@@ -821,25 +981,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         Double distance = Double.valueOf(mylocation.distanceTo(dest_location));
 
         return distance;
-    }
-
-    public static <T extends Comparable<T>> int findMinIndex(final List<T> xs) {
-        int minIndex;
-        if (xs.isEmpty()) {
-            minIndex = -1;
-        } else {
-            final ListIterator<T> itr = xs.listIterator();
-            T min = itr.next(); // first element as the current minimum
-            minIndex = itr.previousIndex();
-            while (itr.hasNext()) {
-                final T curr = itr.next();
-                if (curr.compareTo(min) < 0) {
-                    min = curr;
-                    minIndex = itr.previousIndex();
-                }
-            }
-        }
-        return minIndex;
     }
 
 
@@ -922,6 +1063,30 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        lastlocation=latLng;
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 19);
+        mMap.animateCamera(cameraUpdate);
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
     class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
 
         private Context context;
@@ -942,7 +1107,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         public void onBindViewHolder(SliderAdapterVH viewHolder, int position) {
 
             if (imgs.size() == 0) {
-                viewHolder.imageViewBackground.setImageResource(R.drawable.nopics);
+                viewHolder.imageViewBackground.setImageResource(R.drawable.imgsliderback);
             } else {
                 Glide.with(context).load(imgs.get(position)).override(500, 300).placeholder(R.drawable.imgbck).into(viewHolder.imageViewBackground);
             }

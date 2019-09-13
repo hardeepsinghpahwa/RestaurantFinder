@@ -6,18 +6,31 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.api.GoogleApi;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
+
 import android.os.Bundle;
+
 import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,27 +47,32 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
+public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, RecentSearches.OnFragmentInteractionListener, LocationListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleMap mMap;
-    FloatingActionButton floatingActionButton,dhaba,coffeeshop;
+    FloatingActionButton floatingActionButton, dhaba, coffeeshop;
     CircleImageView pic;
     LocationManager locationManager;
-    Location mLastKnownLocation;
     boolean mLocationPermissionGranted = false;
     int item;
     ImageView imageView;
+    LatLng lastlocation;
     int a[];
     String brand;
     Button search;
+    private FusedLocationProviderClient fusedLocationClient;
     TextView name;
-    LinearLayout fl1,fl2,fl3;
+    LinearLayout fl1, fl2, fl3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,30 +83,70 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            getLocationPermission();
 
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 0, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+
+        }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
+                        }
+                    }
+                });
         floatingActionButton = findViewById(R.id.restaurentfab);
         imageView = findViewById(R.id.item);
-        search=findViewById(R.id.search);
+        search = findViewById(R.id.search);
 
-        name=findViewById(R.id.nme);
-        pic=findViewById(R.id.pic);
+        name = findViewById(R.id.nme);
+        pic = findViewById(R.id.pic);
 
 
-        dhaba=findViewById(R.id.dhaba);
-        coffeeshop=findViewById(R.id.coffeeshop);
+        pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileDialog.display(getSupportFragmentManager());
+            }
+        });
+        dhaba = findViewById(R.id.dhaba);
+        coffeeshop = findViewById(R.id.coffeeshop);
 
         brand = getIntent().getStringExtra("brand");
 
-        fl1=findViewById(R.id.fl1);
-        fl2=findViewById(R.id.fl2);
-        fl3=findViewById(R.id.fl3);
+        fl1 = findViewById(R.id.fl1);
+        fl2 = findViewById(R.id.fl2);
+        fl3 = findViewById(R.id.fl3);
 
 
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null)
-        {
-            name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-            Glide.with(HomeMaps.this).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(pic);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("About").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    name.setText(dataSnapshot.child("name").getValue(String.class));
+                    Glide.with(HomeMaps.this).load(dataSnapshot.child("image").getValue(String.class)).into(pic);
 
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
 
         a = new int[]{};
@@ -113,9 +171,9 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
                             .duration(1000)
                             .playOn(search);
                 }
-            },1000);
+            }, 1000);
 
-        }else {
+        } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -135,29 +193,29 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
                             .playOn(fl3);
 
                 }
-            },1000);
+            }, 1000);
 
         }
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Intent intent = new Intent(HomeMaps.this, BottomUpActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slideup, R.anim.slidedown);
+                Intent intent = new Intent(HomeMaps.this, BottomUpActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slideup, R.anim.slidedown);
             }
         });
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(HomeMaps.this,RestaurentActivity.class);
-                intent.putExtra("brand",brand);
-                intent.putExtra("array",a);
-                intent.putExtra("posi",item);
+                Intent intent = new Intent(HomeMaps.this, RestaurentActivity.class);
+                intent.putExtra("brand", brand);
+                intent.putExtra("array", a);
+                intent.putExtra("posi", item);
                 startActivity(intent);
                 finish();
-                overridePendingTransition(R.anim.top,R.anim.bottom);
+                overridePendingTransition(R.anim.top, R.anim.bottom);
             }
         });
 
@@ -173,23 +231,17 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mMap.setMyLocationEnabled(true);
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
+                if (lastlocation != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastlocation, 19));
+                }
+                //getLastKnownLocation();
+                //updateLocationUI();
             }
         } else {
-            mMap.setMyLocationEnabled(true);
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
+            getLocationPermission();
         }
-
-
-        updateLocationUI();
-
-        getLastKnownLocation();
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(getLastKnownLocation()));
-
 
     }
 
@@ -234,26 +286,6 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
         return loc;
     }
 
-    private void updateLocationUI() {
-        if (mMap == null) {
-            return;
-        }
-        try {
-            if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-
-                Log.i("kjn", "ok");
-
-            } else {
-                Log.i("kjn", "no");
-                mLastKnownLocation = null;
-                getLocationPermission();
-            }
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
-        }
-
-    }
 
     private void getLocationPermission() {
         /*
@@ -261,14 +293,15 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
             mMap.setMyLocationEnabled(true);
+            if (lastlocation != null) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastlocation, 19));
+            }
         } else {
             ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
 
@@ -297,16 +330,50 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback {
                         return;
                     }
                     mMap.setMyLocationEnabled(true);
-                    getLastKnownLocation();
-                    updateLocationUI();
+                    fusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    // Got last known location. In some rare situations this can be null.
+                                    if (location != null) {
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
+                                    }
+                                }
+                            });
 
-                }
-                else{
+                } else {
                     getLocationPermission();
                     Toast.makeText(this, "Cant proceed without location permission", Toast.LENGTH_SHORT).show();
                 }
             }
         }
-        updateLocationUI();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        /*LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 19);
+        mMap.animateCamera(cameraUpdate);
+        locationManager.removeUpdates(this);*/
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }

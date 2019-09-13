@@ -116,6 +116,6 @@ public class BottomUpActivity extends AppCompatActivity implements Veg.OnFragmen
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.top,R.anim.bottom);
+        overridePendingTransition(R.anim.slideup,R.anim.slidedown);
     }
 }

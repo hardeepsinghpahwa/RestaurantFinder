@@ -40,7 +40,6 @@
                 map:civ_border_color="#FFFFFF"
                 map:civ_border_width="2dp"
                 android:layout_gravity="center"
-                android:background="@drawable/person"
                 android:backgroundTint="@android:color/white"
                 />
 
@@ -48,7 +47,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="Username"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 android:id="@+id/nme"

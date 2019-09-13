@@ -29,7 +29,6 @@
             >
 
 
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -38,7 +37,9 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:id="@+id/backbuttonrest"
                     android:src="@drawable/backbutt"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:layout_centerVertical="true"
                     />
 
@@ -65,13 +66,12 @@
 
                 <com.varunest.sparkbutton.SparkButton
                     android:id="@+id/bookmark"
-                    android:layout_width="50dp"
+                    android:layout_width="70dp"
                     android:layout_height="match_parent"
                     app:sparkbutton_activeImage="@drawable/bookmark"
                     app:sparkbutton_iconSize="40dp"
                     android:layout_gravity="center"
-                    android:layout_marginRight="5dp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:sparkbutton_inActiveImage="@drawable/unmark"
                     app:sparkbutton_primaryColor="@color/orange"
                     app:sparkbutton_secondaryColor="@color/orange"
@@ -84,7 +84,7 @@
                     android:src="@drawable/share"
                     android:layout_gravity="end"
                     android:id="@+id/share"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:padding="5dp"
                     />
 
