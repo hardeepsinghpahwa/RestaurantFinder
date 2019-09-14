@@ -2,7 +2,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/det"
-    android:paddingBottom="10dp"
+    android:paddingBottom="20dp"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -39,19 +39,44 @@
     </RelativeLayout>
 
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#000"
-        android:layout_margin="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:text="Cuisines"
+        android:drawablePadding="5dp"
+        android:drawableRight="@drawable/cuisines"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chipgroup"
+        android:layout_marginTop="10dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
         android:text="Working Days"
-        android:textSize="18sp"
+        android:drawablePadding="5dp"
+        android:drawableRight="@drawable/workingdays"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/checkboxes"
         android:gravity="left|center_vertical"
         android:orientation="horizontal">
@@ -162,8 +187,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#000"
-        android:layout_margin="15sp"
+        android:layout_marginTop="20dp"
         android:text="Area"
+        android:drawablePadding="5dp"
+        android:layout_marginLeft="15dp"
+        android:drawableRight="@drawable/area"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -172,13 +200,123 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="2"
-        android:text="Mohali"
         android:textColor="#000"
         android:id="@+id/area"
         android:textSize="18sp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
         />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:layout_marginLeft="15sp"
+        android:drawableRight="@drawable/time"
+        android:layout_marginTop="20dp"
+        android:text="Timing"
+        android:drawablePadding="5dp"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:textColor="#000"
+            android:id="@+id/from"
+            android:layout_gravity="top"
+            android:textSize="18sp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:text="-"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:textColor="#000"
+            android:id="@+id/to"
+            android:textSize="18sp"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#999898"
+        android:layout_marginTop="20dp"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15sp"
+        android:layout_marginTop="20dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:drawableRight="@drawable/reviews"
+            android:text="Reviews"
+            android:drawablePadding="5dp"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/writeareview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Write A Review"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/reviewsrecyclerview"
+        android:layout_marginTop="20dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:text="No Reviews Yet"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="#000"
+        />
 
 </LinearLayout>

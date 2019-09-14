@@ -44,21 +44,18 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
 
     ImageView profilepic;
     TextView name;
-    ImageView back;
+    ImageView back,locationpin;
     TextView logout;
     LinearLayout bookmarks;
+    TextView currentlocation;
     LottieAnimationView lottieAnimationView;
     DatabaseReference databaseReference;
-    ConstraintLayout constraintLayout;
+    ConstraintLayout constraintLayout,constraintLayout1;
 
     public ProfileDialog() {
 
     }
 
-    public void dismiss()
-    {
-        getDialog().dismiss();
-    }
 
     public static ProfileDialog display(FragmentManager fragmentManager) {
 
@@ -74,8 +71,6 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
 
     }
 
-
-
     @Override
     public void onStart() {
         super.onStart();
@@ -84,7 +79,7 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             dialog.getWindow().setLayout(width, height);
-            dialog.getWindow().setWindowAnimations(R.style.AppTheme_Slide);
+            dialog.getWindow().setWindowAnimations(R.style.AppTheme_Exit);
         }
     }
 
@@ -105,9 +100,17 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
             }
         });
 
+        constraintLayout1=view.findViewById(R.id.conslayout1);
+
+        back.bringToFront();
+
+        //constraintLayout1.getBackground().setAlpha(100);
 
         name=view.findViewById(R.id.name1);
         profilepic=view.findViewById(R.id.profilepic);
+        currentlocation=view.findViewById(R.id.currentlocation);
+        locationpin=view.findViewById(R.id.locationpin);
+
 
         constraintLayout=view.findViewById(R.id.conslayout);
         lottieAnimationView=view.findViewById(R.id.profilelottie);
@@ -124,6 +127,11 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
         logout=view.findViewById(R.id.logout);
 
         lottieAnimationView.setSpeed(1.5f);
+
+        name.bringToFront();
+        locationpin.bringToFront();
+        currentlocation.bringToFront();
+        profilepic.bringToFront();
 
         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
             @Override

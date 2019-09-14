@@ -30,17 +30,19 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/locationpin"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="8dp"
                 android:src="@drawable/location"
+                android:tint="#FFFFFF"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name1" />
 
@@ -52,9 +54,36 @@
                 android:layout_marginTop="10dp"
                 android:foreground="?attr/selectableItemBackground"
                 android:src="@drawable/backbutt"
-                android:tint="@color/colorPrimary"
+                android:tint="#FFFFFF"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/name1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="60dp"
+                android:text="Hardeep Singh"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/currentlocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Chandigarh"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/locationpin"
+                app:layout_constraintTop_toBottomOf="@+id/name1" />
 
             <TextView
                 android:id="@+id/logout"
@@ -73,49 +102,24 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView4" />
 
-            <TextView
-                android:id="@+id/name1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="60dp"
-                android:text="Hardeep Singh"
-                android:textColor="#000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/currentlocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="Chandigarh"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/name1" />
-
             <View
                 android:id="@+id/view2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="60dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="70dp"
                 android:background="#D8D6D6"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/currentlocation" />
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView4"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:layout_margin="10dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="9dp"
                 android:clickable="true"
                 android:elevation="20dp"
@@ -159,9 +163,9 @@
                 android:id="@+id/cardView6"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:layout_margin="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="9dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
                 android:clickable="true"
                 android:elevation="20dp"
                 android:focusable="true"
@@ -205,7 +209,6 @@
                 android:id="@+id/cardView5"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:layout_margin="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="9dp"
@@ -252,9 +255,9 @@
                 android:id="@+id/cardView3"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:layout_margin="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="9dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
                 android:clickable="true"
                 android:elevation="20dp"
                 android:focusable="true"
@@ -313,8 +316,7 @@
                     android:id="@+id/profilepic"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/imgbck"
-                    />
+                    android:background="@drawable/imgbck" />
 
             </androidx.cardview.widget.CardView>
 
@@ -322,13 +324,16 @@
                 android:id="@+id/cardView2"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:layout_margin="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
                 android:clickable="true"
                 android:elevation="20dp"
                 android:focusable="true"
                 app:cardUseCompatPadding="true"
-                app:layout_constraintTop_toBottomOf="@id/view2"
-                tools:layout_editor_absoluteX="10dp">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view2">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -358,6 +363,19 @@
 
 
             </androidx.cardview.widget.CardView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/conslayout1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/chinesefood"
+                android:foreground="#63000000"
+                app:layout_constraintBottom_toTopOf="@+id/view2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,29 +2,25 @@ package com.example.restaurantfinder;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 
-public class SearchingDialog extends DialogFragment {
+public class ReviewDialog extends DialogFragment {
 
     public static final String TAG = "example_dialog";
 
-    public SearchingDialog() {
+    public ReviewDialog() {
 
     }
 
-    public static SearchingDialog display(FragmentManager fragmentManager) {
+    public static ReviewDialog display(FragmentManager fragmentManager) {
 
-        SearchingDialog exampleDialog = new SearchingDialog();
+        ReviewDialog exampleDialog = new ReviewDialog();
         exampleDialog.show(fragmentManager, TAG);
         return exampleDialog;
     }
@@ -54,7 +50,8 @@ public class SearchingDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.dialog, container, false);
+        View view = inflater.inflate(R.layout.reviewdialog, container, false);
+
 
 
         return view;

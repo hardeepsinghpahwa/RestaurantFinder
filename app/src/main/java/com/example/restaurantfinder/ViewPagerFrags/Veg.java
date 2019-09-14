@@ -81,7 +81,7 @@ public class Veg extends Fragment {
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_veg, container, false);
 
-        images = new int[]{R.drawable.chinesefood, R.drawable.northindian, R.drawable.southindianfood, R.drawable.italianfood};
+        images = new int[]{R.drawable.chinesefood, R.drawable.northindian, R.drawable.southindianfood, R.drawable.italianfood,R.drawable.streetfood,R.drawable.drinks,R.drawable.sweets,R.drawable.deserts,R.drawable.healthyveg,R.drawable.vegthai,R.drawable.mexiconveg};
 
         recyclerView=v.findViewById(R.id.vegrecyclerview);
         recyclerView.setAdapter(new GridAdapter(images,getActivity()));
@@ -132,8 +132,8 @@ public class Veg extends Fragment {
     class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder> {
 
         int a[];
-        String brands[] = new String[]{"veg1","veg2","veg3","veg4"};
-        String names[] = new String[]{"Chinese","North Indian","South Indian","Italian"};
+        String brands[] = new String[]{"Chinese","North Indian","South Indian","Italian","Street Food","Shakes And Drinks","Sweets","Deserts","Healthy Veg","Thai","Mexicon"};
+        String names[] = new String[]{"Chinese","North Indian","South Indian","Italian","Street Food","Shakes And Drinks","Sweets","Deserts","Healthy Veg","Thai","Mexicon"};
 
         int lastPosition = -1;
 

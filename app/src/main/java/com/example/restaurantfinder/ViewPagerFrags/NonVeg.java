@@ -71,7 +71,7 @@ public class NonVeg extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_non_veg, container, false);
-        images = new int[]{R.drawable.nonindianfood, R.drawable.seafood1};
+        images = new int[]{R.drawable.nonindianfood, R.drawable.seafood1,R.drawable.biryani,R.drawable.healthynonveg,R.drawable.thainonveg};
 
         recyclerView=v.findViewById(R.id.nonvegrecyclerview);
         recyclerView.setAdapter(new GridAdapter(images,getActivity()));
@@ -111,8 +111,8 @@ public class NonVeg extends Fragment {
     class GridAdapter extends RecyclerView.Adapter<GridAdapter.GridViewHolder> {
 
         int a[];
-        String brands[]=new String[]{"nonveg1","nonveg2"};
-        String names[]=new String[]{"Indian","Sea Food"};
+        String brands[]=new String[]{"Indian","Sea Food","Biryani","Healthy Non Veg","Thai"};
+        String names[]=new String[]{"Indian","Sea Food","Biryani","Healthy Non Veg","Thai"};
 
         int lastPosition=-1;
 

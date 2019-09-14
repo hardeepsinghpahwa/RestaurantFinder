@@ -105,7 +105,7 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
                         }
                     }
                 });
@@ -245,46 +245,6 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
 
     }
 
-    private LatLng getLastKnownLocation() {
-        List<String> providers = locationManager.getProviders(true);
-        Location bestLocation = null;
-        LatLng loc = null;
-        for (String provider : providers) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-            }
-            Location l = locationManager.getLastKnownLocation(provider);
-            Log.d("last location:", provider + l);
-
-
-            if (l == null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                Log.d("found last location: %s", String.valueOf(l));
-                bestLocation = l;
-            }
-        }
-        if (bestLocation != null) {
-            loc = new LatLng(bestLocation.getLatitude(), bestLocation.getLongitude());
-
-
-            float zoomLevel = 16.0f; //This goes up to 21
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 19));
-
-
-        }
-        if (bestLocation == null) {
-            return null;
-        }
-        return loc;
-    }
 
 
     private void getLocationPermission() {
@@ -336,7 +296,7 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
                                 public void onSuccess(Location location) {
                                     // Got last known location. In some rare situations this can be null.
                                     if (location != null) {
-                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
+                                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
                                     }
                                 }
                             });

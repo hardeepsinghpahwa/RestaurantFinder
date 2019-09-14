@@ -9,6 +9,8 @@
     android:background="#FFFFFF"
     app:umanoPanelHeight="100dp"
     app:umanoParallaxOffset="100dp"
+    app:umanoScrollableView="@id/nested"
+    app:umanoShadowHeight="4dp"
     tools:context=".RestaurentActivity">
 
 
@@ -190,13 +192,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/markerdetails"
-        android:background="#FFFFFF"
         android:orientation="vertical"
+        android:background="#19FFFFFF"
         >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
+            android:background="@drawable/roundedcorners"
             >
 
 
@@ -207,6 +210,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:textSize="20sp"
+                android:textColor="#919090"
                 android:id="@+id/choose"
                 />
 

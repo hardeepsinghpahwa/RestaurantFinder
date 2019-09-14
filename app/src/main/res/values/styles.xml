@@ -16,9 +16,21 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowActionBarOverlay">true</item>
         <item name="android:fontFamily">@font/quicksand_medium</item>
 
     </style>
+
+    <style name="NobarMaterial" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:fontFamily">@font/quicksand_medium</item>
+
+    </style>
+
 
     <style name="SigninTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -38,6 +50,11 @@
         <item name="android:windowExitAnimation">@anim/slidedown</item>
     </style>
 
+
+    <style name="AppTheme.Exit">
+        <item name="android:windowExitAnimation">@anim/slidedown</item>
+    </style>
+
     <style name="AppTheme.FullScreenDialog" parent="Theme.MaterialComponents.Light.Dialog.MinWidth">
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -49,12 +66,29 @@
 
     </style>
 
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/grey</item>
+        <item name="colorControlActivated">@color/orange</item>
+    </style>
+
+    <style name="AppTheme.Review" parent="Theme.MaterialComponents.Light.Dialog.MinWidth">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/grey</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/trans</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="actionMenuTextColor">@color/colorAccent</item>
+
+    </style>
+
     <style name="AppTheme.ProfileDialog" parent="android:Theme">
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="actionMenuTextColor">@color/colorAccent</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:fragmentExitTransition">@anim/bottom</item>
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowIsFloating">false</item>
 

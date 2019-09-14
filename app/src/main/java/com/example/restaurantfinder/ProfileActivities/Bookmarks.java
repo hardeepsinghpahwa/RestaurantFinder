@@ -72,7 +72,7 @@ public class Bookmarks extends AppCompatActivity {
 
                 if(bookmarks.size()==0)
                 {
-
+                    nobookmarks.setVisibility(View.VISIBLE);
                     lottieAnimationView.setVisibility(View.VISIBLE);
                     lottieAnimationView.playAnimation();
                     lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
@@ -83,10 +83,6 @@ public class Bookmarks extends AppCompatActivity {
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            nobookmarks.setVisibility(View.VISIBLE);
-                            YoYo.with(Techniques.ZoomIn)
-                                    .duration(700)
-                                    .playOn(nobookmarks);
                         }
 
                         @Override
@@ -183,14 +179,14 @@ public class Bookmarks extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Bookmarks").child(marks.get(holder.getAdapterPosition())).addValueEventListener(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Bookmarks").child(marks.get(holder.getAdapterPosition())).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     dataSnapshot.getRef().removeValue();
 
-                                    recyclerView.getAdapter().notifyDataSetChanged();
                                     Alerter.create(Bookmarks.this)
                                             .setBackgroundColorInt(Color.parseColor("#FFA000"))
+                                            .setDuration(700)
                                             .setTitle("Bookmark Removed")
                                             .show();
                                 }
