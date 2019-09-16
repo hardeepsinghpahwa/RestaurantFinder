@@ -40,6 +40,49 @@
 
 
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/kmslinear"
+        android:visibility="visible"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:text="Delivery"
+            android:textSize="20sp"
+            android:layout_gravity="bottom"
+            android:textStyle="bold" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:id="@+id/lat"
+            app:lottie_loop="true"
+            app:lottie_repeatMode="restart"
+            app:lottie_rawRes="@raw/delivery2"
+            app:lottie_autoPlay="true"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/kms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="8 kms"
+        android:layout_marginLeft="15dp"
+        android:gravity="center|left"
+        android:textSize="18sp"
+        android:layout_marginTop="10dp"
+        android:textColor="#000" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,6 +100,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/chipgroup"
+        android:layout_marginTop="10dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:text="Menu"
+        android:drawablePadding="5dp"
+        android:drawableRight="@drawable/menu"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Menu Available"
+        android:layout_marginTop="20dp"
+        android:textColor="#000"
+        android:visibility="gone"
+        android:id="@+id/nomenu"
+        android:layout_gravity="center"
+        />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:id="@+id/menurecyclerview"
         android:layout_marginTop="10dp"
         />
 
@@ -197,15 +273,14 @@
 
 
     <TextView
+        android:id="@+id/area"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
         android:maxLines="2"
         android:textColor="#000"
-        android:id="@+id/area"
-        android:textSize="18sp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        />
+        android:textSize="18sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -271,7 +346,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginLeft="15sp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         >
 
         <TextView
@@ -293,6 +368,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:clickable="true"
+            android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:text="Write A Review"
             android:textColor="@color/colorPrimary"
@@ -309,14 +385,15 @@
         />
 
     <TextView
+        android:id="@+id/noreviewsyettext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
         android:text="No Reviews Yet"
-        android:textStyle="bold"
-        android:textSize="15sp"
+        android:visibility="visible"
         android:textColor="#000"
-        />
+        android:textSize="15sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

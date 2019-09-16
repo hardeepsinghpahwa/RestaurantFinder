@@ -226,29 +226,67 @@
                 app:SpinKit_Color="@color/colorPrimary" />
 
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                app:cardUseCompatPadding="true"
+                android:id="@+id/pro"
+                android:visibility="gone"
+                android:elevation="10dp"
+                android:background="#FFFFFF"
+                app:cardCornerRadius="10dp"
+                >
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/cuisines"
+                    android:padding="10dp"
+                    android:background="#FFFFFF"
+                    android:id="@+id/detailsprofilepic"
+                    android:scaleType="centerCrop"
+                    />
+            </androidx.cardview.widget.CardView>
+
             <TextView
-                android:id="@+id/name"
+                android:id="@+id/editname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
                 android:maxWidth="300dp"
                 android:visibility="gone"
+                android:layout_toRightOf="@+id/pro"
                 android:singleLine="true"
                 android:text="Pahwa's Restaurant"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 android:textColor="#000"
                 android:textStyle="bold" />
+
+            <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                style="@style/RatingBar.ExtraSmall"
+                android:id="@+id/ratingBar3"
+                android:visibility="gone"
+                android:layout_toRightOf="@+id/pro"
+                android:layout_below="@+id/editname"
+                android:layout_marginLeft="10dp"
+                />
 
             <TextView
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="10dp"
                 android:visibility="gone"
                 android:layout_marginRight="20sp"
                 android:text="OPEN"
-                android:textSize="25sp"
+                android:layout_toRightOf="@id/pro"
+                android:textSize="20sp"
+                android:layout_marginLeft="11dp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/ratingBar3"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -257,6 +295,7 @@
                 android:orientation="horizontal"
                 android:id="@+id/call"
                 android:visibility="gone"
+                android:layout_alignParentEnd="true"
                 android:background="@drawable/button"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="10dp"
@@ -277,41 +316,6 @@
                     android:layout_width="70dp"
                     android:layout_height="35dp"
                     android:text="Call"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                    android:gravity="center|left"
-                    android:textSize="20sp"
-                    android:textColor="#FFFFFF" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/kmslinear"
-                android:visibility="gone"
-                android:layout_toRightOf="@+id/call"
-                android:background="@drawable/button"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="10dp"
-                >
-
-                <com.airbnb.lottie.LottieAnimationView
-                    android:layout_width="50dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentBottom="true"
-                    android:id="@+id/lat"
-                    app:lottie_loop="true"
-                    app:lottie_repeatMode="restart"
-                    app:lottie_rawRes="@raw/delivery2"
-                    app:lottie_autoPlay="true"
-
-                    />
-                <TextView
-                    android:id="@+id/kms"
-                    android:layout_width="70dp"
-                    android:layout_height="35dp"
-                    android:text="8 kms"
                     android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                     android:gravity="center|left"
                     android:textSize="20sp"

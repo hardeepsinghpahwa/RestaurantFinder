@@ -1,6 +1,7 @@
 package com.example.restaurantfinder;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,10 +18,13 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +36,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,6 +44,9 @@ import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.restaurantfinder.Directions.TaskLoadedCallback;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -62,6 +70,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -90,9 +99,10 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     String markid;
     SpinKitView spin;
     ArrayList<String> images;
+    RecyclerView reviewrecyclerview;
     String buiss;
     TextView choose, area, title;
-    ArrayList<String> chipnames=new ArrayList<>();
+    ArrayList<String> chipnames = new ArrayList<>();
     NestedScrollView nestedScrollView;
     private SlidingUpPanelLayout mLayout;
     RelativeLayout overlay;
@@ -100,8 +110,10 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     NestedScrollView nested;
     LatLng lastlocation;
     GoogleMap mMap;
-    TextView status,writereview;
-    TextView totime,fromtime;
+    CardView pro;
+    DatabaseReference reviewref;
+    TextView status, writereview, noreviewsyet;
+    TextView totime, fromtime, nomenu;
     LinearLayout det;
     ImageView back;
     ChipGroup chipGroup;
@@ -113,12 +125,18 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     boolean mLocationPermissionGranted = false;
     String brand;
     int a[] = new int[]{};
+    RatingBar ratingBar2;
+    ImageView propic;
     int pos;
     ImageView share;
     SparkButton bookmark;
+    RecyclerView menu;
     double lon, lat;
     ArrayList<String> names = new ArrayList<>();
     DatabaseReference databaseReference;
+    FirebaseRecyclerAdapter<Review, ReviewHolder> firebaseRecyclerAdapter;
+    FirebaseRecyclerAdapter<menu, MenuViewHolder> firebaseRecyclerAdapter1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +148,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
         onsitekms = findViewById(R.id.kms);
         call = findViewById(R.id.call);
-        name = findViewById(R.id.name);
+        name = findViewById(R.id.editname);
         kmslinear = findViewById(R.id.kmslinear);
 
         sliderView = findViewById(R.id.imageSlider);
@@ -146,11 +164,14 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         saturday = findViewById(R.id.saturday);
 
         back = findViewById(R.id.backbuttonrest);
+        menu = findViewById(R.id.menurecyclerview);
 
-        nested=findViewById(R.id.nested);
-        totime=findViewById(R.id.to);
-        fromtime=findViewById(R.id.from);
-        writereview=findViewById(R.id.writeareview);
+        nested = findViewById(R.id.nested);
+        totime = findViewById(R.id.to);
+        fromtime = findViewById(R.id.from);
+        writereview = findViewById(R.id.writeareview);
+        noreviewsyet = findViewById(R.id.noreviewsyettext);
+        nomenu = findViewById(R.id.nomenu);
 
         share = findViewById(R.id.share);
         bookmark = findViewById(R.id.bookmark);
@@ -164,6 +185,10 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         spin = findViewById(R.id.spin);
         title = findViewById(R.id.title1);
 
+        ratingBar2 = findViewById(R.id.ratingBar3);
+        propic = findViewById(R.id.detailsprofilepic);
+        pro = findViewById(R.id.pro);
+
         sunday.setChecked(true);
         monday.setChecked(true);
         tuesday.setChecked(true);
@@ -173,9 +198,9 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         saturday.setChecked(true);
 
         det = findViewById(R.id.det);
-        chipGroup=findViewById(R.id.chipgroup);
+        chipGroup = findViewById(R.id.chipgroup);
         status = findViewById(R.id.status);
-
+        reviewrecyclerview = findViewById(R.id.reviewsrecyclerview);
         overlay = findViewById(R.id.overlay);
         ok = findViewById(R.id.ok);
 
@@ -193,9 +218,11 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
         chipGroup.setChipSpacing(25);
 
-        chipGroup.setPadding(40,10,10,10);
+        chipGroup.setPadding(40, 10, 10, 10);
 
-        mLayout.setScrollableViewHelper(new NestedScrollableViewHelper()) ;
+        menu.setLayoutManager(new LinearLayoutManager(RestaurentActivity.this, LinearLayoutManager.HORIZONTAL, false));
+
+        mLayout.setScrollableViewHelper(new NestedScrollableViewHelper());
         mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -215,18 +242,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         });
 
 
-
-        writereview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReviewDialog.display(getSupportFragmentManager());
-            }
-        });
-
-
-
-
-
         mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
 
 
@@ -244,7 +259,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                 }
             }
         });
-
 
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -273,8 +287,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                 overlay.setVisibility(View.GONE);
             }
         });
-
-
 
 
         final SearchingDialog searchingDialog = new SearchingDialog();
@@ -411,7 +423,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -506,6 +517,14 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 .duration(500)
                                 .playOn(call);
 
+                        YoYo.with(Techniques.FadeOut)
+                                .duration(500)
+                                .playOn(pro);
+
+                        YoYo.with(Techniques.FadeOut)
+                                .duration(500)
+                                .playOn(ratingBar2);
+
 
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -532,6 +551,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public boolean onMarkerClick(final com.google.android.gms.maps.model.Marker marker) {
 
+                Log.i("time", String.valueOf(ServerValue.TIMESTAMP));
 //                new FetchURL(RestaurentActivity.this).execute(getUrl(getLastKnownLocation(), marker.getPosition(), "driving"), "driving");
 
                 final String mark = marker.getTitle();
@@ -553,6 +573,103 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 Log.i("b", markid);
                             }
                         }
+
+                        writereview.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ReviewDialog.display(getSupportFragmentManager(), markid);
+                            }
+                        });
+
+                        reviewref = FirebaseDatabase.getInstance().getReference().child("Reviews").child(markid);
+
+
+                        FirebaseRecyclerOptions<Review> options = new FirebaseRecyclerOptions.Builder<Review>()
+                                .setQuery(FirebaseDatabase.getInstance().getReference().child("Reviews").child(markid).orderByChild("timestamp"), new SnapshotParser<Review>() {
+                                    @NonNull
+                                    @Override
+                                    public Review parseSnapshot(@NonNull DataSnapshot snapshot) {
+
+                                        return new Review(snapshot.child("rating").getValue(String.class), snapshot.child("review").getValue(String.class), snapshot.child("userid").getValue(String.class), snapshot.child("date").getValue(String.class));
+                                    }
+                                }).build();
+
+
+                        reviewrecyclerview.setLayoutManager(new LinearLayoutManager(RestaurentActivity.this, LinearLayoutManager.HORIZONTAL, false));
+
+
+                        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Review, ReviewHolder>
+                                (options) {
+
+
+                            @Override
+                            protected void onBindViewHolder(@NonNull final ReviewHolder reviewHolder, int i, @NonNull final Review review) {
+
+                                reviewHolder.review.setText(review.getReview());
+                                reviewHolder.ratingBar.setRating(Float.parseFloat(review.getRating()));
+                                reviewHolder.date.setText(review.getDate());
+
+                                String id = review.getUserid();
+
+                                FirebaseDatabase.getInstance().getReference().child("Users").child(id).child("About").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        reviewHolder.name.setText(dataSnapshot.child("name").getValue(String.class));
+                                        Glide.with(RestaurentActivity.this).load(dataSnapshot.child("image").getValue(String.class)).into(reviewHolder.pic);
+
+                                        if(dataSnapshot.child("name").getValue(String.class)!=null)
+                                        {
+                                            noreviewsyet.setVisibility(View.GONE);
+                                            reviewrecyclerview.setVisibility(View.VISIBLE);
+                                        }
+                                        else {
+                                            noreviewsyet.setVisibility(View.VISIBLE);
+                                            reviewrecyclerview.setVisibility(View.GONE);
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                            }
+
+
+                            @NonNull
+                            @Override
+                            public ReviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                                LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext()
+                                        .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                                View view = layoutInflater.inflate(R.layout.review, null, true);
+                                view.setLayoutParams(new RecyclerView.LayoutParams(
+                                        RecyclerView.LayoutParams.MATCH_PARENT,
+                                        RecyclerView.LayoutParams.WRAP_CONTENT
+                                ));
+
+                                return new ReviewHolder(view);
+                            }
+                        };
+
+
+                        reviewrecyclerview.setAdapter(firebaseRecyclerAdapter);
+                        firebaseRecyclerAdapter.startListening();
+
+
+                        Log.i("count", String.valueOf(firebaseRecyclerAdapter.getItemCount()));
+
+                        /*if(firebaseRecyclerAdapter.getItemCount()==0)
+                        {
+                            noreviewsyet.setVisibility(View.VISIBLE);
+                            reviewrecyclerview.setVisibility(View.GONE);
+                        }
+                        else {
+                            noreviewsyet.setVisibility(View.GONE);
+                            reviewrecyclerview.setVisibility(View.VISIBLE);
+
+                        }*/
 
                         FirebaseDatabase.getInstance().getReference().child("Images").child(markid).addValueEventListener(new ValueEventListener() {
                             @Override
@@ -580,12 +697,10 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 for (final DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
 
-
-                                    if(!chipnames.contains(dataSnapshot1.getValue(String.class)))
-                                    {
+                                    if (!chipnames.contains(dataSnapshot1.getValue(String.class))) {
                                         chipnames.add(dataSnapshot1.getValue(String.class));
 
-                                        Chip chip=new Chip(chipGroup.getContext());
+                                        Chip chip = new Chip(chipGroup.getContext());
 
                                         chip.setText(dataSnapshot1.getValue(String.class));
 
@@ -603,6 +718,57 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                             }
                         });
+
+
+                        FirebaseRecyclerOptions<menu> options1 = new FirebaseRecyclerOptions.Builder<menu>()
+                                .setQuery(FirebaseDatabase.getInstance().getReference().child("Menus").child(markid), new SnapshotParser<menu>() {
+                                    @NonNull
+                                    @Override
+                                    public menu parseSnapshot(@NonNull DataSnapshot snapshot) {
+
+                                        return new menu(snapshot.child("image").getValue(String.class));
+                                    }
+                                }).build();
+
+
+                        firebaseRecyclerAdapter1 = new FirebaseRecyclerAdapter<menu, MenuViewHolder>
+                                (options1) {
+                            @Override
+                            protected void onBindViewHolder(@NonNull MenuViewHolder menuViewHolder, int i, @NonNull menu men) {
+
+
+                                Glide.with(RestaurentActivity.this).load(men.getImage()).into(menuViewHolder.imageView);
+
+                                if(men.getImage()!=null)
+                                {
+                                    nomenu.setVisibility(View.GONE);
+                                    menu.setVisibility(View.VISIBLE);
+                                }else {
+                                    nomenu.setVisibility(View.VISIBLE);
+                                    menu.setVisibility(View.GONE);
+
+                                }
+                            }
+
+
+                            @NonNull
+                            @Override
+                            public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                                LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
+                                View view = layoutInflater.inflate(R.layout.addmenu, null, true);
+                                view.setLayoutParams(new RecyclerView.LayoutParams(
+                                        RecyclerView.LayoutParams.MATCH_PARENT,
+                                        RecyclerView.LayoutParams.WRAP_CONTENT
+                                ));
+
+                                return new MenuViewHolder(view);
+                            }
+                        };
+
+
+                        menu.setAdapter(firebaseRecyclerAdapter1);
+                        firebaseRecyclerAdapter1.startListening();
 
 
                         FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Bookmarks").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -744,11 +910,15 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                     }
                                 });
 
+                                Glide.with(RestaurentActivity.this).load(de.getProfilepic()).into(propic);
+
+                                ratingBar2.setRating(4);
+
+
                                 area.setText(de.getAreaname());
                                 name.setText(de.getBuisnessname());
 
 
-                                String phone = de.getContact1();
                                 if (de.getOnsite().equals("no")) {
                                     onsitekms.setText("None");
                                 } else {
@@ -855,6 +1025,16 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 YoYo.with(Techniques.FadeIn)
                                         .duration(1000)
                                         .playOn(call);
+
+                                pro.setVisibility(View.VISIBLE);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1000)
+                                        .playOn(pro);
+
+                                ratingBar2.setVisibility(View.VISIBLE);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1000)
+                                        .playOn(ratingBar2);
 
                                 spin.setVisibility(View.INVISIBLE);
 
@@ -1116,7 +1296,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     public class NestedScrollableViewHelper extends ScrollableViewHelper {
         public int getScrollableViewScrollPosition(View scrollableView, boolean isSlidingUp) {
             if (nested instanceof NestedScrollView) {
-                if(isSlidingUp){
+                if (isSlidingUp) {
                     return nested.getScrollY();
                 } else {
                     NestedScrollView nsv = ((NestedScrollView) nested);
@@ -1126,6 +1306,21 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
             } else {
                 return 0;
             }
+        }
+    }
+
+    class ReviewHolder extends RecyclerView.ViewHolder {
+        TextView name, date, review;
+        ImageView pic;
+        RatingBar ratingBar;
+
+        public ReviewHolder(@NonNull View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.reviewname2);
+            date = itemView.findViewById(R.id.reviewdate2);
+            review = itemView.findViewById(R.id.review2);
+            ratingBar = itemView.findViewById(R.id.ratingBar2);
+            pic = itemView.findViewById(R.id.reviewimage2);
         }
     }
 
@@ -1173,6 +1368,27 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                 imageViewBackground = itemView.findViewById(R.id.slideimg);
                 this.itemView = itemView;
             }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (firebaseRecyclerAdapter != null) {
+            firebaseRecyclerAdapter.stopListening();
+        }
+        if (firebaseRecyclerAdapter1 != null) {
+            firebaseRecyclerAdapter1.stopListening();
+        }
+    }
+
+    class MenuViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView imageView;
+
+        public MenuViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.menuimg);
         }
     }
 }

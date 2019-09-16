@@ -3,7 +3,15 @@ package com.example.restaurantfinder;
 
 public class details1 {
 
-    String name,buisnessname,contact1,contact2,sunday,monday,tuesday,wednesday,thursday,friday,saturday,fromtime,totime,latitude,longitude,areaname,restaurenttype,veg,nonveg,onsite,kms;
+    String name,buisnessname,contact1,contact2,sunday,monday,tuesday,wednesday,thursday,friday,saturday,fromtime,totime,latitude,longitude,areaname,restaurenttype,veg,nonveg,onsite,kms,profilepic;
+
+    public String getProfilepic() {
+        return profilepic;
+    }
+
+    public void setProfilepic(String profilepic) {
+        this.profilepic = profilepic;
+    }
 
     public String getName() {
         return name;

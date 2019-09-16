@@ -133,22 +133,6 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
         fl3 = findViewById(R.id.fl3);
 
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("About").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    name.setText(dataSnapshot.child("name").getValue(String.class));
-                    Glide.with(HomeMaps.this).load(dataSnapshot.child("image").getValue(String.class)).into(pic);
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-
         a = new int[]{};
 
         item = getIntent().getIntExtra("posi", -1);
@@ -174,6 +158,23 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
             }, 1000);
 
         } else {
+
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("About").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        name.setText(dataSnapshot.child("name").getValue(String.class));
+                        Glide.with(getApplicationContext()).load(dataSnapshot.child("image").getValue(String.class)).into(pic);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

@@ -32,7 +32,7 @@ public class SearchingDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Searching);
 
     }
 
@@ -42,6 +42,7 @@ public class SearchingDialog extends DialogFragment {
     public void onStart() {
         super.onStart();
         Dialog dialog = getDialog();
+        dialog.setCancelable(false);
         if (dialog != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
