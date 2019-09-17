@@ -7,6 +7,7 @@
 
     <TextView
         android:layout_width="wrap_content"
+        android:textColor="#000"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
@@ -27,6 +28,7 @@
         android:layout_height="wrap_content"
         android:text="Swipe for more ->"
         android:layout_below="@+id/nonvegrecyclerview"
+        android:textStyle="bold"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="20dp"
         />

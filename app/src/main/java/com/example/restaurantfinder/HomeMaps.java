@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -69,7 +70,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragmentInteractionListener, LocationListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    FloatingActionButton restaurant, dhaba, coffeeshop;
+    CardView restaurant, dhaba, coffeeshop;
     CircleImageView pic;
     LocationManager locationManager;
     boolean mLocationPermissionGranted = false;
@@ -123,7 +124,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                         }
                     }
                 });
-        restaurant = findViewById(R.id.restaurentfab);
+        restaurant = findViewById(R.id.restaurant);
         nearbyrestaurants = findViewById(R.id.nearbyrestaurants);
         nearbycafes = findViewById(R.id.nearbycafes);
         nearbydhabas = findViewById(R.id.nearbydhabas);
@@ -142,7 +143,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
             }
         });
         dhaba = findViewById(R.id.dhaba);
-        coffeeshop = findViewById(R.id.coffeeshop);
+        coffeeshop = findViewById(R.id.coffee);
 
         brand = getIntent().getStringExtra("brand");
 
@@ -217,7 +218,13 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                 FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("About").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        name.setText(dataSnapshot.child("name").getValue(String.class));
+                        String mystring = dataSnapshot.child("name").getValue(String.class);
+                        String arr[] = mystring.split(" ", 2);
+
+                        String firstWord = arr[0];
+
+                        name.setText(firstWord);
+
                         Glide.with(getApplicationContext()).load(dataSnapshot.child("image").getValue(String.class)).into(pic);
                         profileshimmer.stopShimmer();
                         profileshimmer.setVisibility(View.GONE);
@@ -394,7 +401,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         public void onViewAttachedToWindow(@NonNull ItemHolder holder) {
             super.onViewAttachedToWindow(holder);
 
-            FirebaseDatabase.getInstance().getReference().child("Saved").child(ids.get(0)).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("Saved").child(ids.get(0)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.child("whichtype").getValue(String.class).equals("dhaba"))

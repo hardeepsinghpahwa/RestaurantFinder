@@ -41,19 +41,20 @@ public class Bookmarks extends AppCompatActivity {
     TextView nobookmarks;
     RecyclerView recyclerView;
     ArrayList<String> bookmarks;
+    String type="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmarks);
 
-        bookmarks=new ArrayList<>();
+        bookmarks = new ArrayList<>();
 
-        lottieAnimationView=findViewById(R.id.bookmarkanimation);
+        lottieAnimationView = findViewById(R.id.bookmarkanimation);
 
-        nobookmarks=findViewById(R.id.nobookmarkstext);
+        nobookmarks = findViewById(R.id.nobookmarkstext);
 
-        recyclerView=findViewById(R.id.bookmarksrecyclerview);
+        recyclerView = findViewById(R.id.bookmarksrecyclerview);
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(Bookmarks.this));
@@ -61,15 +62,13 @@ public class Bookmarks extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 bookmarks.clear();
-                for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
-                {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     bookmarks.add(dataSnapshot1.getKey());
                 }
 
                 recyclerView.setAdapter(new BookmarksAdapter(bookmarks));
 
-                if(bookmarks.size()==0)
-                {
+                if (bookmarks.size() == 0) {
                     nobookmarks.setVisibility(View.VISIBLE);
                     lottieAnimationView.setVisibility(View.VISIBLE);
                     lottieAnimationView.playAnimation();
@@ -104,7 +103,7 @@ public class Bookmarks extends AppCompatActivity {
             }
         });
 
-        back=findViewById(R.id.bookmarksback);
+        back = findViewById(R.id.bookmarksback);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,11 +114,10 @@ public class Bookmarks extends AppCompatActivity {
 
     }
 
-    class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.ViewHolderBookmarks>
-    {
+    class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.ViewHolderBookmarks> {
 
         ArrayList<String> marks;
-        int lastPosition=-1;
+        int lastPosition = -1;
 
 
         public BookmarksAdapter(ArrayList<String> marks) {
@@ -157,7 +155,7 @@ public class Bookmarks extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolderBookmarks onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmarklayout,parent,false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmarklayout, parent, false);
 
             return new ViewHolderBookmarks(v);
         }
@@ -195,8 +193,7 @@ public class Bookmarks extends AppCompatActivity {
                                 }
                             });
                         }
-                    },700);
-
+                    }, 700);
 
 
                 }
@@ -208,6 +205,7 @@ public class Bookmarks extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     holder.name.setText(dataSnapshot.child("buisnessname").getValue(String.class));
                     holder.area.setText(dataSnapshot.child("areaname").getValue(String.class));
+                    type = dataSnapshot.child("whichtype").getValue(String.class);
 
                 }
 
@@ -220,13 +218,26 @@ public class Bookmarks extends AppCompatActivity {
             FirebaseDatabase.getInstance().getReference().child("Images").child(marks.get(position)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child("image").getValue(String.class)!=null)
-                    {
+
+
+                    if (dataSnapshot.child("image").getValue(String.class) != null) {
                         Glide.with(Bookmarks.this).load(dataSnapshot.child("image")).into(holder.imageView);
+                    } else if (type.equals("restaurant")) {
+                        Glide.with(Bookmarks.this).load("https://firebasestorage.googleapis.com/v0/b/urbanrider-a7875.appspot.com/o/restaurant.png?alt=media&token=146f9520-f2cd-46fe-99f3-6dc33f0f8e59").into(holder.imageView);
+                        holder.imageView.setBackgroundColor(Color.WHITE);
+
                     }
-                    else {
-                        holder.imageView.setImageResource(R.drawable.imgsliderback);
+                    else if (type.equals("dhaba")) {
+                        Glide.with(Bookmarks.this).load("https://firebasestorage.googleapis.com/v0/b/urbanrider-a7875.appspot.com/o/dhaba.png?alt=media&token=28266211-e1a0-4ed8-99e5-14965b39be7c").into(holder.imageView);
+                        holder.imageView.setBackgroundColor(Color.WHITE);
+
                     }
+                    else if (type.equals("cafe")) {
+                        Glide.with(Bookmarks.this).load("https://firebasestorage.googleapis.com/v0/b/urbanrider-a7875.appspot.com/o/coffee.png?alt=media&token=c4510f20-75c0-44af-986e-c1b63981b11b").into(holder.imageView);
+                        holder.imageView.setBackgroundColor(Color.WHITE);
+
+                    }
+
 
                 }
 
@@ -243,21 +254,21 @@ public class Bookmarks extends AppCompatActivity {
             return marks.size();
         }
 
-        public class ViewHolderBookmarks extends RecyclerView.ViewHolder{
+        public class ViewHolderBookmarks extends RecyclerView.ViewHolder {
 
-            TextView name,area,rating;
+            TextView name, area, rating;
             ImageView imageView;
             SparkButton bookmark;
 
-                public ViewHolderBookmarks(@NonNull View itemView) {
-                    super(itemView);
-                    name=itemView.findViewById(R.id.bookmarkname);
-                    area=itemView.findViewById(R.id.bookmarkarea);
-                    rating=itemView.findViewById(R.id.displayrating);
-                    imageView=itemView.findViewById(R.id.bookmarkimg);
-                    bookmark=itemView.findViewById(R.id.bookmarkicon);
-                }
+            public ViewHolderBookmarks(@NonNull View itemView) {
+                super(itemView);
+                name = itemView.findViewById(R.id.bookmarkname);
+                area = itemView.findViewById(R.id.bookmarkarea);
+                rating = itemView.findViewById(R.id.displayrating);
+                imageView = itemView.findViewById(R.id.bookmarkimg);
+                bookmark = itemView.findViewById(R.id.bookmarkicon);
             }
+        }
 
     }
 
@@ -265,6 +276,6 @@ public class Bookmarks extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        overridePendingTransition(R.anim.alerter_slide_in_from_left,R.anim.alerter_slide_out_to_right);
+        overridePendingTransition(R.anim.alerter_slide_in_from_left, R.anim.alerter_slide_out_to_right);
     }
 }

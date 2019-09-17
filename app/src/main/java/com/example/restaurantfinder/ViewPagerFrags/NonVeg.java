@@ -46,6 +46,7 @@ public class NonVeg extends Fragment {
     RecyclerView recyclerView;
     ArrayList<Integer> imgs = new ArrayList<>();
     int[] images;
+    LinearLayoutManager linearLayoutManager;
 
 
     // TODO: Rename and change types and number of parameters
@@ -67,6 +68,7 @@ public class NonVeg extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,7 +78,8 @@ public class NonVeg extends Fragment {
 
         recyclerView=v.findViewById(R.id.nonvegrecyclerview);
         recyclerView.setAdapter(new GridAdapter(images,getActivity()));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+        linearLayoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         return v;
     }
@@ -189,16 +192,17 @@ public class NonVeg extends Fragment {
                     @TargetApi(Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View v) {
+                        CuisineDialog.display(getFragmentManager(),"restaurant",getAdapterPosition(),a,brands[getAdapterPosition()]);
+
                         Intent intent=new Intent(getActivity(), HomeMaps.class);
                         intent.putExtra("posi",getAdapterPosition());
                         intent.putExtra("whichtype","restaurant");
                         intent.putExtra("array",a);
                         intent.putExtra("brand",brands[getAdapterPosition()]);
                         startActivity(intent);
-                        getActivity().finish();
+                        //getActivity().finish();
                         getActivity().overridePendingTransition(R.anim.fadein,R.anim.fadeout);
 
-                        CuisineDialog.display(getFragmentManager(),"restaurant",getAdapterPosition(),a,brands[getAdapterPosition()]);
 
                     }
                 });

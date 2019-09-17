@@ -106,8 +106,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     ArrayList<String> chipnames = new ArrayList<>();
     NestedScrollView nestedScrollView;
     private SlidingUpPanelLayout mLayout;
-    RelativeLayout overlay;
-    Button ok;
     NestedScrollView nested;
     LatLng lastlocation;
     GoogleMap mMap;
@@ -203,8 +201,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         chipGroup = findViewById(R.id.chipgroup);
         status = findViewById(R.id.status);
         reviewrecyclerview = findViewById(R.id.reviewsrecyclerview);
-        overlay = findViewById(R.id.overlay);
-        ok = findViewById(R.id.ok);
 
         pos = getIntent().getIntExtra("posi", -1);
         a = getIntent().getIntArrayExtra("array");
@@ -283,13 +279,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
         brand = getIntent().getStringExtra("brand");
 
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                overlay.setVisibility(View.GONE);
-            }
-        });
-
 
         final SearchingDialog searchingDialog = new SearchingDialog();
         searchingDialog.show(getSupportFragmentManager(), "Activity");
@@ -307,7 +296,8 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                     if (map.containsValue(brand)) {
 
                         //Log.i("", String.valueOf(map.size()));
-                        //Log.i("",dataSnapshot1.getKey());
+                        //Log.i("",dataSnapshot1.getKey())
+
                         names.add(dataSnapshot1.getKey());
                         Log.i("size", String.valueOf(names));
 
@@ -342,6 +332,8 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                     task.addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            Log.i("type", String.valueOf(dataSnapshot1.child("whichtype").getValue(String.class).equals(whichtype)));
+
                             if (dist < 10 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches(whichtype) && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
                                 if (names.contains(dataSnapshot1.getKey())) {
                                     MarkerOptions markerOptions = new MarkerOptions();
@@ -448,20 +440,47 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         });
 
 
-        try {
-            // Customise the styling of the base map using a JSON object defined
-            // in a raw resource file.
-            boolean success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.map));
+        if(Calendar.getInstance().getTime().getHours()>=17 || Calendar.getInstance().getTime().getHours()<=4)
+        {
+            try {
 
-            if (!success) {
-                Log.e("Activity", "Style parsing failed.");
+
+
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                boolean success = googleMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(
+                                this, R.raw.darkmap));
+
+                if (!success) {
+                    Log.e("Activity", "Style parsing failed.");
+                }
+            } catch (Resources.NotFoundException e) {
+                Log.e("Activity", "Can't find style. Error: ", e);
             }
-        } catch (Resources.NotFoundException e) {
-            Log.e("Activity", "Can't find style. Error: ", e);
-        }
 
+
+        }
+        else {
+            try {
+
+
+
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                boolean success = googleMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(
+                                this, R.raw.map));
+
+                if (!success) {
+                    Log.e("Activity", "Style parsing failed.");
+                }
+            } catch (Resources.NotFoundException e) {
+                Log.e("Activity", "Can't find style. Error: ", e);
+            }
+
+
+        }
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -529,6 +548,8 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final com.google.android.gms.maps.model.Marker marker) {
+
+                nestedScrollView.smoothScrollTo(0,0);
 
                 Log.i("time", String.valueOf(ServerValue.TIMESTAMP));
 //                new FetchURL(RestaurentActivity.this).execute(getUrl(getLastKnownLocation(), marker.getPosition(), "driving"), "driving");
@@ -1186,7 +1207,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
             mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         } else if (mLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
             super.onBackPressed();
-            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+            overridePendingTransition(R.anim.alerter_slide_in_from_left, R.anim.alerter_slide_out_to_right);
             finish();
         }
     }
@@ -1218,6 +1239,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
 
     }
+
 
     @Override
     protected void onPause() {
@@ -1252,8 +1274,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         lastlocation = latLng;
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 19);
-        mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
     }
 
@@ -1347,6 +1367,17 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                 imageViewBackground = itemView.findViewById(R.id.slideimg);
                 this.itemView = itemView;
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (firebaseRecyclerAdapter != null) {
+            firebaseRecyclerAdapter.startListening();
+        }
+        if (firebaseRecyclerAdapter1 != null) {
+            firebaseRecyclerAdapter1.startListening();
         }
     }
 

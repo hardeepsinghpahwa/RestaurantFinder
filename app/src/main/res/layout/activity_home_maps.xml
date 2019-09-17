@@ -67,7 +67,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_toLeftOf="@+id/pic"
-                            android:fontFamily="@font/quicksand_medium"
                             android:gravity="center"
                             android:textColor="#FFFFFF"
                             android:textSize="18sp"
@@ -93,7 +92,6 @@
                                     android:layout_gravity="center"
                                     android:layout_toLeftOf="@+id/pic"
                                     android:background="#CECDCD"
-                                    android:fontFamily="@font/quicksand_medium"
                                     android:textColor="#FFFFFF"
                                     android:textSize="18sp"
                                     android:textStyle="bold" />
@@ -104,7 +102,7 @@
                                     android:layout_gravity="center"
                                     android:layout_marginLeft="10dp"
                                     android:backgroundTint="@android:color/white"
-                                    android:src="#CECDCD"
+                                    android:background="#CECDCD"
                                     map:civ_border_color="#FFFFFF"
                                     map:civ_border_width="2dp" />
 
@@ -163,7 +161,6 @@
                         android:id="@+id/nearbyrestaurantsshimmer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         >
 
                         <LinearLayout
@@ -302,18 +299,6 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@color/colorPrimary"
-                android:text="Search Nearby"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:visibility="invisible" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -321,6 +306,7 @@
                 android:text="Search For Particular Cuisine"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:layout_marginTop="20dp"
                 android:textColor="#000"
                 android:layout_marginLeft="5dp"
                 />
@@ -335,7 +321,7 @@
 
                 <LinearLayout
                     android:id="@+id/fl1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -343,29 +329,37 @@
                     android:visibility="visible">
 
 
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/restaurentfab"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:layout_marginBottom="10dp"
-                        android:src="@drawable/restaurantwhite"
-                        map:backgroundTint="#FFAB00"
-                        map:fabSize="normal" />
+                        android:id="@+id/restaurant"
+                        >
+
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="70dp"
+                            android:src="@drawable/restaurant"
+                            />
+
+                    </androidx.cardview.widget.CardView>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Restaurant"
-                        android:textColor="#FFAB00"
-                        android:textSize="20dp"
+                        android:textColor="#000"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/fl2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -373,22 +367,31 @@
                     android:visibility="visible">
 
 
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/dhaba"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:layout_marginBottom="10dp"
-                        android:src="@drawable/dhabafood"
-                        map:backgroundTint="#FF6D00"
-                        map:fabSize="normal" />
+                        android:id="@+id/dhaba"
+                        >
+
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="70dp"
+                            android:src="@drawable/dhaba"
+                            />
+
+                    </androidx.cardview.widget.CardView>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Dhaba"
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                        android:textColor="#FF6D00"
-                        android:textSize="20dp"
+                        android:textColor="#000"
+                        android:textSize="20sp"
                         android:textStyle="bold"
 
                         />
@@ -397,7 +400,7 @@
 
                 <LinearLayout
                     android:id="@+id/fl3"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -406,22 +409,31 @@
 
 
 
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/coffeeshop"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:layout_marginBottom="10dp"
-                        android:src="@drawable/coffeewhite"
-                        map:backgroundTint="#795548"
-                        map:fabSize="normal" />
+                        android:id="@+id/coffee"
+                        >
+
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="70dp"
+                            android:src="@drawable/coffee"
+                            />
+
+                    </androidx.cardview.widget.CardView>
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Coffee Shop"
-                        android:textColor="#795548"
-                        android:textSize="20dp"
+                        android:text="Cafe"
+                        android:textColor="#000"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>

@@ -89,26 +89,31 @@ public class CuisineDialog extends DialogFragment {
         else if(whichtype.equals("dhaba"))
         {
             cuisinename.setText(cuisine);
-            cuisineimg.setImageResource(R.drawable.dhabafood);
+            cuisineimg.setImageResource(R.drawable.dhaba);
         }
 
         else if(whichtype.equals("cafe"))
         {
             cuisinename.setText(cuisine);
-            cuisineimg.setImageResource(R.drawable.coffeewhite);
+            cuisineimg.setImageResource(R.drawable.coffee);
         }
 
 
         goforit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getDialog().dismiss();
+                if(getActivity().equals(BottomUpActivity.class))
+                {
+                    getActivity().finish();
+                }
                 Intent intent = new Intent(getActivity(), RestaurentActivity.class);
                 intent.putExtra("brand", cuisine);
                 intent.putExtra("array", imgs);
                 intent.putExtra("posi", position);
                 intent.putExtra("whichtype",whichtype);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.top, R.anim.bottom);
+                getActivity().overridePendingTransition(R.anim.alerter_slide_in_from_left, R.anim.alerter_slide_out_to_right);
             }
         });
 

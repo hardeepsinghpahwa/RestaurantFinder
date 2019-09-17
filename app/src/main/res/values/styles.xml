@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:fontFamily">@font/quicksand_medium</item>
+        <item name="android:fontFamily">@font/quicksand</item>
 
     </style>
 
@@ -17,7 +17,7 @@
         <item name="colorPrimaryDark">#000</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:fontFamily">@font/quicksand_medium</item>
+        <item name="android:fontFamily">@font/quicksand</item>
 
     </style>
 
@@ -27,7 +27,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:fontFamily">@font/quicksand_medium</item>
+        <item name="android:fontFamily">@font/quicksand</item>
 
     </style>
 
@@ -37,7 +37,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:fontFamily">@font/quicksand_medium</item>
+        <item name="android:fontFamily">@font/quicksand</item>
 
     </style>
 
@@ -48,7 +48,7 @@
         <item name="colorPrimaryDark">#362D2D</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:fontFamily">@font/quicksand_medium</item>
+        <item name="android:fontFamily">@font/quicksand</item>
         <item name="android:windowEnterAnimation">@anim/slideup</item>
         <item name="android:windowExitAnimation">@anim/slidedown</item>
 
@@ -92,9 +92,12 @@
         <item name="colorControlActivated">@color/orange</item>
     </style>
 
-    <style name="RatingBarSmall" parent="Widget.AppCompat.RatingBar.Indicator">
+    <style name="RatingBarSmall" parent="Theme.AppCompat">
         <item name="colorControlNormal">@color/grey</item>
         <item name="colorControlActivated">@color/orange</item>
+        <item name="android:numStars">5</item>
+        <item name="ratingBarStyle">@style/Widget.AppCompat.RatingBar.Small</item>
+
     </style>
 
     <style name="RatingBar.ExtraSmall" parent="Widget.AppCompat.RatingBar.Small">
@@ -128,7 +131,7 @@
 
     <style name="Custom" parent="android:Theme.DeviceDefault.Dialog">
         <item name="DialogTitleAppearance">@android:style/TextAppearance.Material.Title</item>
-        <item name="android:fontFamily">@font/quicksand_medium</item>
+        <item name="android:fontFamily">@font/quicksand</item>
         <item name="DialogSpotColor">#FFFFFF</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="DialogSpotCount">6</item>
@@ -144,7 +147,7 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
-        <item name="android:fontFamily">@font/quicksand_medium</item>
+        <item name="android:fontFamily">@font/quicksand</item>
     </style>
 
 </resources>

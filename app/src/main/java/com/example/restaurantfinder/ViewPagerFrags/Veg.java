@@ -216,6 +216,7 @@ public class Veg extends Fragment {
                     @TargetApi(Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View v) {
+                        CuisineDialog.display(getFragmentManager(),"restaurant",getAdapterPosition(),a,brands[getAdapterPosition()]);
 
                         //ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),imageView,"imageMain");
                         Intent in = new Intent(getActivity(),HomeMaps.class);
@@ -229,7 +230,6 @@ public class Veg extends Fragment {
                         //getActivity().overridePendingTransition(R.anim.fadein,R.anim.fadeout);
 
 
-                        CuisineDialog.display(getFragmentManager(),"restaurant",getAdapterPosition(),a,brands[getAdapterPosition()]);
 
                     }
                 });

@@ -167,7 +167,7 @@
             android:button="@android:color/transparent"
             android:gravity="center"
             android:text="S"
-            android:textColor="#e0e0e0"
+            android:textColor="#C2C1C1"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -181,7 +181,7 @@
             android:checked="false"
             android:gravity="center"
             android:text="M"
-            android:textColor="#e0e0e0"
+            android:textColor="#C2C1C1"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -195,7 +195,7 @@
             android:checked="false"
             android:gravity="center"
             android:text="T"
-            android:textColor="#e0e0e0"
+            android:textColor="#C2C1C1"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -209,7 +209,7 @@
             android:checked="false"
             android:gravity="center"
             android:text="W"
-            android:textColor="#e0e0e0"
+            android:textColor="#C2C1C1"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -224,7 +224,7 @@
             android:checked="false"
             android:gravity="center"
             android:text="T"
-            android:textColor="#e0e0e0"
+            android:textColor="#C2C1C1"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -239,7 +239,7 @@
             android:checked="false"
             android:gravity="center"
             android:text="F"
-            android:textColor="#e0e0e0"
+            android:textColor="#C2C1C1"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -254,7 +254,7 @@
             android:checked="false"
             android:gravity="center"
             android:text="S"
-            android:textColor="#e0e0e0"
+            android:textColor="#C2C1C1"
             android:textSize="15sp"
             android:textStyle="bold" />
     </LinearLayout>
