@@ -77,8 +77,8 @@
     </style>
 
     <style name="AppTheme.Searching" parent="Theme.MaterialComponents.Light.Dialog.MinWidth">
-        <item name="colorPrimaryDark">@color/grey</item>
-        <item name="colorAccent">@color/grey</item>
+        <item name="colorPrimaryDark">#51000000</item>
+        <item name="colorAccent">#51000000</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowBackground">@color/trans</item>

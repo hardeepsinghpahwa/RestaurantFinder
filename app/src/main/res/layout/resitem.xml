@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="10dp"
+    android:layout_margin="5dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        >
+
+        <ImageView
+            android:id="@+id/displaypropic"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="#FFFFFF"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/displayname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="Pawan Da Dhaba"
+        android:textColor="#000"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/displaypropic"
+        app:layout_constraintStart_toStartOf="@+id/displaypropic"
+        app:layout_constraintTop_toBottomOf="@+id/displaypropic" />
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="35dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintEnd_toEndOf="@+id/displaypropic"
+        app:layout_constraintTop_toTopOf="@+id/displaypropic">
+
+        <TextView
+            android:id="@+id/displayrating"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="#4CBE01"
+            android:gravity="center"
+            android:text="4.5"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/displayarea"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="Kharar,Mohali"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/displayname"
+            app:layout_constraintStart_toStartOf="@+id/displayname"
+            app:layout_constraintTop_toBottomOf="@+id/displayname" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

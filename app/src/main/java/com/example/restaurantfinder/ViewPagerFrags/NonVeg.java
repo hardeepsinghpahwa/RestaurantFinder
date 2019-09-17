@@ -20,6 +20,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.restaurantfinder.CuisineDialog;
 import com.example.restaurantfinder.HomeMaps;
 import com.example.restaurantfinder.R;
 
@@ -190,11 +191,14 @@ public class NonVeg extends Fragment {
                     public void onClick(View v) {
                         Intent intent=new Intent(getActivity(), HomeMaps.class);
                         intent.putExtra("posi",getAdapterPosition());
+                        intent.putExtra("whichtype","restaurant");
                         intent.putExtra("array",a);
                         intent.putExtra("brand",brands[getAdapterPosition()]);
                         startActivity(intent);
                         getActivity().finish();
                         getActivity().overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+
+                        CuisineDialog.display(getFragmentManager(),"restaurant",getAdapterPosition(),a,brands[getAdapterPosition()]);
 
                     }
                 });

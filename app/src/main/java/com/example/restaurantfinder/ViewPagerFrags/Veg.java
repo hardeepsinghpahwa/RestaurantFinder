@@ -21,6 +21,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.restaurantfinder.CuisineDialog;
 import com.example.restaurantfinder.HomeMaps;
 import com.example.restaurantfinder.R;
 
@@ -216,14 +217,20 @@ public class Veg extends Fragment {
                     @Override
                     public void onClick(View v) {
 
-                        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),imageView,"imageMain");
+                        //ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),imageView,"imageMain");
                         Intent in = new Intent(getActivity(),HomeMaps.class);
                         in.putExtra("posi",getAdapterPosition());
                         in.putExtra("array",a);
+                        in.putExtra("whichtype","restaurant");
                         in.putExtra("brand",brands[getAdapterPosition()]);
-                        startActivity(in,activityOptionsCompat.toBundle());
-                        getActivity().finish();
+                        //startActivity(in,activityOptionsCompat.toBundle());
+                        //startActivity(in);
+                        //getActivity().finish();
                         //getActivity().overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+
+
+                        CuisineDialog.display(getFragmentManager(),"restaurant",getAdapterPosition(),a,brands[getAdapterPosition()]);
+
                     }
                 });
             }

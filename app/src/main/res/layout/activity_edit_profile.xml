@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/conslayout2"
-    tools:context=".EditProfile">
+    tools:context=".ProfileActivities.EditProfile">
 
     <ImageView
         android:id="@+id/editbackpic"

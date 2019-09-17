@@ -11,7 +11,6 @@ import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,6 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.daimajia.easing.linear.Linear;
 import com.example.restaurantfinder.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -255,7 +253,7 @@ public class Bookmarks extends AppCompatActivity {
                     super(itemView);
                     name=itemView.findViewById(R.id.bookmarkname);
                     area=itemView.findViewById(R.id.bookmarkarea);
-                    rating=itemView.findViewById(R.id.bookmarkrating);
+                    rating=itemView.findViewById(R.id.displayrating);
                     imageView=itemView.findViewById(R.id.bookmarkimg);
                     bookmark=itemView.findViewById(R.id.bookmarkicon);
                 }

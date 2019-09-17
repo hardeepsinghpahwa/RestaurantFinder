@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,12 +17,15 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -30,9 +35,13 @@ import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,26 +61,30 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, RecentSearches.OnFragmentInteractionListener, LocationListener {
+public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragmentInteractionListener, LocationListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private GoogleMap mMap;
-    FloatingActionButton floatingActionButton, dhaba, coffeeshop;
+    FloatingActionButton restaurant, dhaba, coffeeshop;
     CircleImageView pic;
     LocationManager locationManager;
     boolean mLocationPermissionGranted = false;
     int item;
-    ImageView imageView;
-    LatLng lastlocation;
+    Location lastlocation;
     int a[];
+    ShimmerFrameLayout nearbyresturantsshimmer, profileshimmer, nearbydhabasshimmer, nearbycafesshimmer;
+    Double lat, lon;
+    LatLng lastloc;
     String brand;
-    Button search;
+    double dist;
+    RecyclerView nearbyrestaurants, nearbydhabas, nearbycafes;
     private FusedLocationProviderClient fusedLocationClient;
     TextView name;
+    ArrayList<String> restaurants,dhabas,cafes;
     LinearLayout fl1, fl2, fl3;
 
     @Override
@@ -79,9 +92,7 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -99,22 +110,29 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        restaurants = new ArrayList<>();
+        dhabas=new ArrayList<>();
+        cafes=new ArrayList<>();
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
+                            lastlocation = location;
                         }
                     }
                 });
-        floatingActionButton = findViewById(R.id.restaurentfab);
-        imageView = findViewById(R.id.item);
-        search = findViewById(R.id.search);
-
+        restaurant = findViewById(R.id.restaurentfab);
+        nearbyrestaurants = findViewById(R.id.nearbyrestaurants);
+        nearbycafes = findViewById(R.id.nearbycafes);
+        nearbydhabas = findViewById(R.id.nearbydhabas);
         name = findViewById(R.id.nme);
         pic = findViewById(R.id.pic);
+        nearbyresturantsshimmer = findViewById(R.id.nearbyrestaurantsshimmer);
+        profileshimmer = findViewById(R.id.profileshimmer);
+        nearbycafesshimmer = findViewById(R.id.nearbycafessshimmer);
+        nearbydhabasshimmer = findViewById(R.id.nearbydhabassshimmer);
 
 
         pic.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +151,10 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
         fl3 = findViewById(R.id.fl3);
 
 
+        nearbyrestaurants.setLayoutManager(new LinearLayoutManager(HomeMaps.this, LinearLayoutManager.HORIZONTAL, false));
+        nearbydhabas.setLayoutManager(new LinearLayoutManager(HomeMaps.this, LinearLayoutManager.HORIZONTAL, false));
+        nearbycafes.setLayoutManager(new LinearLayoutManager(HomeMaps.this, LinearLayoutManager.HORIZONTAL, false));
+
         a = new int[]{};
 
         item = getIntent().getIntExtra("posi", -1);
@@ -141,23 +163,55 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
 
         Log.i("img", String.valueOf(item));
 
-        if (item != -1) {
-            imageView.setImageResource(a[item]);
-            fl1.setVisibility(View.GONE);
-            fl2.setVisibility(View.GONE);
-            fl3.setVisibility(View.GONE);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    search.setVisibility(View.VISIBLE);
-                    YoYo.with(Techniques.Landing)
-                            .duration(1000)
-                            .playOn(search);
+        FirebaseDatabase.getInstance().getReference().child("Saved").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                restaurants.clear();
+                dhabas.clear();
+                cafes.clear();
+                for (final DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+                    lat = Double.parseDouble(dataSnapshot1.child("latitude").getValue(String.class));
+                    lon = Double.parseDouble(dataSnapshot1.child("longitude").getValue(String.class));
+
+
+                    if (lastlocation != null) {
+                        lastloc = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+                        dist = ((distance(lastloc.latitude, lastloc.longitude, lat, lon))) / 100;
+                    }
+
+
+
+
+                    Log.i("dis", String.valueOf(dist));
+                    if (dist < 1 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("restaurant") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                        restaurants.add(dataSnapshot1.getKey());
+
+                    } else if (dist < 1 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("dhaba") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                            dhabas.add(dataSnapshot1.getKey());
+
+                    }
+                    else if (dist < 1 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("cafe") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                        cafes.add(dataSnapshot1.getKey());
+
+                    }
                 }
-            }, 1000);
 
-        } else {
+                nearbyrestaurants.setAdapter(new ItemAdapter(restaurants));
+                nearbycafes.setAdapter(new ItemAdapter(cafes));
+                nearbydhabas.setAdapter(new ItemAdapter(dhabas));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                 FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("About").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -165,7 +219,8 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         name.setText(dataSnapshot.child("name").getValue(String.class));
                         Glide.with(getApplicationContext()).load(dataSnapshot.child("image").getValue(String.class)).into(pic);
-
+                        profileshimmer.stopShimmer();
+                        profileshimmer.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -196,9 +251,8 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
                 }
             }, 1000);
 
-        }
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        restaurant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeMaps.this, BottomUpActivity.class);
@@ -207,16 +261,18 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
             }
         });
 
-        search.setOnClickListener(new View.OnClickListener() {
+
+        dhaba.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeMaps.this, RestaurentActivity.class);
-                intent.putExtra("brand", brand);
-                intent.putExtra("array", a);
-                intent.putExtra("posi", item);
-                startActivity(intent);
-                finish();
-                overridePendingTransition(R.anim.top, R.anim.bottom);
+            public void onClick(View view) {
+                CuisineDialog.display(getSupportFragmentManager(),"dhaba",0,new int[]{},"Dhaba");
+            }
+        });
+
+        coffeeshop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CuisineDialog.display(getSupportFragmentManager(),"cafe",0,new int[]{},"Cafe");
             }
         });
 
@@ -228,25 +284,6 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
         super.onBackPressed();
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(true);
-                if (lastlocation != null) {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastlocation, 19));
-                }
-                //getLastKnownLocation();
-                //updateLocationUI();
-            }
-        } else {
-            getLocationPermission();
-        }
-
-    }
-
-
 
     private void getLocationPermission() {
         /*
@@ -256,9 +293,7 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
          */
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
-            mMap.setMyLocationEnabled(true);
             if (lastlocation != null) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastlocation, 19));
             }
         } else {
             ActivityCompat.requestPermissions(this,
@@ -290,14 +325,12 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
                         // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
-                    mMap.setMyLocationEnabled(true);
                     fusedLocationClient.getLastLocation()
                             .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                                 @Override
                                 public void onSuccess(Location location) {
                                     // Got last known location. In some rare situations this can be null.
                                     if (location != null) {
-                                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 19));
                                     }
                                 }
                             });
@@ -337,4 +370,114 @@ public class HomeMaps extends FragmentActivity implements OnMapReadyCallback, Re
     public void onProviderDisabled(String provider) {
 
     }
+
+
+    class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
+
+        ArrayList<String> ids;
+
+        public ItemAdapter(ArrayList<String> ids) {
+            this.ids = ids;
+        }
+
+
+        @NonNull
+        @Override
+        public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.resitem, parent, false);
+
+            return new ItemHolder(v);
+        }
+
+        @Override
+        public void onViewAttachedToWindow(@NonNull ItemHolder holder) {
+            super.onViewAttachedToWindow(holder);
+
+            FirebaseDatabase.getInstance().getReference().child("Saved").child(ids.get(0)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.child("whichtype").getValue(String.class).equals("dhaba"))
+                    {
+                        nearbydhabasshimmer.stopShimmer();
+                        nearbydhabasshimmer.setVisibility(View.GONE);
+                    }
+                    else if(dataSnapshot.child("whichtype").getValue(String.class).equals("restaurant")){
+                        nearbyresturantsshimmer.stopShimmer();
+                        nearbyresturantsshimmer.setVisibility(View.GONE);
+                    }
+                    else if(dataSnapshot.child("whichtype").getValue(String.class).equals("cafe"))
+                    {
+                        nearbycafesshimmer.stopShimmer();
+                        nearbycafesshimmer.setVisibility(View.GONE);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull final ItemHolder holder, int position) {
+
+            FirebaseDatabase.getInstance().getReference().child("Saved").child(ids.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    Log.i("value", "" + dataSnapshot.child("profilepic").getValue(String.class));
+                    holder.name.setText(dataSnapshot.child("buisnessname").getValue(String.class));
+                    //holder.rating.setText(dataSnapshot.child("rating").getValue(String.class));
+                    holder.area.setText(dataSnapshot.child("areaname").getValue(String.class));
+                    Glide.with(getApplicationContext()).load(dataSnapshot.child("profilepic").getValue(String.class)).into(holder.propic);
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return ids.size();
+        }
+
+        public class ItemHolder extends RecyclerView.ViewHolder {
+
+            TextView area, name, rating;
+            ImageView propic;
+
+            public ItemHolder(@NonNull View itemView) {
+                super(itemView);
+
+                name = itemView.findViewById(R.id.displayname);
+                area = itemView.findViewById(R.id.displayarea);
+                rating = itemView.findViewById(R.id.displayrating);
+                propic = itemView.findViewById(R.id.displaypropic);
+            }
+        }
+
+    }
+
+    public double distance(Double lat_a, Double lng_a, double lat_b, double lng_b) {
+        Location mylocation = new Location("");
+        Location dest_location = new Location("");
+        dest_location.setLatitude(lat_b);
+        dest_location.setLongitude(lng_b);
+        mylocation.setLatitude(lat_a);
+        mylocation.setLongitude(lng_a);
+        Double distance = Double.valueOf(mylocation.distanceTo(dest_location));
+
+        return distance;
+    }
+
 }

@@ -44,6 +44,7 @@ import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.restaurantfinder.Directions.TaskLoadedCallback;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -96,7 +97,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     LinearLayout call, kmslinear;
     SliderView sliderView;
     private Polyline currentPolyline;
-    String markid;
+    String markid,whichtype;
     SpinKitView spin;
     ArrayList<String> images;
     RecyclerView reviewrecyclerview;
@@ -175,6 +176,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
         share = findViewById(R.id.share);
         bookmark = findViewById(R.id.bookmark);
+        whichtype=getIntent().getStringExtra("whichtype");
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         nestedScrollView = findViewById(R.id.nested);
@@ -332,7 +334,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                     LatLng lastloc = getLastKnownLocation();
 
-                    final double dist = ((distance(lastloc.latitude, lastloc.longitude, lat, lon))) / 1000;
+                    final double dist = ((distance(lastloc.latitude, lastloc.longitude, lat, lon))) / 100;
 
 
                     Task<Void> task = databaseReference.child("Saved").child(dataSnapshot1.getKey()).child("distance").setValue(dist);
@@ -340,7 +342,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                     task.addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            if (dist < 10 && (dataSnapshot1.child("restaurenttype").getValue(String.class)).matches("indian") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+                            if (dist < 10 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches(whichtype) && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
                                 if (names.contains(dataSnapshot1.getKey())) {
                                     MarkerOptions markerOptions = new MarkerOptions();
 
@@ -360,29 +362,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                     mMap.addMarker(markerOptions);
 
                                 }
-                            }
-                            if (dist < 10 && (dataSnapshot1.child("restaurenttype").getValue(String.class)).matches("nonindian") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
-                                MarkerOptions markerOptions = new MarkerOptions();
-
-                                LatLng latLng = new LatLng(Double.parseDouble(dataSnapshot1.child("latitude").getValue(String.class)), Double.parseDouble(dataSnapshot1.child("longitude").getValue(String.class)));
-                                markerOptions.position(latLng);
-
-                                markerOptions.title(dataSnapshot1.child("buisnessname").getValue(String.class));
-
-                                int height = 200;
-                                int width = 200;
-                                BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.redres);
-                                Bitmap b = bitmapdraw.getBitmap();
-                                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-
-
-                                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
-
-
-                                // Placing a marker on the touched position
-                                mMap.addMarker(markerOptions);
-
-
                             }
 
                         }
