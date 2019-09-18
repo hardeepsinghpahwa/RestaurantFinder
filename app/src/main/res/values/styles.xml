@@ -49,8 +49,8 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:fontFamily">@font/quicksand</item>
-        <item name="android:windowEnterAnimation">@anim/slideup</item>
-        <item name="android:windowExitAnimation">@anim/slidedown</item>
+        <item name="android:windowEnterAnimation">@anim/top</item>
+        <item name="android:windowExitAnimation">@anim/bottom</item>
 
     </style>
 

@@ -31,6 +31,7 @@
         android:layout_below="@+id/vegrecyclerview"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="20dp"
+        android:layout_marginRight="5dp"
         android:textStyle="bold"
         />
 

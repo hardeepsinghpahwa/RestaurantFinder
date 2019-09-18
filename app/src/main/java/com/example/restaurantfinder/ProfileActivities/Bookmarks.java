@@ -221,19 +221,19 @@ public class Bookmarks extends AppCompatActivity {
 
 
                     if (dataSnapshot.child("image").getValue(String.class) != null) {
-                        Glide.with(Bookmarks.this).load(dataSnapshot.child("image")).into(holder.imageView);
+                        Glide.with(getApplicationContext()).load(dataSnapshot.child("image")).into(holder.imageView);
                     } else if (type.equals("restaurant")) {
-                        Glide.with(Bookmarks.this).load("https://firebasestorage.googleapis.com/v0/b/urbanrider-a7875.appspot.com/o/restaurant.png?alt=media&token=146f9520-f2cd-46fe-99f3-6dc33f0f8e59").into(holder.imageView);
+                        Glide.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/urbanrider-a7875.appspot.com/o/restaurant.png?alt=media&token=146f9520-f2cd-46fe-99f3-6dc33f0f8e59").into(holder.imageView);
                         holder.imageView.setBackgroundColor(Color.WHITE);
 
                     }
                     else if (type.equals("dhaba")) {
-                        Glide.with(Bookmarks.this).load("https://firebasestorage.googleapis.com/v0/b/urbanrider-a7875.appspot.com/o/dhaba.png?alt=media&token=28266211-e1a0-4ed8-99e5-14965b39be7c").into(holder.imageView);
+                        Glide.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/urbanrider-a7875.appspot.com/o/dhaba.png?alt=media&token=28266211-e1a0-4ed8-99e5-14965b39be7c").into(holder.imageView);
                         holder.imageView.setBackgroundColor(Color.WHITE);
 
                     }
                     else if (type.equals("cafe")) {
-                        Glide.with(Bookmarks.this).load("https://firebasestorage.googleapis.com/v0/b/urbanrider-a7875.appspot.com/o/coffee.png?alt=media&token=c4510f20-75c0-44af-986e-c1b63981b11b").into(holder.imageView);
+                        Glide.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/urbanrider-a7875.appspot.com/o/coffee.png?alt=media&token=c4510f20-75c0-44af-986e-c1b63981b11b").into(holder.imageView);
                         holder.imageView.setBackgroundColor(Color.WHITE);
 
                     }

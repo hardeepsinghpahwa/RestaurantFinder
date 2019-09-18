@@ -1,8 +1,11 @@
 package com.example.restaurantfinder;
 
 import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -18,10 +21,18 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -29,13 +40,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,6 +57,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,7 +82,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragmentInteractionListener, LocationListener {
+public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragmentInteractionListener, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     CardView restaurant, dhaba, coffeeshop;
@@ -82,6 +97,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
     LatLng lastloc;
     String brand;
     double dist;
+    NestedScrollView nestedScrollView;
     RecyclerView nearbyrestaurants, nearbydhabas, nearbycafes;
     private FusedLocationProviderClient fusedLocationClient;
     TextView name;
@@ -93,6 +109,10 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+      takegpspermission();
+
+        nestedScrollView=findViewById(R.id.homenested);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -114,16 +134,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         restaurants = new ArrayList<>();
         dhabas=new ArrayList<>();
         cafes=new ArrayList<>();
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            lastlocation = location;
-                        }
-                    }
-                });
+
         restaurant = findViewById(R.id.restaurant);
         nearbyrestaurants = findViewById(R.id.nearbyrestaurants);
         nearbycafes = findViewById(R.id.nearbycafes);
@@ -156,63 +167,71 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         nearbydhabas.setLayoutManager(new LinearLayoutManager(HomeMaps.this, LinearLayoutManager.HORIZONTAL, false));
         nearbycafes.setLayoutManager(new LinearLayoutManager(HomeMaps.this, LinearLayoutManager.HORIZONTAL, false));
 
+
         a = new int[]{};
 
         item = getIntent().getIntExtra("posi", -1);
-        Log.i("", String.valueOf(item));
         a = getIntent().getIntArrayExtra("array");
 
-        Log.i("img", String.valueOf(item));
 
 
-        FirebaseDatabase.getInstance().getReference().child("Saved").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            lastlocation = location;
 
-                restaurants.clear();
-                dhabas.clear();
-                cafes.clear();
-                for (final DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                            FirebaseDatabase.getInstance().getReference().child("Saved").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    lat = Double.parseDouble(dataSnapshot1.child("latitude").getValue(String.class));
-                    lon = Double.parseDouble(dataSnapshot1.child("longitude").getValue(String.class));
+                                    restaurants.clear();
+                                    dhabas.clear();
+                                    cafes.clear();
+                                    for (final DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
+                                        lat = Double.parseDouble(dataSnapshot1.child("latitude").getValue(String.class));
+                                        lon = Double.parseDouble(dataSnapshot1.child("longitude").getValue(String.class));
 
-                    if (lastlocation != null) {
-                        lastloc = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
-                        dist = ((distance(lastloc.latitude, lastloc.longitude, lat, lon))) / 100;
+                                        if (lastlocation != null) {
+                                            lastloc = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+                                            dist = ((distance(lastloc.latitude, lastloc.longitude, lat, lon)));
+                                        }
+
+                                        if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("restaurant") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                                            restaurants.add(dataSnapshot1.getKey());
+
+                                        } else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("dhaba") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                                            dhabas.add(dataSnapshot1.getKey());
+
+                                        }
+                                        else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("cafe") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                                            cafes.add(dataSnapshot1.getKey());
+
+                                        }
+                                    }
+
+                                    nearbyrestaurants.setAdapter(new ItemAdapter(restaurants));
+                                    nearbycafes.setAdapter(new ItemAdapter(cafes));
+                                    nearbydhabas.setAdapter(new ItemAdapter(dhabas));
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        }
                     }
+                });
 
 
-
-
-                    Log.i("dis", String.valueOf(dist));
-                    if (dist < 1 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("restaurant") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
-
-                        restaurants.add(dataSnapshot1.getKey());
-
-                    } else if (dist < 1 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("dhaba") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
-
-                            dhabas.add(dataSnapshot1.getKey());
-
-                    }
-                    else if (dist < 1 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("cafe") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
-
-                        cafes.add(dataSnapshot1.getKey());
-
-                    }
-                }
-
-                nearbyrestaurants.setAdapter(new ItemAdapter(restaurants));
-                nearbycafes.setAdapter(new ItemAdapter(cafes));
-                nearbydhabas.setAdapter(new ItemAdapter(dhabas));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                 FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("About").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -284,6 +303,62 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         });
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //nestedScrollView.smoothScrollTo(0,0);
+    }
+
+    private void takegpspermission() {
+        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(HomeMaps.this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(HomeMaps.this)
+                .addOnConnectionFailedListener(HomeMaps.this).build();
+        googleApiClient.connect();
+
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(5 * 1000);
+        locationRequest.setFastestInterval(2 * 1000);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        //**************************
+        builder.setAlwaysShow(true); //this is the key ingredient
+        //**************************
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult result) {
+                final Status status = result.getStatus();
+//                final LocationSettingsStates state = result.getLocationSettingsStates();
+
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+
+
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied. But could be fixed by showing the user
+                        // a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(
+                                    HomeMaps.this, 1000);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -378,10 +453,26 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
 
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
 
     class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
         ArrayList<String> ids;
+        int lastPosition=-1;
 
         public ItemAdapter(ArrayList<String> ids) {
             this.ids = ids;
@@ -398,8 +489,32 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         }
 
         @Override
-        public void onViewAttachedToWindow(@NonNull ItemHolder holder) {
+        public void onViewAttachedToWindow(@NonNull final ItemHolder holder) {
             super.onViewAttachedToWindow(holder);
+
+            holder.itemView.setVisibility(View.INVISIBLE);
+
+            if (holder.getPosition() > lastPosition) {
+                holder.itemView.getHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.itemView.setVisibility(View.VISIBLE);
+                        ObjectAnimator alpha = ObjectAnimator.ofFloat(holder.itemView, "alpha", 0f, 1f);
+                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(holder.itemView, "scaleY", 0f, 1f);
+                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(holder.itemView, "scaleX", 0f, 1f);
+                        AnimatorSet animSet = new AnimatorSet();
+                        animSet.play(alpha).with(scaleY).with(scaleX);
+                        animSet.setInterpolator(new FastOutSlowInInterpolator());
+                        animSet.setDuration(1000);
+                        animSet.start();
+
+                    }
+                }, 200);
+
+                lastPosition = holder.getPosition();
+            } else {
+                holder.itemView.setVisibility(View.VISIBLE);
+            }
 
             FirebaseDatabase.getInstance().getReference().child("Saved").child(ids.get(0)).addValueEventListener(new ValueEventListener() {
                 @Override
@@ -433,21 +548,32 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         @Override
         public void onBindViewHolder(@NonNull final ItemHolder holder, int position) {
 
+
             FirebaseDatabase.getInstance().getReference().child("Saved").child(ids.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    Log.i("value", "" + dataSnapshot.child("profilepic").getValue(String.class));
                     holder.name.setText(dataSnapshot.child("buisnessname").getValue(String.class));
                     //holder.rating.setText(dataSnapshot.child("rating").getValue(String.class));
                     holder.area.setText(dataSnapshot.child("areaname").getValue(String.class));
                     Glide.with(getApplicationContext()).load(dataSnapshot.child("profilepic").getValue(String.class)).into(holder.propic);
+
 
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                }
+            });
+
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i=new Intent(HomeMaps.this,RestaurantDetails.class);
+                    i.putExtra("id",ids.get(holder.getAdapterPosition()));
+                    startActivity(i);
                 }
             });
 
@@ -470,21 +596,32 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                 area = itemView.findViewById(R.id.displayarea);
                 rating = itemView.findViewById(R.id.displayrating);
                 propic = itemView.findViewById(R.id.displaypropic);
+
             }
         }
 
     }
 
-    public double distance(Double lat_a, Double lng_a, double lat_b, double lng_b) {
-        Location mylocation = new Location("");
-        Location dest_location = new Location("");
-        dest_location.setLatitude(lat_b);
-        dest_location.setLongitude(lng_b);
-        mylocation.setLatitude(lat_a);
-        mylocation.setLongitude(lng_a);
-        Double distance = Double.valueOf(mylocation.distanceTo(dest_location));
 
-        return distance;
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
     }
 
 }

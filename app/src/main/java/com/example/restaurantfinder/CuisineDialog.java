@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,7 +104,8 @@ public class CuisineDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 getDialog().dismiss();
-                if(getActivity().equals(BottomUpActivity.class))
+                Log.i("ac",getActivity().getClass().getSimpleName());
+                if(getActivity().getClass().getSimpleName().equals("BottomUpActivity"))
                 {
                     getActivity().finish();
                 }

@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class ProfileDialog extends DialogFragment implements RecentSearches.OnFragmentInteractionListener, LocationListener {
+public class ProfileDialog extends DialogFragment implements RecentSearches.OnFragmentInteractionListener{
 
     public static final String TAG = "example_dialog";
 
@@ -141,9 +141,6 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
         }
         Location location = locationManager.getLastKnownLocation(provider);
 
-        onLocationChanged(location);
-
-
         constraintLayout = view.findViewById(R.id.conslayout);
         lottieAnimationView = view.findViewById(R.id.profilelottie);
         bookmarks = view.findViewById(R.id.profilebookmarks);
@@ -230,7 +227,7 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 name.setText(dataSnapshot.child("name").getValue(String.class));
-                Glide.with(getActivity()).load(dataSnapshot.child("image").getValue(String.class)).into(profilepic);
+                Glide.with(getContext()).load(dataSnapshot.child("image").getValue(String.class)).into(profilepic);
 
             }
 
@@ -249,74 +246,10 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
 
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-
-
-        Geocoder geoCoder = new Geocoder(getActivity(), Locale.getDefault());
-        StringBuilder builder = new StringBuilder();
-        try {
-            List<Address> address = geoCoder.getFromLocation(lat, lng, 1);
-            int maxLines = address.get(0).getMaxAddressLineIndex();
-            for (int i = 0; i < maxLines; i++) {
-                String addressStr = address.get(0).getAddressLine(i);
-                builder.append(addressStr);
-                builder.append(" ");
-            }
-
-            String fnialAddress = builder.toString(); //This is the complete address.
-
-            currentlocation.setText(fnialAddress); //This will display the final address.
-
-        } catch (IOException e) {
-            // Handle IOException
-        } catch (NullPointerException e) {
-            // Handle NullPointerException
-        }
-    }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && getActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
-            return;
-        }
-        locationManager.requestLocationUpdates(provider, 400, 1, this);
-
-
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        locationManager.removeUpdates(this);
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        Toast.makeText(getActivity(), "Enabled new provider " + provider, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        Toast.makeText(getActivity(), "Disabled" + provider, Toast.LENGTH_SHORT).show();
-
-    }
-
 }

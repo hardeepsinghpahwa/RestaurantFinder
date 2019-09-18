@@ -80,7 +80,7 @@ public class EditProfile extends AppCompatActivity {
 
                 name.setText(dataSnapshot.child("name").getValue(String.class));
 
-                Glide.with(EditProfile.this).load(dataSnapshot.child("image").getValue(String.class)).into(propic);
+                Glide.with(getApplicationContext()).load(dataSnapshot.child("image").getValue(String.class)).into(propic);
 
                 if (dataSnapshot.child("phone").getValue(String.class) != null) {
                     phone.setText(dataSnapshot.child("phone").getValue(String.class));
