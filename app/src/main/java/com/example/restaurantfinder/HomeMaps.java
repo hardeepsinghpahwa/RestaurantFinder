@@ -325,9 +325,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
 
-        //**************************
-        builder.setAlwaysShow(true); //this is the key ingredient
-        //**************************
+        builder.setAlwaysShow(true);
 
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
@@ -574,6 +572,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                     Intent i=new Intent(HomeMaps.this,RestaurantDetails.class);
                     i.putExtra("id",ids.get(holder.getAdapterPosition()));
                     startActivity(i);
+                    overridePendingTransition(R.anim.alerter_slide_in_from_left,R.anim.alerter_slide_out_to_right);
                 }
             });
 

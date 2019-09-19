@@ -1,11 +1,11 @@
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/det"
-    android:visibility="gone"
-    android:paddingBottom="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:paddingBottom="20dp"
+    android:visibility="visible">
 
 
     <RelativeLayout
@@ -14,9 +14,9 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
+            android:layout_height="250dp"
             android:layout_below="@+id/p"
-            android:layout_marginTop="20dp"
-            android:layout_height="250dp">
+            android:layout_marginTop="20dp">
 
             <com.smarteist.autoimageslider.SliderView
                 android:id="@+id/imageSlider"
@@ -31,44 +31,39 @@
                 app:sliderIndicatorPadding="3dp"
                 app:sliderIndicatorRadius="2dp"
                 app:sliderIndicatorSelectedColor="@color/colorPrimary"
-                app:sliderIndicatorUnselectedColor="#FFFFFF"
-                />
+                app:sliderIndicatorUnselectedColor="#FFFFFF" />
 
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
 
 
-
-
     <LinearLayout
+        android:id="@+id/kmslinear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/kmslinear"
-        android:visibility="visible"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
-        >
+        android:orientation="horizontal"
+        android:visibility="visible">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
-            android:text="Delivery"
-            android:textSize="20sp"
             android:layout_gravity="bottom"
+            android:text="Delivery"
+            android:textColor="#000"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lat"
             android:layout_width="50dp"
             android:layout_height="35dp"
-            android:id="@+id/lat"
-            app:lottie_loop="true"
-            app:lottie_repeatMode="restart"
-            app:lottie_rawRes="@raw/delivery2"
             app:lottie_autoPlay="true"
-            />
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/delivery2"
+            app:lottie_repeatMode="restart" />
 
     </LinearLayout>
 
@@ -77,82 +72,79 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:gravity="center|left"
-        android:textSize="18sp"
         android:layout_marginTop="10dp"
-        android:textColor="#000" />
+        android:gravity="center|left"
+        android:textColor="#000"
+        android:textSize="18sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
-        android:text="Cuisines"
-        android:drawablePadding="5dp"
         android:drawableRight="@drawable/cuisines"
+        android:drawablePadding="5dp"
+        android:text="Cuisines"
+        android:textColor="#000"
         android:textSize="20sp"
         android:textStyle="bold" />
 
 
     <com.google.android.material.chip.ChipGroup
+        android:id="@+id/detailschipgroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/chipgroup"
-        android:layout_marginTop="10dp"
-        />
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
-        android:text="Menu"
-        android:drawablePadding="5dp"
         android:drawableRight="@drawable/menu"
+        android:drawablePadding="5dp"
+        android:text="Menu"
+        android:textColor="#000"
         android:textSize="20sp"
         android:textStyle="bold" />
 
 
     <TextView
+        android:id="@+id/nomenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No Menu Available"
-        android:layout_marginTop="20dp"
-        android:textColor="#000"
-        android:visibility="gone"
-        android:id="@+id/nomenu"
         android:layout_gravity="center"
-        />
+        android:layout_marginTop="20dp"
+        android:text="No Menu Available"
+        android:textColor="#000"
+        android:visibility="gone" />
 
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/menurecyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
-        android:id="@+id/menurecyclerview"
         android:layout_marginTop="10dp"
-        />
+        android:layout_marginRight="15dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
-        android:text="Working Days"
-        android:drawablePadding="5dp"
         android:drawableRight="@drawable/workingdays"
+        android:drawablePadding="5dp"
+        android:text="Working Days"
+        android:textColor="#000"
         android:textSize="20sp"
         android:textStyle="bold" />
 
     <LinearLayout
+        android:id="@+id/checkboxes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
-        android:id="@+id/checkboxes"
         android:gravity="left|center_vertical"
         android:orientation="horizontal">
 
@@ -261,12 +253,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000"
-        android:layout_marginTop="20dp"
-        android:text="Area"
-        android:drawablePadding="5dp"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
         android:drawableRight="@drawable/area"
+        android:drawablePadding="5dp"
+        android:text="Area"
+        android:textColor="#000"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -284,12 +276,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000"
         android:layout_marginLeft="15sp"
-        android:drawableRight="@drawable/time"
         android:layout_marginTop="20dp"
-        android:text="Timing"
+        android:drawableRight="@drawable/time"
         android:drawablePadding="5dp"
+        android:text="Timing"
+        android:textColor="#000"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -297,64 +289,59 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top"
             android:maxLines="2"
             android:textColor="#000"
-            android:id="@+id/from"
-            android:layout_gravity="top"
-            android:textSize="18sp"
-            />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:maxLines="2"
             android:text="-"
             android:textColor="#000"
-            android:textSize="18sp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            />
+            android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:textColor="#000"
-            android:id="@+id/to"
-            android:textSize="18sp"
-            />
+            android:textSize="18sp" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#999898"
         android:layout_marginTop="20dp"
-        />
+        android:background="#999898" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginLeft="15sp"
         android:layout_marginTop="10dp"
-        >
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
             android:drawableRight="@drawable/reviews"
-            android:text="Reviews"
             android:drawablePadding="5dp"
+            android:text="Reviews"
+            android:textColor="#000"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -377,11 +364,10 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reviewsrecyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/reviewsrecyclerview"
-        android:layout_marginTop="20dp"
-        />
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:id="@+id/noreviewsyettext"
@@ -390,9 +376,9 @@
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
         android:text="No Reviews Yet"
-        android:visibility="visible"
         android:textColor="#000"
         android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="visible" />
 
 </LinearLayout>

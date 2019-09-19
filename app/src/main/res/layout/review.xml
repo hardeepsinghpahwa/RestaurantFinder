@@ -30,7 +30,7 @@
 
         <RatingBar
             android:id="@+id/ratingBar2"
-            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            style="@style/Widget.AppCompat.RatingBar.Small"
             android:progressTint="@color/orange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

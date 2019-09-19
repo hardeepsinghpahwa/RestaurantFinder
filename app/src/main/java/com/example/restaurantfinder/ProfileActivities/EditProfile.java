@@ -151,7 +151,7 @@ public class EditProfile extends AppCompatActivity {
                                             Alerter.create(EditProfile.this)
                                                     .setBackgroundColorInt(Color.parseColor("#FFA000"))
                                                     .setText("Profile Updated")
-                                                    .setDuration(700)
+                                                    .setDuration(500)
                                                     .show();
                                             phone.clearFocus();
                                             name.clearFocus();
@@ -179,7 +179,7 @@ public class EditProfile extends AppCompatActivity {
                                 Alerter.create(EditProfile.this)
                                         .setBackgroundColorInt(Color.parseColor("#FFA000"))
                                         .setText("Profile Updated")
-                                        .setDuration(700)
+                                        .setDuration(500)
                                         .show();
                                 phone.clearFocus();
                                 name.clearFocus();

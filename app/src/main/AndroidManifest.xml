@@ -11,10 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RestaurantDetails"></activity>
+        <activity android:name=".RestaurantDetails"
+            android:theme="@style/NobarMaterial">
+
+        </activity>
         <activity
             android:name=".ProfileActivities.EditProfile"
-            android:theme="@style/Material"></activity>
+            android:theme="@style/Material">
+
+        </activity>
         <activity android:name=".ProfileActivities.Bookmarks" />
         <activity
             android:name=".Login"
@@ -71,6 +76,17 @@
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider938339043173435"
             android:exported="true" />
+
+
+        <receiver
+            android:name="com.example.restaurantfinder.NetworkChangeReceiver"
+            android:label="NetworkChangeReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
 
         <service
             android:name=".FetchAddressIntentService"

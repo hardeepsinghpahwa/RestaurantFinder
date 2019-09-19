@@ -31,16 +31,31 @@
                 app:navigationIcon="@drawable/backbutt"
                 app:layout_scrollFlags="scroll|enterAlways">
 
+
+
             </androidx.appcompat.widget.Toolbar>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+               >
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/backbutt"
+                    android:tint="@color/colorPrimary"
+                    android:id="@+id/detailsback"
+                    android:layout_margin="10dp"
+                    />
 
                 <com.smarteist.autoimageslider.SliderView
                     android:id="@+id/imageSlider"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="220dp"
                     app:sliderAnimationDuration="400"
                     app:sliderCircularHandlerEnabled="true"
                     app:sliderIndicatorAnimationDuration="600"
@@ -50,13 +65,39 @@
                     app:sliderIndicatorPadding="3dp"
                     app:sliderIndicatorRadius="2dp"
                     app:sliderIndicatorSelectedColor="@color/colorPrimary"
-                    app:sliderIndicatorUnselectedColor="#FFFFFF"
-                    />
+                    app:sliderIndicatorUnselectedColor="#FFFFFF" />
 
             </androidx.cardview.widget.CardView>
+
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/detailscrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+        <include layout="@layout/restaurantdetailsnestedscroll"/>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/detailscall"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:text="Call 93181504734"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:textStyle="bold" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

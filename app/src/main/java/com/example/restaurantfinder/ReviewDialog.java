@@ -175,7 +175,7 @@ public class ReviewDialog extends DialogFragment {
                             map.put("timestamp", (ServerValue.TIMESTAMP));
                             databaseReference.updateChildren(map);
                             Alerter.create(getActivity())
-                                    .setDuration(700)
+                                    .setDuration(500)
                                     .setBackgroundColorInt(Color.parseColor("#FFA000"))
                                     .setTitle("Review Added")
                                     .setText("Thank You For The Review")

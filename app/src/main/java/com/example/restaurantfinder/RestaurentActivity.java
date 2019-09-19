@@ -33,19 +33,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.restaurantfinder.Directions.TaskLoadedCallback;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -72,7 +69,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -199,7 +195,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         saturday.setChecked(true);
 
         det = findViewById(R.id.det);
-        chipGroup = findViewById(R.id.chipgroup);
+        chipGroup = findViewById(R.id.detailschipgroup);
         status = findViewById(R.id.status);
         reviewrecyclerview = findViewById(R.id.reviewsrecyclerview);
 
@@ -513,7 +509,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Review, ReviewHolder>
                                 (options) {
 
-
                             @Override
                             protected void onBindViewHolder(@NonNull final ReviewHolder reviewHolder, int i, @NonNull final Review review) {
 
@@ -614,7 +609,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                         Chip chip = new Chip(chipGroup.getContext());
 
                                         chip.setText(dataSnapshot1.getValue(String.class));
-
+                                        chip.setTextColor(Color.WHITE);
                                         chipGroup.addView(chip);
                                         chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#f44336")));
 
@@ -648,7 +643,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                             protected void onBindViewHolder(@NonNull MenuViewHolder menuViewHolder, int i, @NonNull menu men) {
 
 
-                                Glide.with(RestaurentActivity.this).load(men.getImage()).into(menuViewHolder.imageView);
+                                Glide.with(getApplicationContext()).load(men.getImage()).override(150,200).into(menuViewHolder.imageView);
 
                                 if(men.getImage()!=null)
                                 {
@@ -714,7 +709,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                             bookmark.setClickable(true);
                                             Alerter.create(RestaurentActivity.this)
                                                     .setBackgroundColorInt(Color.parseColor("#FFA000"))
-                                                    .setDuration(700)
+                                                    .setDuration(500)
                                                     .setTitle(buiss + " Added To Bookmarks")
                                                     .show();
                                         }
@@ -733,7 +728,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                                             .playOn(bookmark);
                                                     Alerter.create(RestaurentActivity.this)
                                                             .setBackgroundColorInt(Color.parseColor("#FFA000"))
-                                                            .setDuration(700)
+                                                            .setDuration(500)
                                                             .setTitle(buiss + " Removed From Bookmarks")
                                                             .show();
                                                 }
@@ -787,7 +782,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 totime.setText(de.getTotime());
                                 fromtime.setText(de.getFromtime());
 
-                                if (currentTime.getHours() > frmhour && (currentTime.getHours()) < (12 + tohour)) {
+                                if (currentTime.getHours() >= frmhour && (currentTime.getHours()) <= (12 + tohour)) {
                                     status.setText("OPEN");
                                     status.setTextColor(Color.parseColor("#64DD17"));
                                 } else {
@@ -1046,6 +1041,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                                         mMap.addMarker(markerOptions);
 
+
                                     }
                                 }
 
@@ -1064,14 +1060,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                         }
                     });
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (searchingDialog != null) {
-                                searchingDialog.dismiss();
-                            }
-                        }
-                    }, 4000);
+
 
                 }
 
@@ -1081,6 +1070,21 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                 }
             });
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (searchingDialog != null ) {
+                        searchingDialog.dismiss();
+                    }
+
+                }
+            }, 4000);
+
         }
     }
 

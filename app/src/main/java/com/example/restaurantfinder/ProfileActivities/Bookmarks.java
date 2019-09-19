@@ -182,7 +182,7 @@ public class Bookmarks extends AppCompatActivity {
 
                                     Alerter.create(Bookmarks.this)
                                             .setBackgroundColorInt(Color.parseColor("#FFA000"))
-                                            .setDuration(700)
+                                            .setDuration(500)
                                             .setTitle("Bookmark Removed")
                                             .show();
                                 }
