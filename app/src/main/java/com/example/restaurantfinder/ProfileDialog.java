@@ -34,6 +34,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.restaurantfinder.ProfileActivities.Bookmarks;
 import com.example.restaurantfinder.ProfileActivities.EditProfile;
+import com.example.restaurantfinder.ProfileActivities.YourReviews;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,7 +58,7 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
     TextView name;
     ImageView back, locationpin;
     TextView logout;
-    LinearLayout bookmarks, editprofile;
+    LinearLayout bookmarks, editprofile,yourreviews;
     TextView currentlocation;
     LottieAnimationView lottieAnimationView;
     DatabaseReference databaseReference;
@@ -126,6 +127,7 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
         profilepic = view.findViewById(R.id.profilepic);
         currentlocation = view.findViewById(R.id.currentlocation);
         locationpin = view.findViewById(R.id.locationpin);
+        yourreviews =view.findViewById(R.id.yourreviews);
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -157,6 +159,15 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), EditProfile.class));
+                getActivity().overridePendingTransition(R.anim.alerter_slide_in_from_left, R.anim.alerter_slide_out_to_right);
+
+            }
+        });
+
+        yourreviews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), YourReviews.class));
                 getActivity().overridePendingTransition(R.anim.alerter_slide_in_from_left, R.anim.alerter_slide_out_to_right);
 
             }

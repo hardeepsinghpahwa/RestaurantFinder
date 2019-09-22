@@ -199,10 +199,6 @@ public class NonVeg extends Fragment {
                         intent.putExtra("whichtype","restaurant");
                         intent.putExtra("array",a);
                         intent.putExtra("brand",brands[getAdapterPosition()]);
-                        startActivity(intent);
-                        //getActivity().finish();
-                        getActivity().overridePendingTransition(R.anim.fadein,R.anim.fadeout);
-
 
                     }
                 });

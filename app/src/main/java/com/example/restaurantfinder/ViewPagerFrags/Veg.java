@@ -218,16 +218,11 @@ public class Veg extends Fragment {
                     public void onClick(View v) {
                         CuisineDialog.display(getFragmentManager(),"restaurant",getAdapterPosition(),a,brands[getAdapterPosition()]);
 
-                        //ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),imageView,"imageMain");
                         Intent in = new Intent(getActivity(),HomeMaps.class);
                         in.putExtra("posi",getAdapterPosition());
                         in.putExtra("array",a);
                         in.putExtra("whichtype","restaurant");
                         in.putExtra("brand",brands[getAdapterPosition()]);
-                        //startActivity(in,activityOptionsCompat.toBundle());
-                        //startActivity(in);
-                        //getActivity().finish();
-                        //getActivity().overridePendingTransition(R.anim.fadein,R.anim.fadeout);
 
 
 

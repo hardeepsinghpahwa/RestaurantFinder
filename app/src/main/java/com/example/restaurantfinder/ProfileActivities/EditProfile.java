@@ -52,6 +52,7 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+
         name = findViewById(R.id.editname);
         phone = findViewById(R.id.editphone);
         address = findViewById(R.id.editaddress);
@@ -59,6 +60,9 @@ public class EditProfile extends AppCompatActivity {
         propic = findViewById(R.id.editpropic);
         save = findViewById(R.id.save);
         constraintLayout=findViewById(R.id.conslayout2);
+        phone.clearFocus();
+        name.clearFocus();
+        address.clearFocus();
 
         storageReference= FirebaseStorage.getInstance().getReference();
         constraintLayout.setOnClickListener(new View.OnClickListener() {

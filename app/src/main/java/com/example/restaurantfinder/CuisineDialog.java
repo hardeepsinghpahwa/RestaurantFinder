@@ -13,10 +13,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class CuisineDialog extends DialogFragment {
 
@@ -103,6 +113,26 @@ public class CuisineDialog extends DialogFragment {
         goforit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+                String v="";
+                String posi= String.valueOf(position);
+
+                Map<String,Object> map=new HashMap<>();
+                map.put("cuisine", cuisine);
+                map.put("posi",posi);
+                map.put("whichtype",whichtype);
+                if(imgs.length>5)
+                {
+                    v="veg";
+                }
+                else {
+                    v="nonveg";
+                }
+                map.put("vegnonveg",v);
+
+                FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Search History").child(UUID.randomUUID().toString()).updateChildren(map);
+
                 getDialog().dismiss();
                 Log.i("ac",getActivity().getClass().getSimpleName());
                 if(getActivity().getClass().getSimpleName().equals("BottomUpActivity"))

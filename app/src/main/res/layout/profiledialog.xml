@@ -27,7 +27,7 @@
             android:id="@+id/conslayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -103,7 +103,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView4" />
+                app:layout_constraintTop_toBottomOf="@+id/cardview11223" />
 
             <View
                 android:id="@+id/view2"
@@ -118,7 +118,7 @@
 
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView4"
+                android:id="@+id/cardview11223"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_marginStart="10dp"
@@ -130,11 +130,12 @@
                 app:cardUseCompatPadding="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView6">
+                app:layout_constraintTop_toBottomOf="@+id/cardview212">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:id="@+id/needhelp"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -163,7 +164,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView6"
+                android:id="@+id/cardview212"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_marginStart="10dp"
@@ -179,6 +180,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:id="@+id/yourreviews"
                     android:layout_height="match_parent"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
@@ -273,6 +275,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="?android:attr/selectableItemBackground"
+                    android:id="@+id/searchhistory"
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="10dp">

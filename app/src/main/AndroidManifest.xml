@@ -3,6 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.restaurantfinder">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,15 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RestaurantDetails"
-            android:theme="@style/NobarMaterial">
-
-        </activity>
+        <activity android:name=".ProfileActivities.SearchHistory"></activity>
+        <activity
+            android:name=".RestaurantDetails"
+            android:theme="@style/NobarMaterial" />
         <activity
             android:name=".ProfileActivities.EditProfile"
-            android:theme="@style/Material">
-
-        </activity>
+            android:theme="@style/Material" />
         <activity android:name=".ProfileActivities.Bookmarks" />
         <activity
             android:name=".Login"
@@ -49,6 +55,9 @@
             android:theme="@style/Nobar" />
         <activity android:name=".MainActivity" />
         <activity
+            android:name=".ProfileActivities.YourReviews"
+            android:theme="@style/Nobar" />
+        <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
@@ -77,28 +86,18 @@
             android:authorities="com.facebook.app.FacebookContentProvider938339043173435"
             android:exported="true" />
 
-
         <receiver
-            android:name="com.example.restaurantfinder.NetworkChangeReceiver"
-            android:label="NetworkChangeReceiver" >
+            android:name=".NetworkChangeReceiver"
+            android:label="NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
 
-
         <service
             android:name=".FetchAddressIntentService"
             android:exported="false" />
     </application>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>
