@@ -99,6 +99,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     ArrayList<String> images;
     RecyclerView reviewrecyclerview;
     String buiss;
+    ArrayList<String> menuitems=new ArrayList<>();
     TextView choose, area, title;
     ArrayList<String> chipnames = new ArrayList<>();
     NestedScrollView nestedScrollView;
@@ -124,7 +125,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     RatingBar ratingBar2;
     ImageView propic;
     int pos;
-    ImageView share;
+    ImageView share,directions;
     SparkButton bookmark;
     RecyclerView menu;
     double lon, lat;
@@ -172,6 +173,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
         share = findViewById(R.id.share);
         bookmark = findViewById(R.id.bookmark);
         whichtype=getIntent().getStringExtra("whichtype");
+        directions=findViewById(R.id.resdirections);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         nestedScrollView = findViewById(R.id.nested);
@@ -383,6 +385,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                     bookmark.setVisibility(View.INVISIBLE);
                     share.setVisibility(View.INVISIBLE);
+                    directions.setVisibility(View.INVISIBLE);
 
                     if (name.getVisibility() == View.VISIBLE) {
 
@@ -625,7 +628,21 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                             }
                         });
 
+                        FirebaseDatabase.getInstance().getReference().child("Menus").child(markid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                menuitems.clear();
+                                for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
+                                {
+                                    menuitems.add(dataSnapshot1.child("image").getValue(String.class));
+                                }
+                            }
 
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                         FirebaseRecyclerOptions<menu> options1 = new FirebaseRecyclerOptions.Builder<menu>()
                                 .setQuery(FirebaseDatabase.getInstance().getReference().child("Menus").child(markid), new SnapshotParser<menu>() {
                                     @NonNull
@@ -640,7 +657,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                         firebaseRecyclerAdapter1 = new FirebaseRecyclerAdapter<menu, MenuViewHolder>
                                 (options1) {
                             @Override
-                            protected void onBindViewHolder(@NonNull MenuViewHolder menuViewHolder, int i, @NonNull menu men) {
+                            protected void onBindViewHolder(@NonNull final MenuViewHolder menuViewHolder, int i, @NonNull menu men) {
 
 
                                 Glide.with(getApplicationContext()).load(men.getImage()).override(150,200).into(menuViewHolder.imageView);
@@ -654,19 +671,22 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                     menu.setVisibility(View.GONE);
 
                                 }
+
+                                menuViewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        ViewImagesDialog viewImagesDialog=new ViewImagesDialog(menuitems,menuViewHolder.getAdapterPosition());
+                                        viewImagesDialog.show(getSupportFragmentManager(),"Activity");
+                                    }
+                                });
                             }
 
 
                             @NonNull
                             @Override
                             public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                                LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-
-                                View view = layoutInflater.inflate(R.layout.addmenu, null, true);
-                                view.setLayoutParams(new RecyclerView.LayoutParams(
-                                        RecyclerView.LayoutParams.MATCH_PARENT,
-                                        RecyclerView.LayoutParams.WRAP_CONTENT
-                                ));
+                                View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.addmenu,null);
 
                                 return new MenuViewHolder(view);
                             }
@@ -767,6 +787,14 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 Date currentTime = Calendar.getInstance().getTime();
 
 
+                                directions.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                                                Uri.parse("http://maps.google.com/maps?daddr="+de.getLatitude()+","+de.getLongitude()));
+                                        startActivity(intent);
+                                    }
+                                });
                                 int m = 0;
                                 while (from.charAt(m) != ':') {
                                     m++;
@@ -901,7 +929,7 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
                                 }
 
                                 bookmark.setVisibility(View.VISIBLE);
-
+                                directions.setVisibility(View.VISIBLE);
                                 share.setVisibility(View.VISIBLE);
 
 

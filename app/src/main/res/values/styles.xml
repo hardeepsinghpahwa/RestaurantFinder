@@ -60,6 +60,10 @@
         <item name="android:windowExitAnimation">@anim/slidedown</item>
     </style>
 
+    <style name="AppTheme.SlideFromRight">
+        <item name="android:windowEnterAnimation">@anim/alerter_slide_in_from_left</item>
+        <item name="android:windowExitAnimation">@anim/alerter_slide_out_to_right</item>
+    </style>
 
     <style name="AppTheme.Exit">
         <item name="android:windowExitAnimation">@anim/slidedown</item>

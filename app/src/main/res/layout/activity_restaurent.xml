@@ -27,6 +27,13 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
+            android:contentInsetEnd="0dp"
+            android:contentInsetRight="0dp"
+            android:contentInsetStart="0dp"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
             android:background="@color/colorPrimary"
             >
 
@@ -37,13 +44,13 @@
                 >
 
                 <ImageView
+                    android:id="@+id/backbuttonrest"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:id="@+id/backbuttonrest"
-                    android:src="@drawable/backbutt"
-                    android:foreground="?android:attr/selectableItemBackground"
                     android:layout_centerVertical="true"
-                    />
+                    android:layout_marginStart="5dp"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:src="@drawable/backbutt" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -68,27 +75,43 @@
 
                 <com.varunest.sparkbutton.SparkButton
                     android:id="@+id/bookmark"
-                    android:layout_width="70dp"
+                    android:layout_width="45dp"
                     android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:layout_marginRight="5dp"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:sparkbutton_activeImage="@drawable/bookmark"
                     app:sparkbutton_iconSize="40dp"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
                     app:sparkbutton_inActiveImage="@drawable/unmark"
                     app:sparkbutton_primaryColor="@color/orange"
-                    app:sparkbutton_secondaryColor="@color/orange"
-                    />
+                    app:sparkbutton_secondaryColor="@color/orange" />
 
 
                 <ImageView
+                    android:id="@+id/share"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginRight="7dp"
                     android:src="@drawable/share"
-                    android:layout_gravity="end"
-                    android:id="@+id/share"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/resdirections"
+                    android:layout_width="40dp"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
                     android:visibility="gone"
-                    android:padding="5dp"
-                    />
+                    android:layout_height="match_parent"
+                    android:src="@drawable/directions" />
 
             </LinearLayout>
             </RelativeLayout>

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ public class YourReviews extends AppCompatActivity {
     DatabaseReference databaseReference;
     ArrayList<Map<String,String>> values;
     ArrayList<String> keys;
-    ImageView back;
+    ImageView back,noreviewsimg;
 
 
     @Override
@@ -48,6 +49,7 @@ public class YourReviews extends AppCompatActivity {
 
         values=new ArrayList<>();
         keys=new ArrayList<>();
+        noreviewsimg=findViewById(R.id.noreviewsimg);
 
         back=findViewById(R.id.backbutonyourreviews);
         back.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +120,14 @@ public class YourReviews extends AppCompatActivity {
         @Override
         public void onViewAttachedToWindow(@NonNull final YourReviewsHol holder) {
             super.onViewAttachedToWindow(holder);
+
+            if(recyclerView.getAdapter().getItemCount()==0)
+            {
+                noreviewsimg.setVisibility(View.VISIBLE);
+            }
+            else {
+                noreviewsimg.setVisibility(View.GONE);
+            }
             holder.itemView.setVisibility(View.INVISIBLE);
 
             if (holder.getPosition() > lastPosition) {
@@ -130,8 +140,8 @@ public class YourReviews extends AppCompatActivity {
                         ObjectAnimator scaleX = ObjectAnimator.ofFloat(holder.itemView, "scaleX", 0f, 1f);
                         AnimatorSet animSet = new AnimatorSet();
                         animSet.play(alpha).with(scaleY).with(scaleX);
-                        animSet.setInterpolator(new FastOutSlowInInterpolator());
-                        animSet.setDuration(1000);
+                        animSet.setInterpolator(new OvershootInterpolator());
+                        animSet.setDuration(400);
                         animSet.start();
 
                     }
@@ -141,6 +151,7 @@ public class YourReviews extends AppCompatActivity {
             } else {
                 holder.itemView.setVisibility(View.VISIBLE);
             }
+
         }
 
         @NonNull

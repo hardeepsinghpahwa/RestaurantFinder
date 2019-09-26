@@ -60,20 +60,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_rawRes="@raw/bookmarklottie" />
 
-    <TextView
-        android:id="@+id/nobookmarkstext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="No Bookmarks"
-        android:textStyle="bold"
-        android:textColor="#000"
-        android:visibility="gone"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookmarkanimation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

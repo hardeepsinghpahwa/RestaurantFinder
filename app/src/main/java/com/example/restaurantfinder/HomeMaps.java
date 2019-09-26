@@ -10,6 +10,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -77,8 +79,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -100,7 +104,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
     NestedScrollView nestedScrollView;
     RecyclerView nearbyrestaurants, nearbydhabas, nearbycafes;
     private FusedLocationProviderClient fusedLocationClient;
-    TextView name;
+    TextView name,nores,nodhaba,nocafe,locationname;
     ArrayList<String> restaurants,dhabas,cafes;
     LinearLayout fl1, fl2, fl3;
 
@@ -134,7 +138,9 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         restaurants = new ArrayList<>();
         dhabas=new ArrayList<>();
         cafes=new ArrayList<>();
-
+        nocafe=findViewById(R.id.nocafesaround);
+        nores=findViewById(R.id.noresaround);
+        nodhaba=findViewById(R.id.nodhabaaround);
         restaurant = findViewById(R.id.restaurant);
         nearbyrestaurants = findViewById(R.id.nearbyrestaurants);
         nearbycafes = findViewById(R.id.nearbycafes);
@@ -145,7 +151,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         profileshimmer = findViewById(R.id.profileshimmer);
         nearbycafesshimmer = findViewById(R.id.nearbycafessshimmer);
         nearbydhabasshimmer = findViewById(R.id.nearbydhabassshimmer);
-
+        locationname=findViewById(R.id.locationname);
 
         pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,6 +187,38 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
+
+                            Geocoder geocoder = new Geocoder(HomeMaps.this, Locale.getDefault());
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 3);
+                                Log.i("add", String.valueOf(addresses.get(0)));
+                                if(addresses.get(0).getLocality()==null)
+                                {
+                                    if(addresses.get(1).getLocality()==null)
+                                    {
+                                        if(addresses.get(2).getLocality()==null)
+                                        {
+
+                                        }
+                                        else {
+                                            locationname.setText(addresses.get(2).getLocality()+", "+addresses.get(0).getAdminArea());
+
+                                        }
+                                    }
+                                    else {
+                                        locationname.setText(addresses.get(1).getLocality()+", "+addresses.get(0).getAdminArea());
+
+                                    }
+                                }
+                                else{
+                                    locationname.setText(addresses.get(0).getLocality()+", "+addresses.get(0).getAdminArea());
+
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
                             lastlocation = location;
 
                             FirebaseDatabase.getInstance().getReference().child("Saved").addValueEventListener(new ValueEventListener() {
@@ -486,9 +524,29 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
             return new ItemHolder(v);
         }
 
+
         @Override
         public void onViewAttachedToWindow(@NonNull final ItemHolder holder) {
             super.onViewAttachedToWindow(holder);
+
+
+            if(nearbydhabas.getAdapter().getItemCount()==0)
+            {
+                nodhaba.setVisibility(View.VISIBLE);
+                nearbydhabasshimmer.stopShimmer();
+                nearbydhabasshimmer.setVisibility(View.GONE);
+            }
+            else if(nearbyrestaurants.getAdapter().getItemCount()==0){
+                nearbyresturantsshimmer.stopShimmer();
+                nores.setVisibility(View.VISIBLE);
+                nearbyresturantsshimmer.setVisibility(View.GONE);
+            }
+            else if(nearbycafes.getAdapter().getItemCount()==0)
+            {
+                nearbycafesshimmer.stopShimmer();
+                nocafe.setVisibility(View.VISIBLE);
+                nearbycafesshimmer.setVisibility(View.GONE);
+            }
 
             holder.itemView.setVisibility(View.INVISIBLE);
 
@@ -514,9 +572,14 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                 holder.itemView.setVisibility(View.VISIBLE);
             }
 
+
+
             FirebaseDatabase.getInstance().getReference().child("Saved").child(ids.get(0)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+
                     if(dataSnapshot.child("whichtype").getValue(String.class).equals("dhaba"))
                     {
                         nearbydhabasshimmer.stopShimmer();
@@ -547,13 +610,46 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         public void onBindViewHolder(@NonNull final ItemHolder holder, int position) {
 
 
+
+
             FirebaseDatabase.getInstance().getReference().child("Saved").child(ids.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                    Geocoder geocoder = new Geocoder(HomeMaps.this, Locale.getDefault());
+                    try {
+                        List<Address> addresses = geocoder.getFromLocation(Double.valueOf(dataSnapshot.child("latitude").getValue(String.class)), Double.valueOf(dataSnapshot.child("longitude").getValue(String.class)), 3);
+                        Log.i("add", String.valueOf(addresses.get(0)));
+
+                        if(addresses.get(0).getLocality()==null)
+                        {
+                            if(addresses.get(1).getLocality()==null)
+                            {
+                                if(addresses.get(2).getLocality()==null)
+                                {
+
+                                }
+                                else {
+                                    holder.area.setText(addresses.get(2).getLocality()+", "+addresses.get(0).getAdminArea());
+
+                                }
+                            }
+                            else {
+                                holder.area.setText(addresses.get(1).getLocality()+", "+addresses.get(0).getAdminArea());
+
+                            }
+                        }
+                        else{
+                            holder.area.setText(addresses.get(0).getLocality()+", "+addresses.get(0).getAdminArea());
+
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     holder.name.setText(dataSnapshot.child("buisnessname").getValue(String.class));
                     //holder.rating.setText(dataSnapshot.child("rating").getValue(String.class));
-                    holder.area.setText(dataSnapshot.child("areaname").getValue(String.class));
+                    //holder.area.setText(dataSnapshot.child("areaname").getValue(String.class));
                     Glide.with(getApplicationContext()).load(dataSnapshot.child("profilepic").getValue(String.class)).into(holder.propic);
 
 
@@ -580,6 +676,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
 
         @Override
         public int getItemCount() {
+            Log.i("size", String.valueOf(ids.size()));
             return ids.size();
         }
 

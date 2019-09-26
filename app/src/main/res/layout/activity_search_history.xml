@@ -12,8 +12,9 @@
         android:layout_height="30dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:foreground="?attr/selectableItemBackground"
+        android:src="@drawable/backbutt"
         android:tint="@color/colorPrimary"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,11 +32,26 @@
         app:layout_constraintTop_toTopOf="@+id/backbutonsearchhistory" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
         android:id="@+id/recyclerviewsearchhistory"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8"
-        tools:layout_editor_absoluteX="52dp" />
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/nosearchhistoryimg"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/nosearchhistory"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

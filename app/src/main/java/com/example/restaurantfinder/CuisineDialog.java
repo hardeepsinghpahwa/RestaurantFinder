@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -121,6 +122,7 @@ public class CuisineDialog extends DialogFragment {
                 Map<String,Object> map=new HashMap<>();
                 map.put("cuisine", cuisine);
                 map.put("posi",posi);
+                map.put("timestamp", (ServerValue.TIMESTAMP));
                 map.put("whichtype",whichtype);
                 if(imgs.length>5)
                 {

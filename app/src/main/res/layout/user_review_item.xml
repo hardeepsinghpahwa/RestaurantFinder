@@ -10,6 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FFFFFF"
         >
 
 
@@ -22,11 +23,11 @@
         android:textColor="#000"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/userimage"
+        app:layout_constraintBottom_toBottomOf="@+id/cardview321312"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/userimage"
-        app:layout_constraintTop_toTopOf="@+id/userimage" />
+        app:layout_constraintStart_toEndOf="@+id/cardview321312"
+        app:layout_constraintTop_toTopOf="@+id/cardview321312" />
 
     <TextView
         android:id="@+id/userreview"
@@ -49,19 +50,29 @@
         android:layout_marginTop="8dp"
         android:numStars="5"
         android:progressTint="@color/orange"
-        app:layout_constraintStart_toStartOf="@+id/userimage"
-        app:layout_constraintTop_toBottomOf="@+id/userimage" />
+        app:layout_constraintStart_toStartOf="@+id/cardview321312"
+        app:layout_constraintTop_toBottomOf="@+id/cardview321312" />
 
-    <ImageView
-        android:id="@+id/userimage"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:scaleType="centerCrop"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardview321312"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:cardElevation="5dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/userimage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="#FFFFFF"
+                android:scaleType="centerCrop"
+                tools:srcCompat="@tools:sample/avatars" />
+
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

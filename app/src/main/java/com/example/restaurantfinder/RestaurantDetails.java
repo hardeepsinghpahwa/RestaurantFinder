@@ -1,34 +1,30 @@
 package com.example.restaurantfinder;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
-import android.app.MediaRouteButton;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -38,17 +34,15 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
-import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.chip.Chip;
@@ -56,21 +50,24 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.smarteist.autoimageslider.SliderViewAdapter;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tapadoo.alerter.Alerter;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -79,6 +76,7 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
     TextView delivery;
     TextView name;
     TextView call;
+    ArrayList<String>menuitems;
     SliderView sliderView;
     ArrayList<String> images;
     RecyclerView reviewrecyclerview;
@@ -88,10 +86,11 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
     TextView totime, fromtime;
     ChipGroup chipGroup;
     String buisnessname;
+    TextView reviewnums;
     FusedLocationProviderClient fusedLocationClient;
     int a[] = new int[]{};
     RatingBar ratingBar2;
-    ImageView propic,share;
+    ImageView propic,share,detailsdirection;
     RecyclerView menu;
     ImageView back;
     SparkButton bookmark;
@@ -129,7 +128,7 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
 
         bookmark=findViewById(R.id.detailbookmark);
         share=findViewById(R.id.detailshare);
-
+        detailsdirection=findViewById(R.id.detailsdirection);
         delivery = findViewById(R.id.detailsdelivery);
         call = findViewById(R.id.detailscall);
         sunday = findViewById(R.id.detailssunday);
@@ -157,6 +156,7 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
         chipGroup = findViewById(R.id.detailschipgroup);
         reviewrecyclerview = findViewById(R.id.detailsreviewrecyclerview);
         chipGroup.setChipSpacing(25);
+        reviewnums=findViewById(R.id.reviewnumber);
 
         chipGroup.setPadding(40, 10, 10, 10);
 
@@ -219,13 +219,14 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
     public void DataLoad()
     {
 
-
+        menuitems=new ArrayList<>();
         FirebaseDatabase.getInstance().getReference().child("Saved").child(id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 final details1 de = dataSnapshot.getValue(details1.class);
 
                 name.setText(de.getBuisnessname());
+
                 area.setText(de.getAreaname());
 
                 call.setOnClickListener(new View.OnClickListener() {
@@ -250,6 +251,17 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
                         }).show();
                     }
                 });
+
+                share.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        shareIntent.setType("text/plain");
+                        shareIntent.putExtra(Intent.EXTRA_SUBJECT, de.getBuisnessname());
+                        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Got this amazing place "+de.getBuisnessname().toUpperCase()+" to eat from the Restaurant Finder app. Please do check out the app and Get to know about new places around to eat");
+                        startActivity(Intent.createChooser(shareIntent, "Share via"));
+                    }
+                    });
 
                 buisnessname=de.getBuisnessname();
                 totime.setText(de.getTotime());
@@ -367,6 +379,15 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
 
                 Glide.with(getApplicationContext()).load(de.getProfilepic()).into(propic);
 
+                detailsdirection.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                                Uri.parse("http://maps.google.com/maps?daddr="+de.getLatitude()+","+de.getLongitude()));
+                        startActivity(intent);
+                    }
+                });
+
                 if(map!=null)
                 {
                     LatLng latLng=new LatLng(Double.valueOf(de.getLatitude()),Double.valueOf(de.getLongitude()));
@@ -408,6 +429,8 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
             @Override
             protected void onBindViewHolder(@NonNull final ReviewHolder reviewHolder, int i, @NonNull Review review) {
 
+
+
                 reviewHolder.review.setText(review.getReview());
                 reviewHolder.ratingBar.setRating(Float.parseFloat(review.getRating()));
                 reviewHolder.date.setText(review.getDate());
@@ -439,6 +462,11 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
                     }
                 });
 
+            }
+
+            @Override
+            public int getItemCount() {
+                return super.getItemCount();
             }
 
             @NonNull
@@ -492,6 +520,21 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
+        FirebaseDatabase.getInstance().getReference().child("Menus").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                menuitems.clear();
+                for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
+                {
+                    menuitems.add(dataSnapshot1.child("image").getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         FirebaseRecyclerOptions<menu> options1 = new FirebaseRecyclerOptions.Builder<menu>()
                 .setQuery(FirebaseDatabase.getInstance().getReference().child("Menus").child(id), new SnapshotParser<menu>() {
@@ -506,7 +549,8 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
 
         firebaseRecyclerAdapter1=new FirebaseRecyclerAdapter<menu, MenuViewHolder>(options1) {
             @Override
-            protected void onBindViewHolder(@NonNull MenuViewHolder menuViewHolder, int i, @NonNull menu men) {
+            protected void onBindViewHolder(@NonNull final MenuViewHolder menuViewHolder, int i, @NonNull menu men) {
+
 
                 Glide.with(getApplicationContext()).load(men.getImage()).override(150,200).into(menuViewHolder.imageView);
 
@@ -520,18 +564,20 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
 
                 }
 
+                menuViewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        ViewImagesDialog viewImagesDialog=new ViewImagesDialog(menuitems,menuViewHolder.getAdapterPosition());
+                        viewImagesDialog.show(getSupportFragmentManager(),"Activity");
+                    }
+                });
             }
 
             @NonNull
             @Override
             public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-
-                View view = layoutInflater.inflate(R.layout.addmenu, null, true);
-                view.setLayoutParams(new RecyclerView.LayoutParams(
-                        RecyclerView.LayoutParams.MATCH_PARENT,
-                        RecyclerView.LayoutParams.WRAP_CONTENT
-                ));
+                View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.addmenu,null);
 
                 return new MenuViewHolder(view);
             }
@@ -559,6 +605,8 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
 
             }
         });
+
+
 
         bookmark.setEventListener(new SparkEventListener() {
             @Override
@@ -619,7 +667,12 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
 
 
     }
-
+    private Uri getImageUri(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
     class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
 
         private Context context;
@@ -658,7 +711,7 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
         class SliderAdapterVH extends SliderViewAdapter.ViewHolder {
 
             View itemView;
-            ImageView imageViewBackground;
+            PhotoView imageViewBackground;
 
             public SliderAdapterVH(View itemView) {
                 super(itemView);

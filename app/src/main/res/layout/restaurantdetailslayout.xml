@@ -3,6 +3,7 @@
     android:id="@+id/det"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     android:paddingBottom="20dp"
     android:visibility="gone">
@@ -15,7 +16,6 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:layout_below="@+id/p"
             android:layout_marginTop="20dp">
 
             <com.smarteist.autoimageslider.SliderView
@@ -117,7 +117,7 @@
         android:layout_marginTop="20dp"
         android:text="No Menu Available"
         android:textColor="#000"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 
     <androidx.recyclerview.widget.RecyclerView

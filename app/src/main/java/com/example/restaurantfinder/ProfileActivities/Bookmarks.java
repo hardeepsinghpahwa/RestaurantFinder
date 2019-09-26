@@ -38,7 +38,6 @@ public class Bookmarks extends AppCompatActivity {
 
     LottieAnimationView lottieAnimationView;
     ImageView back;
-    TextView nobookmarks;
     RecyclerView recyclerView;
     ArrayList<String> bookmarks;
     String type="";
@@ -52,7 +51,6 @@ public class Bookmarks extends AppCompatActivity {
 
         lottieAnimationView = findViewById(R.id.bookmarkanimation);
 
-        nobookmarks = findViewById(R.id.nobookmarkstext);
 
         recyclerView = findViewById(R.id.bookmarksrecyclerview);
 
@@ -69,7 +67,6 @@ public class Bookmarks extends AppCompatActivity {
                 recyclerView.setAdapter(new BookmarksAdapter(bookmarks));
 
                 if (bookmarks.size() == 0) {
-                    nobookmarks.setVisibility(View.VISIBLE);
                     lottieAnimationView.setVisibility(View.VISIBLE);
                     lottieAnimationView.playAnimation();
                     lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
@@ -207,7 +204,7 @@ public class Bookmarks extends AppCompatActivity {
                     holder.area.setText(dataSnapshot.child("areaname").getValue(String.class));
                     type = dataSnapshot.child("whichtype").getValue(String.class);
 
-                    Glide.with(getApplicationContext()).load(dataSnapshot.child("profilepic").getValue(String.class)).into(holder.imageView);
+                    Glide.with(getApplicationContext()).load(dataSnapshot.child("profilepic").getValue(String.class)).placeholder(R.drawable.imgbck).into(holder.imageView);
 
                 }
 

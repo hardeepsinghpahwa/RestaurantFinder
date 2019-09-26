@@ -93,7 +93,7 @@ public class ReviewDialog extends DialogFragment {
 
         ratingBar = view.findViewById(R.id.ratingBar);
         area = view.findViewById(R.id.reviewarea);
-        pic = view.findViewById(R.id.pic);
+        pic = view.findViewById(R.id.reviewpic);
         name = view.findViewById(R.id.reiviewname);
         review = view.findViewById(R.id.review);
         submit = view.findViewById(R.id.reviewsubmit);
@@ -114,6 +114,7 @@ public class ReviewDialog extends DialogFragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 name.setText(dataSnapshot.child("buisnessname").getValue(String.class));
                 area.setText(dataSnapshot.child("areaname").getValue(String.class));
+                Glide.with(getContext()).load(dataSnapshot.child("profilepic").getValue(String.class)).into(pic);
             }
 
             @Override

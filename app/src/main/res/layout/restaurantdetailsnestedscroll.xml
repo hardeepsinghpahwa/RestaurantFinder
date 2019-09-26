@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F3F1F1"
+        android:background="#FFFFFF"
         android:orientation="vertical">
 
         <RatingBar
@@ -87,6 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:orientation="horizontal"
+                android:visibility="visible"
                 android:weightSum="2">
 
 
@@ -327,13 +328,13 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/detailsmenurecyclerview"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/menu2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/menu2" />
 
         <LinearLayout
@@ -440,8 +441,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="24dp"
             android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.35"
+            app:layout_constraintEnd_toStartOf="@+id/detailshare"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView11"
             app:sparkbutton_activeImage="@drawable/bookmark"
@@ -454,14 +454,14 @@
             android:id="@+id/detailshare"
             android:layout_width="76dp"
             android:layout_height="70dp"
-            android:padding="15dp"
-            app:layout_constraintBottom_toBottomOf="@+id/detailbookmark"
-            app:layout_constraintEnd_toEndOf="parent"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
+            android:padding="15dp"
+            app:layout_constraintBottom_toBottomOf="@+id/detailbookmark"
+            app:layout_constraintEnd_toStartOf="@+id/detailsdirection"
             app:layout_constraintHorizontal_bias="0.65"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/detailbookmark"
             app:layout_constraintTop_toTopOf="@+id/detailbookmark"
             app:layout_constraintVertical_bias="1.0"
             app:srcCompat="@drawable/share" />
@@ -489,6 +489,45 @@
             app:layout_constraintEnd_toEndOf="@+id/detailshare"
             app:layout_constraintStart_toStartOf="@+id/detailshare"
             app:layout_constraintTop_toBottomOf="@+id/detailshare" />
+
+        <ImageView
+            android:id="@+id/detailsdirection"
+            android:layout_width="76dp"
+            android:layout_height="70dp"
+            android:padding="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/textView7"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintStart_toEndOf="@+id/detailshare"
+            app:layout_constraintTop_toTopOf="@+id/detailshare"
+            app:srcCompat="@drawable/directions" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Directions"
+            android:textColor="#000"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/detailsdirection"
+            app:layout_constraintStart_toStartOf="@+id/detailsdirection"
+            app:layout_constraintTop_toBottomOf="@+id/detailsdirection" />
+
+        <TextView
+            android:id="@+id/reviewnumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="(200)"
+            android:textColor="#000"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/detailscuisines5"
+            app:layout_constraintStart_toEndOf="@+id/detailscuisines5"
+            app:layout_constraintTop_toTopOf="@+id/detailscuisines5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

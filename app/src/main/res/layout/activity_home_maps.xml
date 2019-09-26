@@ -3,6 +3,7 @@
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#FFFFFF"
     android:layout_height="match_parent"
     tools:context=".HomeMaps">
 
@@ -21,6 +22,13 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/homemapstoolbar"
                 android:layout_width="match_parent"
+                android:contentInsetEnd="0dp"
+                android:contentInsetRight="0dp"
+                android:contentInsetStart="0dp"
+                map:contentInsetEnd="0dp"
+                map:contentInsetLeft="0dp"
+                map:contentInsetRight="0dp"
+                map:contentInsetStart="0dp"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary">
 
@@ -31,7 +39,8 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginStart="10dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -45,12 +54,13 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/locationname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableTint="#FFFFFF"
-                            android:text="Mohali"
+                            android:layout_marginTop="5dp"
                             android:textColor="#FFFFFF"
-                            android:textSize="23sp"
+                            android:textSize="18sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -153,6 +163,18 @@
                     android:layout_marginTop="10dp" />
 
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Restaurants Around"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:textColor="#000"
+                    android:id="@+id/noresaround"
+                    android:layout_marginTop="20dp"
+                    android:visibility="gone"
+                    />
+
                 <HorizontalScrollView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -198,6 +220,18 @@
                     android:textColor="#000"
                     android:textSize="20sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Dhabas Around"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:textColor="#000"
+                    android:id="@+id/nodhabaaround"
+                    android:layout_marginTop="20dp"
+                    android:visibility="gone"
+                    />
 
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -253,6 +287,19 @@
                     android:textColor="#000"
                     android:textSize="20sp"
                     android:textStyle="bold" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Cafes Around"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:textColor="#000"
+                    android:id="@+id/nocafesaround"
+                    android:layout_marginTop="20dp"
+                    android:visibility="gone"
+                    />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/nearbycafes"

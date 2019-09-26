@@ -7,6 +7,7 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -19,14 +20,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProfileActivities.SearchHistory"></activity>
+        <activity android:name=".NoInternet"></activity>
+        <activity android:name=".ProfileActivities.SearchHistory" />
         <activity
             android:name=".RestaurantDetails"
             android:theme="@style/NobarMaterial" />
         <activity
             android:name=".ProfileActivities.EditProfile"
             android:theme="@style/Material" />
-        <activity android:name=".ProfileActivities.Bookmarks" />
+        <activity
+            android:name=".ProfileActivities.Bookmarks"
+            android:theme="@style/NobarMaterial" />
         <activity
             android:name=".Login"
             android:theme="@style/SigninTheme">

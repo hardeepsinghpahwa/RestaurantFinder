@@ -34,6 +34,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.restaurantfinder.ProfileActivities.Bookmarks;
 import com.example.restaurantfinder.ProfileActivities.EditProfile;
+import com.example.restaurantfinder.ProfileActivities.SearchHistory;
 import com.example.restaurantfinder.ProfileActivities.YourReviews;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -58,7 +59,7 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
     TextView name;
     ImageView back, locationpin;
     TextView logout;
-    LinearLayout bookmarks, editprofile,yourreviews;
+    LinearLayout bookmarks, editprofile,yourreviews,searchistory;
     TextView currentlocation;
     LottieAnimationView lottieAnimationView;
     DatabaseReference databaseReference;
@@ -128,6 +129,7 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
         currentlocation = view.findViewById(R.id.currentlocation);
         locationpin = view.findViewById(R.id.locationpin);
         yourreviews =view.findViewById(R.id.yourreviews);
+        searchistory=view.findViewById(R.id.searchhistory);
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -168,6 +170,15 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), YourReviews.class));
+                getActivity().overridePendingTransition(R.anim.alerter_slide_in_from_left, R.anim.alerter_slide_out_to_right);
+
+            }
+        });
+
+        searchistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), SearchHistory.class));
                 getActivity().overridePendingTransition(R.anim.alerter_slide_in_from_left, R.anim.alerter_slide_out_to_right);
 
             }
