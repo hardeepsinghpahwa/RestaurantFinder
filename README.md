@@ -57,7 +57,7 @@ Some Previews Of The Application:
 ### Searching
 
 
-<img src="Previews/P10.jpeg" width="100">
+<img src="Previews/P10.png" width="100">
 
 
 
@@ -65,7 +65,7 @@ Some Previews Of The Application:
 ### Found The Places And Marked On The Map
 
 
-<img src="Previews/P8.jpeg" width="100">
+<img src="Previews/P8.png" width="100">
 
 
 
@@ -73,7 +73,7 @@ Some Previews Of The Application:
 ### View Details Of The Particular Restaurant
 
 
-<img src="Previews/P9.jpeg" width="100">
+<img src="Previews/P9.png" width="100">
 
 
 
