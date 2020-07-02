@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.restaurantfinder.CuisineDialog;
 import com.example.restaurantfinder.R;
 import com.example.restaurantfinder.Search;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -106,11 +107,11 @@ public class SearchHistory extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull SearchViewHolder searchViewHolder, int i, @NonNull Search search) {
+            protected void onBindViewHolder(@NonNull SearchViewHolder searchViewHolder, int i, @NonNull final Search search) {
                 searchViewHolder.cuisine.setText(search.getCuisine());
                 searchViewHolder.searchres.setText("Searched For " + search.getWhichtype());
 
-                int p = Integer.parseInt(search.getPosi());
+                final int p = Integer.parseInt(search.getPosi());
 
                 if (search.getWhichtype().equals("restaurant")) {
                     searchViewHolder.searchres.setText("Searched For " + "Restaurant");
@@ -130,7 +131,16 @@ public class SearchHistory extends AppCompatActivity {
 
                 }
 
-
+                searchViewHolder.repeat.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (search.getVegnonveg().equals("veg")) {
+                            CuisineDialog.display(getSupportFragmentManager(),search.getWhichtype(),p,veg,search.getCuisine());
+                        } else  if (search.getVegnonveg().equals("nonveg")){
+                            CuisineDialog.display(getSupportFragmentManager(),search.getWhichtype(),p,nonveg,search.getCuisine());
+                        }
+                    }
+                });
             }
 
             @NonNull

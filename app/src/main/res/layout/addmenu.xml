@@ -10,6 +10,7 @@
         android:foreground="?attr/selectableItemBackground"
         android:id="@+id/menuimg"
         android:background="#FFFFFF"
+        android:src="@drawable/appicon"
         />
 
 </RelativeLayout>

@@ -104,8 +104,8 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
     NestedScrollView nestedScrollView;
     RecyclerView nearbyrestaurants, nearbydhabas, nearbycafes;
     private FusedLocationProviderClient fusedLocationClient;
-    TextView name,nores,nodhaba,nocafe,locationname;
-    ArrayList<String> restaurants,dhabas,cafes;
+    TextView name, nores, nodhaba, nocafe, locationname;
+    ArrayList<String> restaurants, dhabas, cafes;
     LinearLayout fl1, fl2, fl3;
 
     @Override
@@ -114,9 +114,9 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         setContentView(R.layout.activity_home_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
-      takegpspermission();
+        takegpspermission();
 
-        nestedScrollView=findViewById(R.id.homenested);
+        nestedScrollView = findViewById(R.id.homenested);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -136,11 +136,11 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         restaurants = new ArrayList<>();
-        dhabas=new ArrayList<>();
-        cafes=new ArrayList<>();
-        nocafe=findViewById(R.id.nocafesaround);
-        nores=findViewById(R.id.noresaround);
-        nodhaba=findViewById(R.id.nodhabaaround);
+        dhabas = new ArrayList<>();
+        cafes = new ArrayList<>();
+        nocafe = findViewById(R.id.nocafesaround);
+        nores = findViewById(R.id.noresaround);
+        nodhaba = findViewById(R.id.nodhabaaround);
         restaurant = findViewById(R.id.restaurant);
         nearbyrestaurants = findViewById(R.id.nearbyrestaurants);
         nearbycafes = findViewById(R.id.nearbycafes);
@@ -151,7 +151,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         profileshimmer = findViewById(R.id.profileshimmer);
         nearbycafesshimmer = findViewById(R.id.nearbycafessshimmer);
         nearbydhabasshimmer = findViewById(R.id.nearbydhabassshimmer);
-        locationname=findViewById(R.id.locationname);
+        locationname = findViewById(R.id.locationname);
 
         pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,9 +180,8 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         a = getIntent().getIntArrayExtra("array");
 
 
-
         fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                .addOnSuccessListener(HomeMaps.this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
@@ -192,26 +191,20 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                             try {
                                 List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 3);
                                 Log.i("add", String.valueOf(addresses.get(0)));
-                                if(addresses.get(0).getLocality()==null)
-                                {
-                                    if(addresses.get(1).getLocality()==null)
-                                    {
-                                        if(addresses.get(2).getLocality()==null)
-                                        {
+                                if (addresses.get(0).getLocality() == null) {
+                                    if (addresses.get(1).getLocality() == null) {
+                                        if (addresses.get(2).getLocality() == null) {
+
+                                        } else {
+                                            locationname.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                         }
-                                        else {
-                                            locationname.setText(addresses.get(2).getLocality()+", "+addresses.get(0).getAdminArea());
-
-                                        }
-                                    }
-                                    else {
-                                        locationname.setText(addresses.get(1).getLocality()+", "+addresses.get(0).getAdminArea());
+                                    } else {
+                                        locationname.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                     }
-                                }
-                                else{
-                                    locationname.setText(addresses.get(0).getLocality()+", "+addresses.get(0).getAdminArea());
+                                } else {
+                                    locationname.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                 }
                             } catch (IOException e) {
@@ -246,8 +239,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
 
                                             dhabas.add(dataSnapshot1.getKey());
 
-                                        }
-                                        else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("cafe") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+                                        } else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("cafe") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
 
                                             cafes.add(dataSnapshot1.getKey());
 
@@ -270,50 +262,49 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                 });
 
 
-
-            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("About").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String mystring = dataSnapshot.child("name").getValue(String.class);
-                        String arr[] = mystring.split(" ", 2);
-
-                        String firstWord = arr[0];
-
-                        name.setText(firstWord);
-
-                        Glide.with(getApplicationContext()).load(dataSnapshot.child("image").getValue(String.class)).into(pic);
-                        profileshimmer.stopShimmer();
-                        profileshimmer.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            }
-
-            new Handler().postDelayed(new Runnable() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("About").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void run() {
-                    fl1.setVisibility(View.VISIBLE);
-                    YoYo.with(Techniques.Landing)
-                            .duration(1000)
-                            .playOn(fl1);
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String mystring = dataSnapshot.child("name").getValue(String.class);
+                    String arr[] = mystring.split(" ", 2);
 
-                    fl3.setVisibility(View.VISIBLE);
-                    YoYo.with(Techniques.Landing)
-                            .duration(1000)
-                            .playOn(fl2);
+                    String firstWord = arr[0];
 
-                    fl2.setVisibility(View.VISIBLE);
-                    YoYo.with(Techniques.Landing)
-                            .duration(1000)
-                            .playOn(fl3);
+                    name.setText(firstWord);
+
+                    Glide.with(getApplicationContext()).load(dataSnapshot.child("image").getValue(String.class)).into(pic);
+                    profileshimmer.stopShimmer();
+                    profileshimmer.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
-            }, 1000);
+            });
+        }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fl1.setVisibility(View.VISIBLE);
+                YoYo.with(Techniques.Landing)
+                        .duration(1000)
+                        .playOn(fl1);
+
+                fl3.setVisibility(View.VISIBLE);
+                YoYo.with(Techniques.Landing)
+                        .duration(1000)
+                        .playOn(fl2);
+
+                fl2.setVisibility(View.VISIBLE);
+                YoYo.with(Techniques.Landing)
+                        .duration(1000)
+                        .playOn(fl3);
+
+            }
+        }, 1000);
 
 
         restaurant.setOnClickListener(new View.OnClickListener() {
@@ -329,14 +320,14 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         dhaba.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CuisineDialog.display(getSupportFragmentManager(),"dhaba",0,new int[]{},"Dhaba");
+                CuisineDialog.display(getSupportFragmentManager(), "dhaba", 0, new int[]{}, "Dhaba");
             }
         });
 
         coffeeshop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CuisineDialog.display(getSupportFragmentManager(),"cafe",0,new int[]{},"Cafe");
+                CuisineDialog.display(getSupportFragmentManager(), "cafe", 0, new int[]{}, "Cafe");
             }
         });
 
@@ -411,8 +402,88 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
          */
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
-            if (lastlocation != null) {
-            }
+
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(HomeMaps.this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+
+                                Geocoder geocoder = new Geocoder(HomeMaps.this, Locale.getDefault());
+                                try {
+                                    List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 3);
+                                    Log.i("add", String.valueOf(addresses.get(0)));
+                                    if (addresses.get(0).getLocality() == null) {
+                                        if (addresses.get(1).getLocality() == null) {
+                                            if (addresses.get(2).getLocality() == null) {
+
+                                            } else {
+                                                locationname.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                            }
+                                        } else {
+                                            locationname.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                        }
+                                    } else {
+                                        locationname.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                                lastlocation = location;
+
+                                FirebaseDatabase.getInstance().getReference().child("Saved").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                        restaurants.clear();
+                                        dhabas.clear();
+                                        cafes.clear();
+                                        for (final DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+                                            lat = Double.parseDouble(dataSnapshot1.child("latitude").getValue(String.class));
+                                            lon = Double.parseDouble(dataSnapshot1.child("longitude").getValue(String.class));
+
+                                            if (lastlocation != null) {
+                                                lastloc = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+                                                dist = ((distance(lastloc.latitude, lastloc.longitude, lat, lon)));
+                                            }
+
+                                            if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("restaurant") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                                                restaurants.add(dataSnapshot1.getKey());
+
+                                            } else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("dhaba") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                                                dhabas.add(dataSnapshot1.getKey());
+
+                                            } else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("cafe") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                                                cafes.add(dataSnapshot1.getKey());
+
+                                            }
+                                        }
+
+                                        nearbyrestaurants.setAdapter(new ItemAdapter(restaurants));
+                                        nearbycafes.setAdapter(new ItemAdapter(cafes));
+                                        nearbydhabas.setAdapter(new ItemAdapter(dhabas));
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                            }
+                        }
+                    });
+
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
@@ -443,15 +514,88 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                         // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
+
                     fusedLocationClient.getLastLocation()
-                            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            .addOnSuccessListener(HomeMaps.this, new OnSuccessListener<Location>() {
                                 @Override
                                 public void onSuccess(Location location) {
                                     // Got last known location. In some rare situations this can be null.
                                     if (location != null) {
+
+                                        Geocoder geocoder = new Geocoder(HomeMaps.this, Locale.getDefault());
+                                        try {
+                                            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 3);
+                                            Log.i("add", String.valueOf(addresses.get(0)));
+                                            if (addresses.get(0).getLocality() == null) {
+                                                if (addresses.get(1).getLocality() == null) {
+                                                    if (addresses.get(2).getLocality() == null) {
+
+                                                    } else {
+                                                        locationname.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                                    }
+                                                } else {
+                                                    locationname.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                                }
+                                            } else {
+                                                locationname.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+
+
+                                        lastlocation = location;
+
+                                        FirebaseDatabase.getInstance().getReference().child("Saved").addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                restaurants.clear();
+                                                dhabas.clear();
+                                                cafes.clear();
+                                                for (final DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+                                                    lat = Double.parseDouble(dataSnapshot1.child("latitude").getValue(String.class));
+                                                    lon = Double.parseDouble(dataSnapshot1.child("longitude").getValue(String.class));
+
+                                                    if (lastlocation != null) {
+                                                        lastloc = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
+                                                        dist = ((distance(lastloc.latitude, lastloc.longitude, lat, lon)));
+                                                    }
+
+                                                    if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("restaurant") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                                                        restaurants.add(dataSnapshot1.getKey());
+
+                                                    } else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("dhaba") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                                                        dhabas.add(dataSnapshot1.getKey());
+
+                                                    } else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("cafe") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+
+                                                        cafes.add(dataSnapshot1.getKey());
+
+                                                    }
+                                                }
+
+                                                nearbyrestaurants.setAdapter(new ItemAdapter(restaurants));
+                                                nearbycafes.setAdapter(new ItemAdapter(cafes));
+                                                nearbydhabas.setAdapter(new ItemAdapter(dhabas));
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
                                     }
                                 }
                             });
+
 
                 } else {
                     getLocationPermission();
@@ -508,7 +652,7 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
     class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
         ArrayList<String> ids;
-        int lastPosition=-1;
+        int lastPosition = -1;
 
         public ItemAdapter(ArrayList<String> ids) {
             this.ids = ids;
@@ -530,19 +674,15 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
             super.onViewAttachedToWindow(holder);
 
 
-            if(nearbydhabas.getAdapter().getItemCount()==0)
-            {
+            if (nearbydhabas.getAdapter().getItemCount() == 0) {
                 nodhaba.setVisibility(View.VISIBLE);
                 nearbydhabasshimmer.stopShimmer();
                 nearbydhabasshimmer.setVisibility(View.GONE);
-            }
-            else if(nearbyrestaurants.getAdapter().getItemCount()==0){
+            } else if (nearbyrestaurants.getAdapter().getItemCount() == 0) {
                 nearbyresturantsshimmer.stopShimmer();
                 nores.setVisibility(View.VISIBLE);
                 nearbyresturantsshimmer.setVisibility(View.GONE);
-            }
-            else if(nearbycafes.getAdapter().getItemCount()==0)
-            {
+            } else if (nearbycafes.getAdapter().getItemCount() == 0) {
                 nearbycafesshimmer.stopShimmer();
                 nocafe.setVisibility(View.VISIBLE);
                 nearbycafesshimmer.setVisibility(View.GONE);
@@ -573,24 +713,18 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
             }
 
 
-
             FirebaseDatabase.getInstance().getReference().child("Saved").child(ids.get(0)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 
-
-                    if(dataSnapshot.child("whichtype").getValue(String.class).equals("dhaba"))
-                    {
+                    if (dataSnapshot.child("whichtype").getValue(String.class).equals("dhaba")) {
                         nearbydhabasshimmer.stopShimmer();
                         nearbydhabasshimmer.setVisibility(View.GONE);
-                    }
-                    else if(dataSnapshot.child("whichtype").getValue(String.class).equals("restaurant")){
+                    } else if (dataSnapshot.child("whichtype").getValue(String.class).equals("restaurant")) {
                         nearbyresturantsshimmer.stopShimmer();
                         nearbyresturantsshimmer.setVisibility(View.GONE);
-                    }
-                    else if(dataSnapshot.child("whichtype").getValue(String.class).equals("cafe"))
-                    {
+                    } else if (dataSnapshot.child("whichtype").getValue(String.class).equals("cafe")) {
                         nearbycafesshimmer.stopShimmer();
                         nearbycafesshimmer.setVisibility(View.GONE);
                     }
@@ -610,8 +744,6 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
         public void onBindViewHolder(@NonNull final ItemHolder holder, int position) {
 
 
-
-
             FirebaseDatabase.getInstance().getReference().child("Saved").child(ids.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -621,26 +753,20 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                         List<Address> addresses = geocoder.getFromLocation(Double.valueOf(dataSnapshot.child("latitude").getValue(String.class)), Double.valueOf(dataSnapshot.child("longitude").getValue(String.class)), 3);
                         Log.i("add", String.valueOf(addresses.get(0)));
 
-                        if(addresses.get(0).getLocality()==null)
-                        {
-                            if(addresses.get(1).getLocality()==null)
-                            {
-                                if(addresses.get(2).getLocality()==null)
-                                {
+                        if (addresses.get(0).getLocality() == null) {
+                            if (addresses.get(1).getLocality() == null) {
+                                if (addresses.get(2).getLocality() == null) {
+
+                                } else {
+                                    holder.area.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                 }
-                                else {
-                                    holder.area.setText(addresses.get(2).getLocality()+", "+addresses.get(0).getAdminArea());
-
-                                }
-                            }
-                            else {
-                                holder.area.setText(addresses.get(1).getLocality()+", "+addresses.get(0).getAdminArea());
+                            } else {
+                                holder.area.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                             }
-                        }
-                        else{
-                            holder.area.setText(addresses.get(0).getLocality()+", "+addresses.get(0).getAdminArea());
+                        } else {
+                            holder.area.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                         }
                     } catch (IOException e) {
@@ -665,10 +791,10 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent i=new Intent(HomeMaps.this,RestaurantDetails.class);
-                    i.putExtra("id",ids.get(holder.getAdapterPosition()));
+                    Intent i = new Intent(HomeMaps.this, RestaurantDetails.class);
+                    i.putExtra("id", ids.get(holder.getAdapterPosition()));
                     startActivity(i);
-                    overridePendingTransition(R.anim.alerter_slide_in_from_left,R.anim.alerter_slide_out_to_right);
+                    overridePendingTransition(R.anim.alerter_slide_in_from_left, R.anim.alerter_slide_out_to_right);
                 }
             });
 

@@ -1059,13 +1059,34 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
 
                                         markerOptions.title(dataSnapshot1.child("buisnessname").getValue(String.class));
 
-                                        int height = 200;
-                                        int width = 200;
-                                        BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.blueres);
-                                        Bitmap b = bitmapdraw.getBitmap();
-                                        Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-                                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+                                        if(whichtype.equals("dhaba"))
+                                        {
+                                            int height = 170;
+                                            int width = 130;
+                                            BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.orangemarker);
+                                            Bitmap b = bitmapdraw.getBitmap();
+                                            Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(b));
+                                        }
+                                        else if(whichtype.equals("restaurant"))
+                                        {
+                                            int height = 170;
+                                            int width = 130;
+                                            BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.redmarker);
+                                            Bitmap b = bitmapdraw.getBitmap();
+                                            Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(b));
+                                        }
+                                        else if(whichtype.equals("cafe"))
+                                        {
+                                            int height = 170;
+                                            int width = 130;
+                                            BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.greenmarker);
+                                            Bitmap b = bitmapdraw.getBitmap();
+                                            Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(b));
+                                        }
 
                                         mMap.addMarker(markerOptions);
 
@@ -1154,24 +1175,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
             return null;
         }
         return loc;
-    }
-
-    private void updateLocationUI() {
-        if (mMap == null) {
-            return;
-        }
-        try {
-            if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-
-
-            } else {
-                mLastKnownLocation = null;
-                getLocationPermission();
-            }
-        } catch (SecurityException e) {
-        }
-
     }
 
     private void getLocationPermission() {
@@ -1307,22 +1310,6 @@ public class RestaurentActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onPause() {
         super.onPause();
-    }
-
-    private String getUrl(LatLng origin, LatLng dest, String directionMode) {
-        // Origin of route
-        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-        // Destination of route
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-        // Mode
-        String mode = "mode=" + directionMode;
-        // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + mode;
-        // Output format
-        String output = "json";
-        // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
-        return url;
     }
 
     @Override

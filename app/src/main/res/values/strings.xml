@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Restaurant Finder</string>
+    <string name="app_name">Restaurants Dictionary</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

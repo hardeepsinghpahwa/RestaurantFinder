@@ -87,8 +87,8 @@
                     app:sparkbutton_activeImage="@drawable/bookmark"
                     app:sparkbutton_iconSize="40dp"
                     app:sparkbutton_inActiveImage="@drawable/unmark"
-                    app:sparkbutton_primaryColor="@color/orange"
-                    app:sparkbutton_secondaryColor="@color/orange" />
+                    app:sparkbutton_primaryColor="@color/white"
+                    app:sparkbutton_secondaryColor="@color/white" />
 
 
                 <ImageView
@@ -100,6 +100,7 @@
                     android:focusable="true"
                     android:layout_marginRight="7dp"
                     android:src="@drawable/share"
+                    android:tint="#FFFFFF"
                     android:visibility="gone" />
 
                 <ImageView
@@ -110,6 +111,7 @@
                     android:focusable="true"
                     android:gravity="center"
                     android:visibility="gone"
+                    android:tint="#FFFFFF"
                     android:layout_height="match_parent"
                     android:src="@drawable/directions" />
 

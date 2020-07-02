@@ -1,6 +1,45 @@
 [
   {
     "featureType": "administrative",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#444444"
+      }
+    ]
+  },
+  {
+    "featureType": "landscape",
+    "elementType": "all",
+    "stylers": [
+      {
+        "color": "#f2f2f2"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "all",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "all",
+    "stylers": [
+      {
+        "saturation": -100
+      },
+      {
+        "lightness": 45
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
     "elementType": "all",
     "stylers": [
       {
@@ -9,74 +48,32 @@
     ]
   },
   {
-    "featureType": "landscape",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "visibility": "simplified"
-      },
-      {
-        "color": "#fcfcfc"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "visibility": "simplified"
-      },
-      {
-        "color": "#fcfcfc"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "visibility": "simplified"
-      },
-      {
-        "color": "#dddddd"
-      }
-    ]
-  },
-  {
     "featureType": "road.arterial",
-    "elementType": "geometry",
+    "elementType": "labels.icon",
     "stylers": [
       {
-        "visibility": "simplified"
-      },
-      {
-        "color": "#dddddd"
+        "visibility": "off"
       }
     ]
   },
   {
-    "featureType": "road.local",
-    "elementType": "geometry",
+    "featureType": "transit",
+    "elementType": "all",
     "stylers": [
       {
-        "visibility": "simplified"
-      },
-      {
-        "color": "#eeeeee"
+        "visibility": "off"
       }
     ]
   },
   {
     "featureType": "water",
-    "elementType": "geometry",
+    "elementType": "all",
     "stylers": [
       {
-        "visibility": "simplified"
+        "color": "#f7f7f7"
       },
       {
-        "color": "#dddddd"
+        "visibility": "on"
       }
     ]
   }

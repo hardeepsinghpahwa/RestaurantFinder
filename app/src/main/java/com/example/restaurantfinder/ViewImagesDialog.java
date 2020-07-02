@@ -103,7 +103,7 @@ public class ViewImagesDialog extends DialogFragment {
 
         @Override
         public SliderAdapter.SliderAdapterVH onCreateViewHolder(ViewGroup parent) {
-            View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.imageslideritem, null);
+            View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.imageslideritem2, null);
             return new SliderAdapter.SliderAdapterVH(inflate);
         }
 

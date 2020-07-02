@@ -145,7 +145,6 @@ public class Login extends AppCompatActivity {
                         .setTheme(R.style.SigninTheme)
                         .build(), RC_SIGN_IN
         );
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {

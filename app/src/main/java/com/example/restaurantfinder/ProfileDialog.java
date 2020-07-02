@@ -15,6 +15,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,15 +60,14 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
     TextView name;
     ImageView back, locationpin;
     TextView logout;
+    private FusedLocationProviderClient fusedLocationClient;
     LinearLayout bookmarks, editprofile,yourreviews,searchistory;
     TextView currentlocation;
     LottieAnimationView lottieAnimationView;
     DatabaseReference databaseReference;
     LocationManager locationManager;
     ConstraintLayout constraintLayout, constraintLayout1;
-    protected Location lastLocation;
     String provider;
-    FusedLocationProviderClient fusedLocationProviderClient;
 
     public ProfileDialog() {
 
@@ -103,6 +103,45 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+
+            fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+
+                            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 3);
+                                Log.i("add", String.valueOf(addresses.get(0)));
+                                if (addresses.get(0).getLocality() == null) {
+                                    if (addresses.get(1).getLocality() == null) {
+                                        if (addresses.get(2).getLocality() == null) {
+
+                                        } else {
+                                            currentlocation.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                        }
+                                    } else {
+                                        currentlocation.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                    }
+                                } else {
+                                    currentlocation.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                });
 
 
         LayoutInflater layoutInflater = (LayoutInflater) getContext()
@@ -184,19 +223,6 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
             }
         });
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
-        fusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        lastLocation = location;
-
-                        // In some rare cases the location returned can be null
-                    }
-                });
-
-
         logout = view.findViewById(R.id.logout);
 
         lottieAnimationView.setSpeed(1.5f);
@@ -205,6 +231,9 @@ public class ProfileDialog extends DialogFragment implements RecentSearches.OnFr
         locationpin.bringToFront();
         currentlocation.bringToFront();
         profilepic.bringToFront();
+
+
+
 
         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
             @Override

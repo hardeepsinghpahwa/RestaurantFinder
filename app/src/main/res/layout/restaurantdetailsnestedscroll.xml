@@ -55,7 +55,6 @@
             android:layout_height="100dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:cardElevation="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -63,8 +62,12 @@
 
             <ImageView
                 android:id="@+id/detailspropic"
-                android:layout_width="match_parent"
+                android:layout_width="120dp"
                 android:layout_height="100dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 android:scaleType="centerCrop" />
 
         </androidx.cardview.widget.CardView>
@@ -444,11 +447,11 @@
             app:layout_constraintEnd_toStartOf="@+id/detailshare"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView11"
-            app:sparkbutton_activeImage="@drawable/bookmark"
+            app:sparkbutton_activeImage="@drawable/bookmarkred"
             app:sparkbutton_iconSize="40dp"
-            app:sparkbutton_inActiveImage="@drawable/unmark"
-            app:sparkbutton_primaryColor="@color/orange"
-            app:sparkbutton_secondaryColor="@color/orange" />
+            app:sparkbutton_inActiveImage="@drawable/unmarkred"
+            app:sparkbutton_primaryColor="@color/colorPrimary"
+            app:sparkbutton_secondaryColor="@color/colorPrimary" />
 
         <ImageView
             android:id="@+id/detailshare"
@@ -458,6 +461,7 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:padding="15dp"
+            android:tint="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/detailbookmark"
             app:layout_constraintEnd_toStartOf="@+id/detailsdirection"
             app:layout_constraintHorizontal_bias="0.65"
@@ -499,6 +503,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:clickable="true"
             android:focusable="true"
+            android:tint="@color/colorPrimary"
             android:foreground="?attr/selectableItemBackground"
             app:layout_constraintStart_toEndOf="@+id/detailshare"
             app:layout_constraintTop_toTopOf="@+id/detailshare"

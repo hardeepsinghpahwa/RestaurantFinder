@@ -1,43 +1,25 @@
 [
   {
     "featureType": "administrative",
-    "elementType": "labels",
+    "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#FFFFFF"
-      },
-      {
-        "visibility": "simplified"
+        "color": "#444444"
       }
     ]
   },
   {
-    "featureType": "landscape.man_made",
+    "featureType": "landscape",
     "elementType": "all",
     "stylers": [
       {
-        "visibility": "simplified"
-      },
-      {
-        "color": "#303030"
-      }
-    ]
-  },
-  {
-    "featureType": "landscape.natural",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#000000"
-      },
-      {
-        "visibility": "simplified"
+        "color": "#f2f2f2"
       }
     ]
   },
   {
     "featureType": "poi",
-    "elementType": "geometry",
+    "elementType": "all",
     "stylers": [
       {
         "visibility": "off"
@@ -45,44 +27,38 @@
     ]
   },
   {
-    "featureType": "poi",
-    "elementType": "labels.text",
+    "featureType": "road",
+    "elementType": "all",
     "stylers": [
       {
-        "visibility": "simplified"
+        "saturation": -100
       },
       {
-        "color": "#FFFFFF"
+        "lightness": 45
       }
     ]
   },
   {
-    "featureType": "road",
-    "elementType": "geometry",
+    "featureType": "road.highway",
+    "elementType": "all",
     "stylers": [
-      {
-        "visibility": "simplified"
-      },
-      {
-        "color": "#808080"
-      }
-    ]
-  },
-  {
-    "featureType": "road",
-    "elementType": "labels.text",
-    "stylers": [
-      {
-        "color": "#FFFFFF"
-      },
       {
         "visibility": "simplified"
       }
     ]
   },
   {
-    "featureType": "road",
+    "featureType": "road.arterial",
     "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "all",
     "stylers": [
       {
         "visibility": "off"
@@ -94,7 +70,10 @@
     "elementType": "all",
     "stylers": [
       {
-        "color": "#303030"
+        "color": "#f7f7f7"
+      },
+      {
+        "visibility": "on"
       }
     ]
   }

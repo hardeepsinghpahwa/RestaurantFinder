@@ -55,12 +55,15 @@
 
                         <TextView
                             android:id="@+id/locationname"
-                            android:layout_width="wrap_content"
+                            android:layout_width="200dp"
                             android:layout_height="wrap_content"
                             android:drawableTint="#FFFFFF"
                             android:layout_marginTop="5dp"
                             android:textColor="#FFFFFF"
                             android:textSize="18sp"
+                            android:text="Chandigarh"
+                            android:singleLine="true"
+                            android:maxWidth="200dp"
                             android:textStyle="bold" />
 
                     </LinearLayout>

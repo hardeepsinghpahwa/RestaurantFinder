@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "484157616647-81nk8onfkkmqcctdf40u2u5l8p4nrnho.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.restaurantfinder",
+            "certificate_hash": "7762630e0d4e6aba880a4a2a5cd02d860ab8423e"
+          }
+        },
+        {
+          "client_id": "484157616647-gtogr32fo7nnt8jcopf7o82e1iqj4197.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.restaurantfinder",
+            "certificate_hash": "5872c6f08c5fecc9a883da4cd449c602d78e51d6"
+          }
+        },
+        {
           "client_id": "484157616647-akqps13hs4r0ae4ifgg2g5o8m1800jkq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -56,6 +72,43 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.restaurantfinderadmin",
+            "certificate_hash": "f7e685fa61edd8294e5a8d40b325bff817485cc3"
+          }
+        },
+        {
+          "client_id": "484157616647-9asm69bmhq32a2fmln8q034s3rao305k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ1_P6MJjXq__qQOiMiufQLri_EcHIT-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "484157616647-9asm69bmhq32a2fmln8q034s3rao305k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484157616647:android:50181cfbab9724a8",
+        "android_client_info": {
+          "package_name": "com.example.restaurantowners"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "484157616647-ltidoqiko0tbn46i3ifu4ppj8e5d6bgm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.restaurantowners",
             "certificate_hash": "f7e685fa61edd8294e5a8d40b325bff817485cc3"
           }
         },
