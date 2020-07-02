@@ -4,7 +4,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="facebook_application_id">758823291237945</string>
-    <string name="facebook_login_protocol_scheme">fb758823291237945</string>
+    <string name="facebook_application_id">YOUR_FB_APPLICATION_ID</string>
+    <string name="facebook_login_protocol_scheme">YOUR_FB_LOGIN_PROTOCOL</string>
 
 </resources>

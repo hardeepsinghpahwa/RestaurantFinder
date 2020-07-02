@@ -6,6 +6,17 @@ Some Previews Of The Application:
 
 ## The User App
 
+
+
+
+
+### The App Startup
+
+<img src="Previews/P1.png" width="100">
+<img src="Previews/P2.png" width="100">
+<img src="Previews/P3.png" width="100">
+
+
 ### The Login Screen
 
 
@@ -13,30 +24,32 @@ Some Previews Of The Application:
 
 
 
+### Loading Shimmer
+
+
+<img src="Previews/P4.png" width="100">
 
 
 
-### Choose What place are you looking for?
+### Choose places you are looking for?
 
 
-<img src="Previews/Preview2.jpeg" width="100">
-
-
-
-
-### Select A Cuisine
-
-
-<img src="Previews/Preview3.jpeg" width="100">
+<img src="Previews/P5.png" width="100">
 
 
 
 
+### Search Places Cuisine Wise
 
-### Search For The Places Around
+
+<img src="Previews/P6.png" width="100">
 
 
-<img src="Previews/Preview4.jpeg" width="100">
+
+
+### Confirm Search
+
+<img src="Previews/P7.png" width="100">
 
 
 
@@ -44,7 +57,7 @@ Some Previews Of The Application:
 ### Searching
 
 
-<img src="Previews/Preview5.jpeg" width="100">
+<img src="Previews/P10.png" width="100">
 
 
 
@@ -52,7 +65,7 @@ Some Previews Of The Application:
 ### Found The Places And Marked On The Map
 
 
-<img src="Previews/Preview12.jpeg" width="100">
+<img src="Previews/P8.png" width="100">
 
 
 
@@ -60,7 +73,7 @@ Some Previews Of The Application:
 ### View Details Of The Particular Restaurant
 
 
-<img src="Previews/Preview6.jpeg" width="100">
+<img src="Previews/P9.png" width="100">
 
 
 
