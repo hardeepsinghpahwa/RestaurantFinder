@@ -377,6 +377,8 @@ public class RestaurantDetails extends AppCompatActivity implements OnMapReadyCa
 
                 fromtime.setText(de.getFromtime());
 
+                call.setText("Call "+de.getContact1());
+
                 Glide.with(getApplicationContext()).load(de.getProfilepic()).into(propic);
 
                 detailsdirection.setOnClickListener(new View.OnClickListener() {

@@ -190,22 +190,24 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                             Geocoder geocoder = new Geocoder(HomeMaps.this, Locale.getDefault());
                             try {
                                 List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 3);
-                                Log.i("add", String.valueOf(addresses.get(0)));
-                                if (addresses.get(0).getLocality() == null) {
-                                    if (addresses.get(1).getLocality() == null) {
-                                        if (addresses.get(2).getLocality() == null) {
 
+                                if(addresses.size()!=0) {
+                                    if (addresses.get(0).getLocality() == null) {
+                                        if (addresses.get(1).getLocality() == null) {
+                                            if (addresses.get(2).getLocality() == null) {
+
+                                            } else {
+                                                locationname.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                            }
                                         } else {
-                                            locationname.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+                                            locationname.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                         }
                                     } else {
-                                        locationname.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
+                                        locationname.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                     }
-                                } else {
-                                    locationname.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
-
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -229,20 +231,20 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                                         if (lastlocation != null) {
                                             lastloc = new LatLng(lastlocation.getLatitude(), lastlocation.getLongitude());
                                             dist = ((distance(lastloc.latitude, lastloc.longitude, lat, lon)));
-                                        }
 
-                                        if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("restaurant") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+                                            if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("restaurant") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
 
-                                            restaurants.add(dataSnapshot1.getKey());
+                                                restaurants.add(dataSnapshot1.getKey());
 
-                                        } else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("dhaba") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+                                            } else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("dhaba") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
 
-                                            dhabas.add(dataSnapshot1.getKey());
+                                                dhabas.add(dataSnapshot1.getKey());
 
-                                        } else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("cafe") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
+                                            } else if (dist < 5 && (dataSnapshot1.child("whichtype").getValue(String.class)).matches("cafe") && (dataSnapshot1.child("online").getValue(String.class).equals("1"))) {
 
-                                            cafes.add(dataSnapshot1.getKey());
+                                                cafes.add(dataSnapshot1.getKey());
 
+                                            }
                                         }
                                     }
 
@@ -413,22 +415,24 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                                 Geocoder geocoder = new Geocoder(HomeMaps.this, Locale.getDefault());
                                 try {
                                     List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 3);
-                                    Log.i("add", String.valueOf(addresses.get(0)));
-                                    if (addresses.get(0).getLocality() == null) {
-                                        if (addresses.get(1).getLocality() == null) {
-                                            if (addresses.get(2).getLocality() == null) {
 
+                                    if(addresses.size()!=0) {
+                                        if (addresses.get(0).getLocality() == null) {
+                                            if (addresses.get(1).getLocality() == null) {
+                                                if (addresses.get(2).getLocality() == null) {
+
+                                                } else {
+                                                    locationname.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                                }
                                             } else {
-                                                locationname.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+                                                locationname.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                             }
                                         } else {
-                                            locationname.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
+                                            locationname.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                         }
-                                    } else {
-                                        locationname.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
-
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -525,22 +529,24 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                                         Geocoder geocoder = new Geocoder(HomeMaps.this, Locale.getDefault());
                                         try {
                                             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 3);
-                                            Log.i("add", String.valueOf(addresses.get(0)));
-                                            if (addresses.get(0).getLocality() == null) {
-                                                if (addresses.get(1).getLocality() == null) {
-                                                    if (addresses.get(2).getLocality() == null) {
 
+                                            if(addresses.size()!=0) {
+                                                if (addresses.get(0).getLocality() == null) {
+                                                    if (addresses.get(1).getLocality() == null) {
+                                                        if (addresses.get(2).getLocality() == null) {
+
+                                                        } else {
+                                                            locationname.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                                        }
                                                     } else {
-                                                        locationname.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+                                                        locationname.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                                     }
                                                 } else {
-                                                    locationname.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
+                                                    locationname.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                                 }
-                                            } else {
-                                                locationname.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
-
                                             }
                                         } catch (IOException e) {
                                             e.printStackTrace();
@@ -748,34 +754,41 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+
+                    /*Log.i("lat",dataSnapshot.child("latitude").getValue(String.class));
                     Geocoder geocoder = new Geocoder(HomeMaps.this, Locale.getDefault());
                     try {
-                        List<Address> addresses = geocoder.getFromLocation(Double.valueOf(dataSnapshot.child("latitude").getValue(String.class)), Double.valueOf(dataSnapshot.child("longitude").getValue(String.class)), 3);
-                        Log.i("add", String.valueOf(addresses.get(0)));
+                        List<Address> addresses = geocoder.getFromLocation(30.443120850373365, 77.61263877153397, 3);
 
-                        if (addresses.get(0).getLocality() == null) {
-                            if (addresses.get(1).getLocality() == null) {
-                                if (addresses.get(2).getLocality() == null) {
 
+                        if(addresses.size()!=0) {
+                            if (addresses.get(0).getLocality() == null) {
+                                if (addresses.get(1).getLocality() == null) {
+                                    if (addresses.get(2).getLocality() == null) {
+
+                                    } else {
+                                        holder.area.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+
+                                    }
                                 } else {
-                                    holder.area.setText(addresses.get(2).getLocality() + ", " + addresses.get(0).getAdminArea());
+                                    holder.area.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                                 }
                             } else {
-                                holder.area.setText(addresses.get(1).getLocality() + ", " + addresses.get(0).getAdminArea());
+                                holder.area.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
 
                             }
-                        } else {
-                            holder.area.setText(addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea());
-
+                        }
+                        else {
+                            holder.area.setText("");
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
+                    }*/
 
                     holder.name.setText(dataSnapshot.child("buisnessname").getValue(String.class));
                     //holder.rating.setText(dataSnapshot.child("rating").getValue(String.class));
-                    //holder.area.setText(dataSnapshot.child("areaname").getValue(String.class));
+                    holder.area.setText(dataSnapshot.child("areaname").getValue(String.class));
                     Glide.with(getApplicationContext()).load(dataSnapshot.child("profilepic").getValue(String.class)).into(holder.propic);
 
 
@@ -802,7 +815,6 @@ public class HomeMaps extends FragmentActivity implements RecentSearches.OnFragm
 
         @Override
         public int getItemCount() {
-            Log.i("size", String.valueOf(ids.size()));
             return ids.size();
         }
 
